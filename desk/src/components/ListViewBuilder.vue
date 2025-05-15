@@ -152,6 +152,9 @@ import {
 import { getIcon, formatTimeShort } from "@/utils";
 import { useAuthStore } from "@/stores/auth";
 import { useStorage } from "@vueuse/core";
+import { useTicketStatusStore } from "@/stores/ticketStatus";
+
+const ticketStatusStore = useTicketStatusStore();
 
 interface P {
   options: {
@@ -386,6 +389,13 @@ function listCell(column: any, row: any, item: any, idx: number) {
       class: "truncate text-base text-ink-gray-6",
       innerHTML: item,
     });
+  }
+  if(column.type === "Select") {
+    if(!item) return ""
+    return h("h3", {
+      class: `inline-flex select-none items-center gap-1 rounded ${ticketStatusStore.detailedTextColorMap[item]} bg-transparent border border-outline-${ticketStatusStore.detailedColorMap[item]}-2 h-5 text-xs "`,
+      innerHTML: item
+    })
   }
   if (column.type === "Datetime") {
     return h("span", {

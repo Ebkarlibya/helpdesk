@@ -741,13 +741,13 @@ class HDTicket(Document):
                 "label": "Subject",
                 "type": "Data",
                 "key": "subject",
-                "width": "25rem",
+                "width": "22rem",
             },
             {
-                "label": "Status",
+                "label": "Detailed Status",
                 "type": "Select",
-                "key": "status",
-                "width": "8rem",
+                "key": "ehda_detailed_status",
+                "width": "15rem",
             },
             {
                 "label": "First response",

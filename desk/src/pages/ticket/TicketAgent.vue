@@ -465,20 +465,6 @@ function createNonSla() {
                 ticket.reload()
                 // setTimeout(() => location.reload(), 1500)
               }, 1000)
-
-              // m_patch.updateField("ehda_detailed_status", hdStatus, () => {
-              //     setTimeout(() => {
-              //         m_patch.updateField("status", mappedStatus)
-              //         m_patch.createToast({
-              //             title: "ETMS HD: Transition Successfull",
-              //             icon: "alert-circle",
-              //         });
-
-
-              //     }, 2000)
-              // })
-
-              // open(`/app/non-sla-request-evaluation-form/${res.data.name}`)
             }
           }).finally((er) => {
             // $(document.body).css("filter", "opacity(1)")

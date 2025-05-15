@@ -4,51 +4,55 @@
       <template #left-header>
         <Breadcrumbs :items="breadcrumbs" class="breadcrumbs">
           <template #prefix="{ item }">
-            <Icon
-              v-if="item.icon"
-              :icon="item.icon"
-              class="mr-1 h-4 flex items-center justify-center self-center"
-            />
+            <Icon v-if="item.icon" :icon="item.icon" class="mr-1 h-4 flex items-center justify-center self-center" />
           </template>
         </Breadcrumbs>
       </template>
       <template #right-header>
-        <CustomActions
-          v-if="ticket.data._customActions"
-          :actions="ticket.data._customActions"
-        />
+        <CustomActions v-if="ticket.data._customActions" :actions="ticket.data._customActions" />
         <div v-if="ticket.data.assignees?.length">
           <component :is="ticket.data.assignees.length == 1 ? 'Button' : 'div'">
-            <MultipleAvatar
-              :avatars="ticket.data.assignees"
-              @click="showAssignmentModal = true"
-            />
+            <MultipleAvatar :avatars="ticket.data.assignees" @click="showAssignmentModal = true" />
           </component>
         </div>
-        <button
-          v-else
-          class="rounded bg-gray-100 px-2 py-1.5 text-base text-gray-800"
-          @click="showAssignmentModal = true"
-        >
+        <button v-else class="rounded bg-gray-100 px-2 py-1.5 text-base text-gray-800"
+          @click="showAssignmentModal = true">
           Assign
         </button>
-        <Dropdown :options="dropdownOptions">
+        <Button :variant="'subtle'" :ref_for="true" v-if="ticket.data.ehda_non_sla_form" @click="openRelatedNonSla" theme="gray"
+          size="sm" label="Button" :loading="false" :loadingText="null" :disabled="false" :link="null">
+          Open Non-SLA Form
+        </Button>
+        <Button :variant="'subtle'" :ref_for="true" v-if="!ticket.data.ehda_non_sla_form"
+          @click="createNonSla" theme="gray" size="sm" label="Button" :loading="false" :loadingText="null"
+          :disabled="false" :link="null">
+          Create Non-SLA Form
+        </Button>
+        <!-- hd plus: detailed status -->
+        <Dropdown :options="detailedStatusOptions">
           <template #default="{ open }">
-            <Button :label="ticket.data.status">
+            <Button :label="ticket.data.ehda_detailed_status">
               <template #prefix>
-                <IndicatorIcon
-                  :class="ticketStatusStore.textColorMap[ticket.data.status]"
-                />
+                <IndicatorIcon :class="ticketStatusStore.detailedTextColorMap[ticket.data.ehda_detailed_status]" />
               </template>
               <template #suffix>
-                <FeatherIcon
-                  :name="open ? 'chevron-up' : 'chevron-down'"
-                  class="h-4"
-                />
+                <FeatherIcon :name="open ? 'chevron-up' : 'chevron-down'" class="h-4" />
               </template>
             </Button>
           </template>
         </Dropdown>
+        <!-- <Dropdown :options="dropdownOptions">
+          <template #default="{ open }">
+            <Button :label="ticket.data.status">
+              <template #prefix>
+                <IndicatorIcon :class="ticketStatusStore.textColorMap[ticket.data.status]" />
+              </template>
+              <template #suffix>
+                <FeatherIcon :name="open ? 'chevron-up' : 'chevron-down'" class="h-4" />
+              </template>
+            </Button>
+          </template>
+        </Dropdown> -->
       </template>
     </LayoutHeader>
     <div v-if="ticket.data" class="flex h-full overflow-hidden">
@@ -58,76 +62,42 @@
           <Tabs v-model="tabIndex" :tabs="tabs">
             <TabList />
             <TabPanel v-slot="{ tab }" class="h-full">
-              <TicketAgentActivities
-                ref="ticketAgentActivitiesRef"
-                :activities="filterActivities(tab.name)"
-                :title="tab.label"
-                :ticket-status="ticket.data?.status"
-                @update="
+              <TicketAgentActivities ref="ticketAgentActivitiesRef" :activities="filterActivities(tab.name)"
+                :title="tab.label" :ticket-status="ticket.data?.status" @update="
                   () => {
                     ticket.reload();
                   }
-                "
-                @email:reply="
+                " @email:reply="
                   (e) => {
                     communicationAreaRef.replyToEmail(e);
                   }
-                "
-              />
+                " />
             </TabPanel>
           </Tabs>
         </div>
-        <CommunicationArea
-          ref="communicationAreaRef"
-          v-model="ticket.data"
-          :to-emails="[ticket.data?.raised_by]"
-          :cc-emails="[]"
-          :bcc-emails="[]"
-          :key="ticket.data?.name"
-          @update="
+        <CommunicationArea ref="communicationAreaRef" v-model="ticket.data" :to-emails="[ticket.data?.raised_by]"
+          :cc-emails="[]" :bcc-emails="[]" :key="ticket.data?.name" @update="
             () => {
               ticket.reload();
               ticketAgentActivitiesRef.scrollToLatestActivity();
             }
-          "
-        />
+          " />
       </div>
-      <TicketAgentSidebar
-        :ticket="ticket.data"
-        @update="({ field, value }) => updateTicket(field, value)"
-        @email:open="(e) => communicationAreaRef.toggleEmailBox()"
-        @reload="ticket.reload()"
-      />
+      <TicketAgentSidebar :ticket="ticket.data" @update="({ field, value }) => updateTicket(field, value)"
+        @email:open="(e) => communicationAreaRef.toggleEmailBox()" @reload="ticket.reload()" />
     </div>
-    <AssignmentModal
-      v-if="ticket.data"
-      v-model="showAssignmentModal"
-      :assignees="ticket.data.assignees"
-      :docname="ticketId"
-      doctype="HD Ticket"
-      @update="
+    <AssignmentModal v-if="ticket.data" v-model="showAssignmentModal" :assignees="ticket.data.assignees"
+      :docname="ticketId" doctype="HD Ticket" @update="
         () => {
           ticket.reload();
         }
-      "
-    />
+      " />
     <!-- Rename Subject Dialog -->
     <Dialog v-model="showSubjectDialog" :options="{ title: 'Rename Subject' }">
       <template #body-content>
         <div class="flex flex-col flex-1 gap-3">
-          <FormControl
-            v-model="renameSubject"
-            type="textarea"
-            size="sm"
-            variant="subtle"
-            :disabled="false"
-          />
-          <Button
-            variant="solid"
-            :loading="isLoading"
-            label="Rename"
-            @click="handleRename"
-          />
+          <FormControl v-model="renameSubject" type="textarea" size="sm" variant="subtle" :disabled="false" />
+          <Button variant="solid" :loading="isLoading" label="Rename" @click="handleRename" />
         </div>
       </template>
     </Dialog>
@@ -169,7 +139,7 @@ import { useUserStore } from "@/stores/user";
 import { globalStore } from "@/stores/globalStore";
 import { createToast, getIcon } from "@/utils";
 import { setupCustomizations } from "@/composables/formCustomisation";
-import { TabObject, TicketTab, View } from "@/types";
+import { TabObject, Ticket, TicketTab, View } from "@/types";
 import { useView } from "@/composables/useView";
 import { ComputedRef } from "vue";
 
@@ -235,7 +205,7 @@ const ticket = createResource({
     // console.log(ticket._customActions);
   },
 });
-function updateField(name: string, value: string, callback = () => {}) {
+function updateField(name: string, value: string, callback = () => { }) {
   updateTicket(name, value);
   callback();
 }
@@ -266,6 +236,39 @@ const handleRename = () => {
   updateTicket("subject", renameSubject.value);
   showSubjectDialog.value = false;
 };
+
+// hd plus detailed status map
+const detailedStatusOptions = computed(() =>
+  ticketStatusStore.detailedOptions.map((o) => ({
+    label: o,
+    value: o,
+    onClick: () => {
+
+      $dialog({
+        title: "Confirm Transition",
+        message: `Are you sure you want transition from (${ticket.data.ehda_detailed_status}) to (${o})`,
+        actions: [
+          {
+            label: "Confirm",
+            variant: "solid",
+            theme: "green",
+            onClick(close: Function) {
+              ticket.data.status = ticketStatusStore.getStatusFromDetailed(ticket.data.ehda_detailed_status);
+              ticket.data.ehda_detailed_status = o
+              updateTicket({ status: ticket.data.status, ehda_detailed_status: o })
+
+              close();
+            },
+          },
+        ],
+      });
+    },
+    icon: () =>
+      h(IndicatorIcon, {
+        class: ticketStatusStore.detailedTextColorMap[o],
+      }),
+  }))
+);
 
 const dropdownOptions = computed(() =>
   ticketStatusStore.options.map((o) => ({
@@ -386,24 +389,28 @@ function filterActivities(eventType: TicketTab) {
   return activities.value.filter((activity) => activity.type === eventType);
 }
 const isErrorTriggered = ref(false);
-function updateTicket(fieldname: string, value: string) {
+function updateTicket(data: Partial<Ticket>) {
   isErrorTriggered.value = false;
-  if (value === ticket.data[fieldname]) return;
-  updateOptimistic(fieldname, value);
+  // if (value === ticket.data[fieldname]) return;
+  // updateOptimistic(fieldname, value);
 
   createResource({
     url: "frappe.client.set_value",
     params: {
       doctype: "HD Ticket",
       name: props.ticketId,
-      fieldname,
-      value,
+      fieldname: data
     },
     debounce: 500,
     auto: true,
     onSuccess: () => {
       isLoading.value = false;
       isErrorTriggered.value = false;
+      createToast({
+        title: "Ticket updated",
+        icon: "check",
+        iconClasses: "text-green-600",
+      });
       ticket.reload();
     },
     onError: (error) => {
@@ -434,6 +441,68 @@ function updateOptimistic(fieldname: string, value: string) {
   });
 }
 
+function createNonSla() {
+  $dialog({
+    title: "Confirm Action",
+    message: `Are you sure you want Create & Link Non-SLA for Ticket (${ticket.name})`,
+    actions: [
+      {
+        label: "Create Related Non-SLA",
+        theme: "green",
+        variant: "solid",
+        async onClick(close) {
+          // $(document.body).css("filter", "opacity(0.3)")
+          call("etms_hd_addons.api.create_non_sla_form", {
+            ticket_name: ticket.data.name
+          }).then(res => {
+            if (res.status == 200) {
+              setTimeout(() => {
+                // $(document.body).css("filter", "opacity(1)")
+                createToast({
+                  title: "ETMS HD: Non-SLA Form Created & Linked",
+                  icon: "alert-circle",
+                });
+                ticket.reload()
+                // setTimeout(() => location.reload(), 1500)
+              }, 1000)
+
+              // m_patch.updateField("ehda_detailed_status", hdStatus, () => {
+              //     setTimeout(() => {
+              //         m_patch.updateField("status", mappedStatus)
+              //         m_patch.createToast({
+              //             title: "ETMS HD: Transition Successfull",
+              //             icon: "alert-circle",
+              //         });
+
+
+              //     }, 2000)
+              // })
+
+              // open(`/app/non-sla-request-evaluation-form/${res.data.name}`)
+            }
+          }).finally((er) => {
+            // $(document.body).css("filter", "opacity(1)")
+          })
+
+          close();
+        },
+      },
+      {
+        label: "Cancel",
+        variant: "outline",
+        onClick(close) {
+          close();
+        },
+      },
+    ],
+  }
+  );
+}
+
+function openRelatedNonSla() {
+  open(`/app/non-sla-request-evaluation-form/${ticket.data.ehda_non_sla_form}`)
+}
+
 onMounted(() => {
   socket.on("helpdesk:ticket-update", (ticketID) => {
     if (ticketID === Number(props.ticketId)) {
@@ -451,6 +520,7 @@ onUnmounted(() => {
 <style>
 .breadcrumbs button {
   background-color: inherit !important;
+
   &:hover,
   &:focus {
     background-color: inherit !important;

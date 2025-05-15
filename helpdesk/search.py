@@ -401,7 +401,7 @@ def build_index_if_not_exists():
 @filelock("helpdesk_corpus_download", timeout=60)
 def download_corpus():
     from nltk import data, download
-
+    # return
     try:
         data.find("taggers/averaged_perceptron_tagger_eng.zip")
         data.find("tokenizers/punkt_tab.zip")

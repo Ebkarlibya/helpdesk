@@ -86,6 +86,8 @@ export interface Ticket {
   first_responded_on: string;
   resolution_date: string;
   status: string;
+  ehda_detailed_status: string;
+  ehda_non_sla_form: string;
   subject: string;
   ticket_type: string;
   via_customer_portal: string;

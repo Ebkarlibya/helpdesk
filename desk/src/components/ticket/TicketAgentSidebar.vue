@@ -3,11 +3,22 @@
     <div
       class="flex h-10.5 items-center border-b px-5 py-2.5 text-lg font-medium text-ink-gray-9 justify-between"
     >
-      <span
-        class="cursor-copy text-lg font-semibold"
-        @click="copyToClipboard(ticket.name, ticket.name)"
-        >#{{ ticket.name }}
-      </span>
+      <div>
+        <Tooltip :text="ticket.status">
+          <span
+          class="cursor-copy text-lg font-semibold me-3"
+          @click="copyToClipboard(ticket.name, ticket.name)"
+          >#{{ ticket.name }}
+        </span>
+      </Tooltip>
+        <!-- <Badge
+          v-if="ticket.ehda_detailed_status"
+          :class="detailedTextColorMap[ticket.ehda_detailed_status]"
+          :label="ticket.ehda_detailed_status"
+          variant="subtle"
+          theme="red"
+        /> -->
+      </div>
       <Dropdown
         v-if="showMergeOption"
         :options="[
@@ -47,6 +58,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useTicketStatusStore } from "@/stores/ticketStatus";
 import TicketAgentDetails from "./TicketAgentDetails.vue";
 import TicketAgentContact from "./TicketAgentContact.vue";
 import TicketAgentFields from "./TicketAgentFields.vue";
@@ -55,6 +67,8 @@ import LucideMerge from "~icons/lucide/merge";
 import { copyToClipboard } from "@/utils";
 import { Ticket } from "@/types";
 import { computed } from "vue";
+
+const { textColorMap, detailedTextColorMap  } = useTicketStatusStore();
 
 interface Props {
   ticket: Ticket;

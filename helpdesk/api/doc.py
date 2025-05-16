@@ -95,6 +95,10 @@ def get_list_data(
         rows.append(group_by_field)
 
     rows.append("name") if "name" not in rows else rows
+    assignee = ""
+    if "assignee" in filters:
+        assignee = filters['assignee']
+        del filters['assignee']
     data = (
         frappe.get_list(
             doctype,
@@ -105,6 +109,13 @@ def get_list_data(
         )
         or []
     )
+
+    if assignee:
+        _data = [] 
+        for idx, row in enumerate(data):
+            if row["_assign"] and assignee in row["_assign"]:
+                _data.append(row)
+        data = _data
 
     fields = frappe.get_meta(doctype).fields
     fields = [field for field in fields if field.fieldtype not in no_value_fields]
@@ -404,7 +415,22 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
                 "options": options,
             }
         )
-
+    todos = frappe.get_all(
+        "ToDo",
+        fields=["allocated_to"],
+        filters={
+            "status": "Open",
+            "reference_type": "HD Ticket"
+        }
+    )
+    quick_filters.append(
+        {
+            "label": _("Assigne"),
+            "name": "assignee",
+            "type": "Select",
+            "options": list(set([""] + [alloc["allocated_to"] for alloc in todos])),
+        }
+    )
     if doctype != "HD Ticket":
         return quick_filters
 

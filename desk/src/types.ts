@@ -35,6 +35,7 @@ export interface Comment {
 
 export interface Communication {
   creation: string;
+  subject: string;
   content: string;
   name: string;
   sender: string;

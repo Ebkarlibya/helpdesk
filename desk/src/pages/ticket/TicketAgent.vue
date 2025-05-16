@@ -23,7 +23,7 @@
           size="sm" label="Button" :loading="false" :loadingText="null" :disabled="false" :link="null">
           Open Non-SLA Form
         </Button>
-        <Button :variant="'subtle'" :ref_for="true" v-if="!ticket.data.ehda_non_sla_form"
+        <Button :variant="'subtle'" :ref_for="true" v-if="!ticket.data.ehda_non_sla_form && ticket.data.ehda_detailed_status == `Non-SLA – Transferred for Evaluation`"
           @click="createNonSla" theme="gray" size="sm" label="Button" :loading="false" :loadingText="null"
           :disabled="false" :link="null">
           Create Non-SLA Form
@@ -139,7 +139,7 @@ import { useUserStore } from "@/stores/user";
 import { globalStore } from "@/stores/globalStore";
 import { createToast, getIcon } from "@/utils";
 import { setupCustomizations } from "@/composables/formCustomisation";
-import { TabObject, Ticket, TicketTab, View } from "@/types";
+import { Resource, TabObject, Ticket, TicketTab, View } from "@/types";
 import { useView } from "@/composables/useView";
 
 const route = useRoute();
@@ -173,7 +173,7 @@ provide("communicationArea", communicationAreaRef);
 const showAssignmentModal = ref(false);
 const showSubjectDialog = ref(false);
 
-const ticket = createResource({
+const ticket: Resource<Ticket> = createResource({
   url: "helpdesk.helpdesk.doctype.hd_ticket.api.get_one",
   auto: true,
   makeParams: () => ({
@@ -442,9 +442,11 @@ function updateOptimistic(fieldname: string, value: string) {
 }
 
 function createNonSla() {
+  console.log(ticket);
+  
   $dialog({
     title: "Confirm Action",
-    message: `Are you sure you want Create & Link Non-SLA for Ticket (${ticket.name})`,
+    message: `Are you sure you want Create & Link Non-SLA for Ticket (${ticket.data.subject})`,
     actions: [
       {
         label: "Create Related Non-SLA",

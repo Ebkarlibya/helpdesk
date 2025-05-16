@@ -103,6 +103,7 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
     stateInactive,
     textColorMap,
     detailedTextColorMap,
+    detailedToStatusMap,
     getStatusFromDetailed
   };
 });

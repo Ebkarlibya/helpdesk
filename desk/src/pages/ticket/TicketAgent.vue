@@ -83,7 +83,7 @@
             }
           " />
       </div>
-      <TicketAgentSidebar :ticket="ticket.data" @update="({ field, value }) => updateTicket(field, value)"
+      <TicketAgentSidebar :ticket="ticket.data" @update="({ field, value }) => updateTicket({[field]: value})"
         @email:open="(e) => communicationAreaRef.toggleEmailBox()" @reload="ticket.reload()" />
     </div>
     <AssignmentModal v-if="ticket.data" v-model="showAssignmentModal" :assignees="ticket.data.assignees"
@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, h, watch, onMounted, onUnmounted, provide } from "vue";
+import { computed, ref, h, watch, onMounted, onUnmounted, provide, ComputedRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   Breadcrumbs,
@@ -141,7 +141,6 @@ import { createToast, getIcon } from "@/utils";
 import { setupCustomizations } from "@/composables/formCustomisation";
 import { TabObject, Ticket, TicketTab, View } from "@/types";
 import { useView } from "@/composables/useView";
-import { ComputedRef } from "vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -206,7 +205,7 @@ const ticket = createResource({
   },
 });
 function updateField(name: string, value: string, callback = () => { }) {
-  updateTicket(name, value);
+  updateTicket({name: value});
   callback();
 }
 
@@ -233,7 +232,7 @@ const breadcrumbs = computed(() => {
 
 const handleRename = () => {
   if (renameSubject.value === ticket.data?.subject) return;
-  updateTicket("subject", renameSubject.value);
+  updateTicket({"subject": renameSubject.value});
   showSubjectDialog.value = false;
 };
 
@@ -274,7 +273,7 @@ const dropdownOptions = computed(() =>
   ticketStatusStore.options.map((o) => ({
     label: o,
     value: o,
-    onClick: () => updateTicket("status", o),
+    onClick: () => updateTicket({"status": o}),
     icon: () =>
       h(IndicatorIcon, {
         class: ticketStatusStore.textColorMap[o],
@@ -431,6 +430,7 @@ function updateTicket(data: Partial<Ticket>) {
     },
   });
 }
+provide("updateTicket", updateTicket)
 
 function updateOptimistic(fieldname: string, value: string) {
   ticket.data[fieldname] = value;

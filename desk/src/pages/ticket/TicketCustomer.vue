@@ -145,7 +145,7 @@ const send = createResource({
 });
 
 function updateField(name, value, callback = () => {}) {
-  updateTicket({name: value});
+  updateTicket(name, value);
   callback();
 }
 

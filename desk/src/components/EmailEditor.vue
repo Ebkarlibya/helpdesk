@@ -1,80 +1,34 @@
 <template>
-  <TextEditor
-    ref="editorRef"
-    :editor-class="[
-      'prose-sm max-w-none mx-10 max-h-[50vh] overflow-y-auto py-3',
-      'min-h-[7rem]',
-      getFontFamily(newEmail),
-    ]"
-    :content="newEmail"
-    :starterkit-options="{ heading: { levels: [2, 3, 4, 5, 6] } }"
-    :placeholder="placeholder"
-    :editable="editable"
-    @change="editable ? (newEmail = $event) : null"
-    :extensions="[PreserveVideoControls]"
-  >
+  <TextEditor ref="editorRef" :editor-class="[
+    'prose-sm max-w-none mx-10 max-h-[50vh] overflow-y-auto py-3',
+    'min-h-[7rem]',
+    getFontFamily(newEmail),
+  ]" :content="newEmail" :starterkit-options="{ heading: { levels: [2, 3, 4, 5, 6] } }" :placeholder="placeholder"
+    :editable="editable" @change="editable ? (newEmail = $event) : null" :extensions="[PreserveVideoControls]">
     <template #top>
       <div class="mx-10 flex items-center gap-2 border-y py-2.5">
         <span class="text-xs text-gray-500">TO:</span>
-        <MultiSelectInput
-          v-model="toEmailsClone"
-          class="flex-1"
-          :validate="validateEmail"
-          :error-message="(value) => `${value} is an invalid email address`"
-        />
-        <Button
-          :label="'CC'"
-          :class="[cc ? 'bg-gray-300 hover:bg-gray-200' : '']"
-          @click="toggleCC()"
-        />
-        <Button
-          :label="'BCC'"
-          :class="[bcc ? 'bg-gray-300 hover:bg-gray-200' : '']"
-          @click="toggleBCC()"
-        />
+        <MultiSelectInput v-model="toEmailsClone" class="flex-1" :validate="validateEmail"
+          :error-message="(value) => `${value} is an invalid email address`" />
+        <Button :label="'CC'" :class="[cc ? 'bg-gray-300 hover:bg-gray-200' : '']" @click="toggleCC()" />
+        <Button :label="'BCC'" :class="[bcc ? 'bg-gray-300 hover:bg-gray-200' : '']" @click="toggleBCC()" />
       </div>
-      <div
-        v-if="showCC || cc"
-        class="mx-10 flex items-center gap-2 py-2.5"
-        :class="cc || showCC ? 'border-b' : ''"
-      >
+      <div v-if="showCC || cc" class="mx-10 flex items-center gap-2 py-2.5" :class="cc || showCC ? 'border-b' : ''">
         <span class="text-xs text-gray-500">CC:</span>
-        <MultiSelectInput
-          ref="ccInput"
-          v-model="ccEmailsClone"
-          class="flex-1"
-          :validate="validateEmail"
-          :error-message="(value) => `${value} is an invalid email address`"
-        />
+        <MultiSelectInput ref="ccInput" v-model="ccEmailsClone" class="flex-1" :validate="validateEmail"
+          :error-message="(value) => `${value} is an invalid email address`" />
       </div>
-      <div
-        v-if="showBCC || bcc"
-        class="mx-10 flex items-center gap-2 py-2.5"
-        :class="bcc || showBCC ? 'border-b' : ''"
-      >
+      <div v-if="showBCC || bcc" class="mx-10 flex items-center gap-2 py-2.5" :class="bcc || showBCC ? 'border-b' : ''">
         <span class="text-xs text-gray-500">BCC:</span>
-        <MultiSelectInput
-          ref="bccInput"
-          v-model="bccEmailsClone"
-          class="flex-1"
-          :validate="validateEmail"
-          :error-message="(value) => `${value} is an invalid email address`"
-        />
+        <MultiSelectInput ref="bccInput" v-model="bccEmailsClone" class="flex-1" :validate="validateEmail"
+          :error-message="(value) => `${value} is an invalid email address`" />
       </div>
     </template>
     <template #bottom>
       <div class="flex flex-wrap gap-2 px-10">
-        <AttachmentItem
-          v-for="a in attachments"
-          :key="a.file_url"
-          :label="a.file_name"
-        >
+        <AttachmentItem v-for="a in attachments" :key="a.file_url" :label="a.file_name">
           <template #suffix>
-            <FeatherIcon
-              class="h-3.5"
-              name="x"
-              @click.stop="removeAttachment(a)"
-            />
+            <FeatherIcon class="h-3.5" name="x" @click.stop="removeAttachment(a)" />
           </template>
         </AttachmentItem>
       </div>
@@ -82,68 +36,74 @@
         <div class="flex items-center overflow-x-auto">
           <TextEditorFixedMenu class="-ml-1" :buttons="textEditorMenuButtons" />
           <div class="flex gap-1">
-            <FileUploader
-              :upload-args="{
-                doctype: doctype,
-                docname: modelValue?.name,
-                private: true,
-              }"
-              @success="
-                (f) => {
-                  attachments.push(f);
-                }
-              "
-            >
+            <FileUploader :upload-args="{
+              doctype: doctype,
+              docname: modelValue?.name,
+              private: true,
+            }" @success="
+              (f) => {
+                attachments.push(f);
+              }
+            ">
               <template #default="{ openFileSelector }">
                 <Button variant="ghost" @click="openFileSelector()">
                   <template #icon>
-                    <AttachmentIcon
-                      class="h-4"
-                      style="color: #000000; stroke-width: 1.5 !important"
-                    />
+                    <AttachmentIcon class="h-4" style="color: #000000; stroke-width: 1.5 !important" />
                   </template>
                 </Button>
               </template>
             </FileUploader>
-            <Button
-              variant="ghost"
-              @click="showCannedResponseSelectorModal = true"
-            >
+            <Button variant="ghost" @click="showCannedResponseSelectorModal = true">
               <template #icon>
-                <EmailIcon
-                  class="h-4"
-                  style="color: #000000; stroke-width: 1.2"
-                />
+                <EmailIcon class="h-4" style="color: #000000; stroke-width: 1.2" />
               </template>
             </Button>
           </div>
         </div>
         <div class="mt-2 flex items-center justify-end space-x-2 sm:mt-0">
           <Button label="Discard" @click="handleDiscard" />
-          <Button
-            variant="solid"
-            :disabled="emailEmpty"
-            :loading="sendMail.loading"
-            label="Send"
-            @click="
-              () => {
-                submitMail();
-              }
-            "
-          />
+          <Button variant="solid" :disabled="emailEmpty" :loading="sendMail.loading" label="Send" @click="
+            () => {
+              openSubmitMailDialog();
+            }
+          " />
+          <Dialog v-model="nextStatusDialog">
+            <template #body-title>
+              <h3>Next Status Transition</h3>
+            </template>
+            <template #body-content>
+              <Dropdown class="w-full" v-model="nextDetailedStatus" :options="detailedStatusOptions">
+                <template #default="{ open }">
+                  <Button :label="nextDetailedStatus">
+                    <template #prefix>
+                      <IndicatorIcon :class="ticketStatusStore.detailedTextColorMap[nextDetailedStatus]" />
+                    </template>
+                    <template #suffix>
+                      <FeatherIcon :name="open ? 'chevron-up' : 'chevron-down'" class="h-4" />
+                    </template>
+                  </Button>
+                </template>
+              </Dropdown>
+            </template>
+            <template #actions>
+              <Button variant="solid" @click="submitMail">
+                Send
+              </Button>
+              <Button class="ml-2" @click="nextStatusDialog = false">
+                Close
+              </Button>
+            </template>
+          </Dialog>
         </div>
       </div>
     </template>
   </TextEditor>
-  <CannedResponseSelectorModal
-    v-model="showCannedResponseSelectorModal"
-    :doctype="doctype"
-    @apply="applyCannedResponse"
-  />
+  <CannedResponseSelectorModal v-model="showCannedResponseSelectorModal" :doctype="doctype"
+    @apply="applyCannedResponse" />
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from "vue";
+import { ref, computed, nextTick, inject } from "vue";
 import { useStorage } from "@vueuse/core";
 import {
   FileUploader,
@@ -165,9 +125,15 @@ import {
 } from "@/components";
 import { AttachmentIcon, EmailIcon } from "@/components/icons";
 import { PreserveVideoControls } from "@/tiptap-extensions";
+import { useTicketStatusStore } from "@/stores/ticketStatus";
+import { Ticket } from "@/types";
+
+const ticketStatusStore = useTicketStatusStore();
+const updateTicket = inject<Function>("updateTicket")
 
 const editorRef = ref(null);
 const showCannedResponseSelectorModal = ref(false);
+const nextStatusDialog = ref(false)
 
 const props = defineProps({
   placeholder: {
@@ -196,7 +162,8 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["submit", "discard"]);
-const doc = defineModel();
+const doc = defineModel<Ticket>();
+console.log(doc);
 
 const newEmail = useStorage("emailBoxContent" + doc.value.name, "");
 const attachments = ref([]);
@@ -213,10 +180,27 @@ const cc = computed(() => (ccEmailsClone.value?.length ? true : false));
 const bcc = computed(() => (bccEmailsClone.value?.length ? true : false));
 const ccInput = ref(null);
 const bccInput = ref(null);
+const nextDetailedStatus = ref(doc.value.ehda_detailed_status)
 
 function applyCannedResponse(template) {
   newEmail.value = template.message;
   showCannedResponseSelectorModal.value = false;
+}
+
+const detailedStatusOptions = computed(() =>
+  ticketStatusStore.detailedOptions.map((dstatus) => ({
+    label: dstatus,
+    value: dstatus,
+    onClick: () => {
+      console.log('set to!! ', dstatus);
+      
+      nextDetailedStatus.value = dstatus
+    },
+  }))
+);
+
+function openSubmitMailDialog() {
+  nextStatusDialog.value = true
 }
 
 const sendMail = createResource({
@@ -235,6 +219,9 @@ const sendMail = createResource({
   }),
   onSuccess: () => {
     resetState();
+    doc.value.status = ticketStatusStore.getStatusFromDetailed(doc.value.ehda_detailed_status);
+    doc.value.ehda_detailed_status = nextDetailedStatus.value
+    updateTicket({ status: doc.value.status, ehda_detailed_status: doc.value.ehda_detailed_status })
     emit("submit");
   },
   debounce: 300,
@@ -254,6 +241,7 @@ function submitMail() {
   }
 
   sendMail.submit();
+  nextStatusDialog.value = false
 }
 
 function toggleCC() {

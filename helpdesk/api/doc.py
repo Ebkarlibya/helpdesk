@@ -376,7 +376,7 @@ def sort_options(doctype: str, show_customer_portal_fields=False):
 @frappe.whitelist()
 def get_quick_filters(doctype: str, show_customer_portal_fields=False):
     meta = frappe.get_meta(doctype)
-    fields = [field for field in meta.fields if field.in_standard_filter]
+    fields = [field for field in meta.fields if field.in_standard_filter or field.fieldname == 'ehda_detailed_status']
     quick_filters = []
     name_filter = {"label": "ID", "name": "name", "type": "Data"}
     if doctype == "Contact":

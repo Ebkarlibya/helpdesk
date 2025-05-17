@@ -149,7 +149,7 @@ import {
   views,
   currentView as headerView,
 } from "@/composables/useView";
-import { getIcon, formatTimeShort } from "@/utils";
+import { getIcon, formatTimeShort, isCustomerPortal } from "@/utils";
 import { useAuthStore } from "@/stores/auth";
 import { useStorage } from "@vueuse/core";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
@@ -371,6 +371,7 @@ const quickFilters = createResource({
   params: {
     doctype: options.value.doctype,
     show_customer_portal_fields: defaultParams.show_customer_portal_fields,
+    isCustomerPortal: options.value.isCustomerPortal
   },
   transform: (data) => {
     if (Boolean(data.length)) return;
@@ -392,8 +393,8 @@ function listCell(column: any, row: any, item: any, idx: number) {
   }
   if(column.type === "Select") {
     if(!item) return ""
-    return h("h3", {
-      class: `inline-flex select-none items-center gap-1 rounded ${ticketStatusStore.detailedTextColorMap[item]} bg-transparent border border-outline-${ticketStatusStore.detailedColorMap[item]}-2 h-5 text-xs "`,
+    return h("span", {
+      class: `inline-flex select-none items-center gap-1 rounded p-2 ${ticketStatusStore.detailedTextColorMap[item]} bg-transparent border border-outline-${ticketStatusStore.detailedColorMap[item]}-2 h-5 text-xs "`,
       innerHTML: item
     })
   }
@@ -577,6 +578,10 @@ function handleViewChanges() {
     return;
   }
   defaultParams.filters = currentView.filters;
+  // reset assignee TODO: better way
+  delete defaultParams.filters.assignee
+  // console.log("defaultParams.filters: ", defaultParams.filters);
+  
   defaultParams.order_by = currentView.order_by || "modified desc";
   defaultParams.columns = currentView.columns;
   defaultParams.rows = currentView.rows;

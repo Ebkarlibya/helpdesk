@@ -99,6 +99,7 @@ def get_list_data(
     if "assignee" in filters:
         assignee = filters['assignee']
         del filters['assignee']
+
     data = (
         frappe.get_list(
             doctype,
@@ -388,6 +389,7 @@ def sort_options(doctype: str, show_customer_portal_fields=False):
 def get_quick_filters(doctype: str, show_customer_portal_fields=False):
     meta = frappe.get_meta(doctype)
     fields = [field for field in meta.fields if field.in_standard_filter or field.fieldname == 'ehda_detailed_status']
+    is_customer_portal = frappe.form_dict["isCustomerPortal"]
     quick_filters = []
     name_filter = {"label": "ID", "name": "name", "type": "Data"}
     if doctype == "Contact":
@@ -415,22 +417,33 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
                 "options": options,
             }
         )
-    todos = frappe.get_all(
-        "ToDo",
-        fields=["allocated_to"],
-        filters={
-            "status": "Open",
-            "reference_type": "HD Ticket"
-        }
-    )
-    quick_filters.append(
-        {
-            "label": _("Assigne"),
-            "name": "assignee",
-            "type": "Select",
-            "options": list(set([""] + [alloc["allocated_to"] for alloc in todos])),
-        }
-    )
+    if not is_customer_portal:
+        todos = frappe.get_all(
+            "ToDo",
+            fields=["allocated_to"],
+            filters={
+                "status": "Open",
+                "reference_type": "HD Ticket"
+            },
+            distinct=True,
+        )
+        quick_filters.append(
+            {
+                "label": _("Assigne"),
+                "name": "assignee",
+                "type": "Select",
+                # "options": [{"label": "ASD", "value": "i.abdo@ebkar.ly"}]
+                "options": [""] + [
+                    {"label": frappe.db.get_value(
+                        "User",
+                        filters={"name": alloc["allocated_to"]},
+                        fieldname="full_name",
+                        order_by="full_name"
+                    ), "value": alloc["allocated_to"]}
+                    for alloc in todos],
+            }
+        )
+
     if doctype != "HD Ticket":
         return quick_filters
 

@@ -200,6 +200,10 @@ const detailedStatusOptions = computed(() =>
 );
 
 function openSubmitMailDialog() {
+  if(doc.value.ehda_detailed_status == 'Non-SLA – Transferred for Evaluation') {
+    submitMail()
+    return
+  }
   nextStatusDialog.value = true
 }
 

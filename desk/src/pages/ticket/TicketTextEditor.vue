@@ -1,29 +1,16 @@
 <template>
-  <HTextEditor
-    v-if="expand"
-    ref="e"
-    :model-value="content"
-    :placeholder="placeholder"
-    @update:model-value="$emit('update:content', $event)"
-    @clear="() => $emit('update:attachments', [])"
-  >
+  <HTextEditor v-if="expand" ref="e" :model-value="content" :placeholder="placeholder"
+    @update:model-value="$emit('update:content', $event)" @clear="() => $emit('update:attachments', [])">
     <template #bottom-top>
       <div class="flex flex-wrap gap-2">
-        <AttachmentItem
-          v-for="a in attachments"
-          :key="a.file_url"
-          :label="a.file_name"
-        >
+        <AttachmentItem v-for="a in attachments" :key="a.file_url" :label="a.file_name">
           <template #suffix>
-            <Icon
-              icon="lucide:x"
-              @click.stop="
-                $emit(
-                  'update:attachments',
-                  attachments.filter((b) => b.file_url !== a.file_url)
-                )
-              "
-            />
+            <Icon icon="lucide:x" @click.stop="
+              $emit(
+                'update:attachments',
+                attachments.filter((b) => b.file_url !== a.file_url)
+              )
+              " />
           </template>
         </AttachmentItem>
       </div>
@@ -31,21 +18,17 @@
     <template #bottom-left>
       <span class="flex">
         <slot name="bottom-left" />
-        <FileUploader
-          :upload-args="{
-            folder: 'Home/Helpdesk',
-            private: true,
-          }"
-          @success="(f: File) => $emit('update:attachments', [...attachments, f])"
-          @failure="
-            () =>
-              createToast({
-                title: 'Error Uploading File',
-                icon: 'x',
-                iconClasses: 'text-red-600',
-              })
-          "
-        >
+        <FileUploader :upload-args="{
+          folder: 'Home/Helpdesk',
+          private: true,
+        }" @success="(f: File) => $emit('update:attachments', [...attachments, f])" @failure="
+          () =>
+            createToast({
+              title: 'Error Uploading File',
+              icon: 'x',
+              iconClasses: 'text-red-600',
+            })
+        ">
           <template #default="{ openFileSelector }">
             <Button theme="gray" variant="ghost" @click="openFileSelector()">
               <template #icon>
@@ -66,16 +49,9 @@
       <slot name="bottom-right" />
     </template>
   </HTextEditor>
-  <div
-    v-else
-    class="flex w-full cursor-pointer items-center gap-2 rounded bg-gray-100 px-3.5 py-2 hover:bg-gray-200"
-    @click="() => $emit('update:expand', !expand)"
-  >
-    <UserAvatar
-      :name="authStore.userName"
-      :image="authStore.userImage"
-      size="sm"
-    />
+  <div v-else class="flex w-full cursor-pointer items-center gap-2 rounded bg-gray-100 px-3.5 py-2 hover:bg-gray-200"
+    @click="() => $emit('update:expand', !expand)">
+    <UserAvatar :name="authStore.userName" :image="authStore.userImage" size="sm" />
     <span class="text-base text-gray-700">
       {{ placeholder }}
     </span>
@@ -87,11 +63,7 @@ import { computed, ref } from "vue";
 import { FileUploader } from "frappe-ui";
 import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/auth";
-import {
-  AttachmentItem,
-  TextEditor as HTextEditor,
-  UserAvatar,
-} from "@/components";
+import { AttachmentItem, TextEditor as HTextEditor, UserAvatar } from "@/components";
 import { File } from "@/types";
 import { createToast } from "@/utils";
 

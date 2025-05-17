@@ -242,7 +242,14 @@ const detailedStatusOptions = computed(() =>
     label: o,
     value: o,
     onClick: () => {
-
+      if(ticket.data.ehda_detailed_status == "Non-SLA – Transferred for Evaluation") {
+        createToast({
+          title: "Cannot Change Ticket with Linked Non-SLA Form",
+          icon: "check",
+          iconClasses: "text-red-600",
+        });
+        return 
+      }
       $dialog({
         title: "Confirm Transition",
         message: `Are you sure you want transition from (${ticket.data.ehda_detailed_status}) to (${o})`,
@@ -446,7 +453,7 @@ function createNonSla() {
   
   $dialog({
     title: "Confirm Action",
-    message: `Are you sure you want Create & Link Non-SLA for Ticket (${ticket.data.subject})`,
+    message: `Are you sure you want Create & Link Non-SLA Evaluation Form for Ticket (${ticket.data.subject})`,
     actions: [
       {
         label: "Create Related Non-SLA",

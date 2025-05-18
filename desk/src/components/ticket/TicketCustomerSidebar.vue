@@ -8,11 +8,7 @@
     <div class="flex flex-col gap-4 pt-0 px-5 py-3 border-b">
       <!-- user info -->
       <div class="flex gap-2">
-        <Avatar
-          size="2xl"
-          :image="ticket.data.contact.image"
-          :label="ticket.data.contact.name"
-        />
+        <Avatar size="2xl" :image="ticket.data.contact.image" :label="ticket.data.contact.name" />
         <div class="flex items-center justify-between">
           <Tooltip :text="ticket.data.contact.name">
             <div class="w-[242px] truncate text-2xl font-medium">
@@ -30,10 +26,7 @@
       </div>
 
       <!-- Ticket Info -->
-      <div
-        class="flex items-center text-base leading-5"
-        v-for="field in ticketBasicInfo"
-      >
+      <div class="flex items-center text-base leading-5" v-for="field in ticketBasicInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ field.label }}</span>
         <span class="text-base text-gray-800 flex-1">
           {{ field.value }}
@@ -41,11 +34,7 @@
       </div>
 
       <!-- sla info -->
-      <div
-        v-for="data in slaData"
-        :key="data.label"
-        class="flex items-center text-base"
-      >
+      <div v-for="data in slaData" :key="data.label" class="flex items-center text-base">
         <div class="w-[126px] text-gray-600 text-sm">{{ data.title }}</div>
 
         <div class="break-words text-base text-gray-800">
@@ -56,16 +45,9 @@
       </div>
     </div>
     <!-- feedback component -->
-    <TicketFeedback
-      v-if="ticket.data.feedback_rating"
-      class="border-b text-base text-gray-600"
-      :ticket="ticket.data"
-    />
+    <TicketFeedback v-if="ticket.data.feedback_rating" class="border-b text-base text-gray-600" :ticket="ticket.data" />
     <div class="flex flex-col gap-4 pt-0 px-5 py-3">
-      <div
-        class="flex items-center text-base leading-5"
-        v-for="field in ticketAdditionalInfo"
-      >
+      <div class="flex items-center text-base leading-5" v-for="field in ticketAdditionalInfo">
         <span class="w-[126px] text-sm text-gray-600">{{ field.label }}</span>
         <span class="text-base text-gray-800 flex-1">
           {{ field.value }}
@@ -200,6 +182,16 @@ const ticketAdditionalInfo = computed(() => {
       label: "Priority",
       value: ticket.data.priority,
     },
+    ...[
+      {
+        label: "Non Sla Status",
+        value: ticket.data.ehda_detailed_status,
+      },
+      {
+        label: "Non Sla Form",
+        value: ticket.data.ehda_non_sla_form,
+      },
+    ]
   ];
   const custom_fields = ticket.data.template.fields
     .filter(

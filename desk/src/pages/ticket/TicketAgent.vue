@@ -19,15 +19,15 @@
           @click="showAssignmentModal = true">
           Assign
         </button>
-        <Button :variant="'subtle'" :ref_for="true" v-if="ticket.data.ehda_non_sla_form" @click="openRelatedNonSla" theme="gray"
-          size="sm" label="Button" :loading="false" :loadingText="null" :disabled="false" :link="null">
+        <Button :variant="'subtle'" :ref_for="true" v-if="ticket.data.ehda_non_sla_form" @click="openRelatedNonSla"
+          theme="gray" size="sm" label="Button" :loading="false" :loadingText="null" :disabled="false" :link="null">
           Open Non-SLA Form
         </Button>
-        <Button :variant="'subtle'" :ref_for="true" v-if="!ticket.data.ehda_non_sla_form && ticket.data.ehda_detailed_status == `Non-SLA – Transferred for Evaluation`"
+        <!-- <Button :variant="'subtle'" :ref_for="true" v-if="!ticket.data.ehda_non_sla_form && ticket.data.ehda_detailed_status == `Non-SLA – Transferred for Evaluation`"
           @click="createNonSla" theme="gray" size="sm" label="Button" :loading="false" :loadingText="null"
           :disabled="false" :link="null">
           Create Non-SLA Form
-        </Button>
+        </Button> -->
         <!-- hd plus: detailed status -->
         <Dropdown :options="detailedStatusOptions">
           <template #default="{ open }">
@@ -83,7 +83,7 @@
             }
           " />
       </div>
-      <TicketAgentSidebar :ticket="ticket.data" @update="({ field, value }) => updateTicket({[field]: value})"
+      <TicketAgentSidebar :ticket="ticket.data" @update="({ field, value }) => updateTicket({ [field]: value })"
         @email:open="(e) => communicationAreaRef.toggleEmailBox()" @reload="ticket.reload()" />
     </div>
     <AssignmentModal v-if="ticket.data" v-model="showAssignmentModal" :assignees="ticket.data.assignees"
@@ -205,7 +205,7 @@ const ticket: Resource<Ticket> = createResource({
   },
 });
 function updateField(name: string, value: string, callback = () => { }) {
-  updateTicket({name: value});
+  updateTicket({ name: value });
   callback();
 }
 
@@ -232,7 +232,7 @@ const breadcrumbs = computed(() => {
 
 const handleRename = () => {
   if (renameSubject.value === ticket.data?.subject) return;
-  updateTicket({"subject": renameSubject.value});
+  updateTicket({ "subject": renameSubject.value });
   showSubjectDialog.value = false;
 };
 
@@ -242,25 +242,59 @@ const detailedStatusOptions = computed(() =>
     label: o,
     value: o,
     onClick: () => {
-      if(ticket.data.ehda_detailed_status == "Non-SLA – Transferred for Evaluation") {
+      let toNonSla = o == "Non-SLA – Transferred for Evaluation"
+      if (ticket.data.ehda_detailed_status == "Non-SLA – Transferred for Evaluation") {
         createToast({
           title: "Cannot Change Ticket with Linked Non-SLA Form",
           icon: "check",
           iconClasses: "text-red-600",
         });
-        return 
+        return
       }
+
+      let title = `Confirm Transition`
+      let message = `Are you sure you want transition from: <br> - <strong>(${ticket.data.ehda_detailed_status}) to (${o})</strong>`
+      let confirmBtnText = `Confirm`
+      let theme = "green"
+
+      if (toNonSla) {
+        title += ` & Create Non-Sla Form`
+        message += ` <br>And Create Non-SLA Evaluation Form for this ticket?`
+        confirmBtnText += ` & Create Non Sla!`
+        theme = "red"
+      }
+
       $dialog({
-        title: "Confirm Transition",
-        message: `Are you sure you want transition from (${ticket.data.ehda_detailed_status}) to (${o})`,
+        title: title,
+        html: message,
         actions: [
           {
-            label: "Confirm",
+            label: confirmBtnText,
             variant: "solid",
-            theme: "green",
+            theme: theme,
             onClick(close: Function) {
               ticket.data.status = ticketStatusStore.getStatusFromDetailed(ticket.data.ehda_detailed_status);
               ticket.data.ehda_detailed_status = o
+
+              if(toNonSla) {
+                call("etms_hd_addons.api.create_non_sla_form", {
+                  ticket_name: ticket.data.name
+                }).then(res => {
+                  if (res.status == 200) {
+                    setTimeout(() => {
+                      // $(document.body).css("filter", "opacity(1)")
+                      createToast({
+                        title: "ETMS HD: Non-SLA Form Created & Linked",
+                        icon: "alert-circle",
+                      });
+                      ticket.reload()
+                      // setTimeout(() => location.reload(), 1500)
+                    }, 1000)
+                  }
+                }).finally((er) => {
+                  // $(document.body).css("filter", "opacity(1)")
+                })
+              }
               updateTicket({ status: ticket.data.status, ehda_detailed_status: o })
 
               close();
@@ -280,7 +314,7 @@ const dropdownOptions = computed(() =>
   ticketStatusStore.options.map((o) => ({
     label: o,
     value: o,
-    onClick: () => updateTicket({"status": o}),
+    onClick: () => updateTicket({ "status": o }),
     icon: () =>
       h(IndicatorIcon, {
         class: ticketStatusStore.textColorMap[o],
@@ -450,7 +484,7 @@ function updateOptimistic(fieldname: string, value: string) {
 
 function createNonSla() {
   console.log(ticket);
-  
+
   $dialog({
     title: "Confirm Action",
     message: `Are you sure you want Create & Link Non-SLA Evaluation Form for Ticket (${ticket.data.subject})`,

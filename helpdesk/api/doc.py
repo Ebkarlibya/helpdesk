@@ -86,6 +86,13 @@ def get_list_data(
     if rows is None:
         rows = []
 
+    # reorder
+    assigned_to_col = columns.pop(5)
+    customer_col = columns.pop(5)
+    customer_col["width"] = "10rem"
+    columns.insert(3, customer_col)
+    columns.insert(4, assigned_to_col)
+
     # check if rows has all keys from columns if not add them
     for column in columns:
         if column.get("key") not in rows:
@@ -214,6 +221,9 @@ def get_list_data(
                     "type": field.get("type"),
                     "options": options,
                 }
+
+
+    
     return {
         "data": data,
         "columns": columns,

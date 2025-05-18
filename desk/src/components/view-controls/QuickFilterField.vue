@@ -15,6 +15,8 @@
     :placeholder="filter.label"
     @change.stop="updateFilter(filter, $event.target.value)"
   />
+    <Autocomplete v-else-if="filter.type === 'SelectSearch'" :value="filter.value" 
+    :options="filter.options" :placeholder="filter.label" @change="(data) => updateFilter(filter, data ? data.value : '')" />
   <Link
     v-else-if="filter.type === 'Link'"
     :value="filter.value"
@@ -57,6 +59,7 @@ const debouncedFn = useDebounceFn((f, value) => {
 }, 500);
 
 function updateFilter(f, value) {
+  console.log(f, value); 
   emit("applyQuickFilter", f, value);
 }
 </script>

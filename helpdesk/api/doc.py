@@ -7,6 +7,75 @@ from pypika import Criterion
 
 from helpdesk.utils import check_permissions
 
+@frappe.whitelist()
+def get_quick_filters(doctype: str, show_customer_portal_fields=False):
+    meta = frappe.get_meta(doctype)
+    fields = [field for field in meta.fields if field.in_standard_filter or field.fieldname == 'ehda_detailed_status']
+    is_customer_portal = frappe.form_dict["isCustomerPortal"]
+    quick_filters = []
+    name_filter = {"label": "ID", "name": "name", "type": "Data"}
+    if doctype == "Contact":
+        quick_filters.append(name_filter)
+        return quick_filters
+    name_filter_doctypes = ["HD Agent", "HD Customer", "HD Ticket"]
+    if doctype in name_filter_doctypes:
+        quick_filters.append(name_filter)
+
+    for field in fields:
+        options = []
+        if field.fieldtype == "Select":
+            options = field.options.split("\n")
+            options = [{"label": option, "value": option} for option in options]
+            options.insert(0, {"label": "", "value": ""})
+
+        if field.fieldtype == "Link":
+            options = field.options
+
+        quick_filters.append(
+            {
+                "label": _(field.label),
+                "name": field.fieldname,
+                "type": field.fieldtype,
+                "options": options,
+            }
+        )
+    if not is_customer_portal:
+        todos = frappe.get_all(
+            "ToDo",
+            fields=["allocated_to"],
+            filters={
+                "status": "Open",
+                "reference_type": "HD Ticket"
+            },
+            distinct=True,
+        )
+        quick_filters.append(
+            {
+                "label": _("Assigne"),
+                "name": "assignee",
+                "type": "SelectSearch",
+                # "options": [{"label": "ASD", "value": "i.abdo@ebkar.ly"}]
+                "options": [
+                    {"label": frappe.db.get_value(
+                        "User",
+                        filters={"name": alloc["allocated_to"]},
+                        fieldname="full_name",
+                        order_by="full_name"
+                    ), "value": alloc["allocated_to"]}
+                    for alloc in todos],
+            }
+        )
+
+    if doctype != "HD Ticket":
+        return quick_filters
+
+    _list = get_controller(doctype)
+    if hasattr(_list, "filter_standard_fields") and show_customer_portal_fields:
+        # to filter out more fields from customer remember to update customer_not_allowed_fields in hd_ticket.py
+        quick_filters = _list.filter_standard_fields(quick_filters)
+
+    return quick_filters
+
 
 @frappe.whitelist()
 def get_list_data(
@@ -121,7 +190,9 @@ def get_list_data(
     if assignee:
         _data = [] 
         for idx, row in enumerate(data):
-            if row["_assign"] and assignee in row["_assign"]:
+            assignee_name: str = assignee[1]
+            assignee_name = assignee_name.replace("%", "")
+            if row["_assign"] and assignee_name in row["_assign"]:
                 _data.append(row)
         data = _data
 
@@ -393,76 +464,6 @@ def sort_options(doctype: str, show_customer_portal_fields=False):
     fields.extend(standard_fields)
 
     return fields
-
-
-@frappe.whitelist()
-def get_quick_filters(doctype: str, show_customer_portal_fields=False):
-    meta = frappe.get_meta(doctype)
-    fields = [field for field in meta.fields if field.in_standard_filter or field.fieldname == 'ehda_detailed_status']
-    is_customer_portal = frappe.form_dict["isCustomerPortal"]
-    quick_filters = []
-    name_filter = {"label": "ID", "name": "name", "type": "Data"}
-    if doctype == "Contact":
-        quick_filters.append(name_filter)
-        return quick_filters
-    name_filter_doctypes = ["HD Agent", "HD Customer", "HD Ticket"]
-    if doctype in name_filter_doctypes:
-        quick_filters.append(name_filter)
-
-    for field in fields:
-        options = []
-        if field.fieldtype == "Select":
-            options = field.options.split("\n")
-            options = [{"label": option, "value": option} for option in options]
-            options.insert(0, {"label": "", "value": ""})
-
-        if field.fieldtype == "Link":
-            options = field.options
-
-        quick_filters.append(
-            {
-                "label": _(field.label),
-                "name": field.fieldname,
-                "type": field.fieldtype,
-                "options": options,
-            }
-        )
-    if not is_customer_portal:
-        todos = frappe.get_all(
-            "ToDo",
-            fields=["allocated_to"],
-            filters={
-                "status": "Open",
-                "reference_type": "HD Ticket"
-            },
-            distinct=True,
-        )
-        quick_filters.append(
-            {
-                "label": _("Assigne"),
-                "name": "assignee",
-                "type": "Select",
-                # "options": [{"label": "ASD", "value": "i.abdo@ebkar.ly"}]
-                "options": [""] + [
-                    {"label": frappe.db.get_value(
-                        "User",
-                        filters={"name": alloc["allocated_to"]},
-                        fieldname="full_name",
-                        order_by="full_name"
-                    ), "value": alloc["allocated_to"]}
-                    for alloc in todos],
-            }
-        )
-
-    if doctype != "HD Ticket":
-        return quick_filters
-
-    _list = get_controller(doctype)
-    if hasattr(_list, "filter_standard_fields") and show_customer_portal_fields:
-        # to filter out more fields from customer remember to update customer_not_allowed_fields in hd_ticket.py
-        quick_filters = _list.filter_standard_fields(quick_filters)
-
-    return quick_filters
 
 
 def get_customer_portal_fields(doctype, fields):

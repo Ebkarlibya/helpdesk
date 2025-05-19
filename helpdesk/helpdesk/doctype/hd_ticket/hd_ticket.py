@@ -140,11 +140,22 @@ class HDTicket(Document):
             return
 
         if self.contact:
-            customer = get_customer(self.contact)
+            customers = get_customer(self.contact)
+
+            site_related_hd_customer = frappe.db.get_value(
+                "ETMS ERP Site",
+                filters=[
+                    ["name", "=", self.ehda_etms_erp_site],
+                    # ["ehda_related_hd_customer", "in", customers]
+                ],
+                fieldname="ehda_related_hd_customer"
+            )
+
+            self.customer = site_related_hd_customer
 
             # let agent assign the customer when one contact has more than one customer
-            if len(customer) == 1:
-                self.customer = customer[0]
+            # if len(customers) == 1:
+            #     self.customer = customers[0]
 
     def set_priority(self):
         if self.priority:

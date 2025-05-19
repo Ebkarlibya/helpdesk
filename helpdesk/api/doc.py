@@ -156,11 +156,12 @@ def get_list_data(
         rows = []
 
     # reorder
-    assigned_to_col = columns.pop(5)
-    customer_col = columns.pop(5)
-    customer_col["width"] = "10rem"
-    columns.insert(3, customer_col)
-    columns.insert(4, assigned_to_col)
+    if doctype == "HD Ticket":
+        assigned_to_col = columns.pop(5)
+        customer_col = columns.pop(5)
+        customer_col["width"] = "10rem"
+        columns.insert(3, customer_col)
+        columns.insert(4, assigned_to_col)
 
     # check if rows has all keys from columns if not add them
     for column in columns:

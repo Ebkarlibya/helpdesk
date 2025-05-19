@@ -178,6 +178,14 @@ function updateTicket(fieldname: string, value: string) {
 }
 
 function handleClose() {
+  if(ticket.data.ehda_detailed_status == `Non-SLA – Transferred for Evaluation`) {
+    createToast({
+      text: "Cannot Close Non SLA Ticket at the moment",
+      icon: "x",
+      iconClasses: "text-red-600",
+    });
+    return
+  }
   if (showFeedback.value) {
     showFeedbackDialog.value = true;
   } else {

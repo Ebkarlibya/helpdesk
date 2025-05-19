@@ -162,8 +162,9 @@ const ticketBasicInfo = computed(() => [
     value: ticket.data.name,
   },
   {
-    label: "Status",
-    value: transformStatus(ticket.data.status),
+    label: "Detailed Status",
+    value: ticket.data.ehda_detailed_status,
+    // value: transformStatus(ticket.data.status),
     bold: true,
   },
 ]);
@@ -182,16 +183,20 @@ const ticketAdditionalInfo = computed(() => {
       label: "Priority",
       value: ticket.data.priority,
     },
-    ...[
+  ];
+
+  const fields2 = [
+
+    ...ticket.data.ehda_non_sla_form ? [
       {
-        label: "Non Sla Status",
+        label: "Non SLA Status",
         value: ticket.data.ehda_detailed_status,
       },
       {
-        label: "Non Sla Form",
+        label: "Non SLA Form",
         value: ticket.data.ehda_non_sla_form,
       },
-    ]
+    ] : []
   ];
   const custom_fields = ticket.data.template.fields
     .filter(
@@ -204,7 +209,7 @@ const ticketAdditionalInfo = computed(() => {
       value: ticket.data[field.fieldname],
     }));
 
-  return [...fields, ...custom_fields];
+  return [...fields, ...custom_fields, ...fields2];
 });
 function transformStatus(status: string) {
   switch (status) {

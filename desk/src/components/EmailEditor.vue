@@ -86,8 +86,12 @@
               </Dropdown>
             </template>
             <template #actions>
-              <Button variant="solid" @click="submitMail">
-                Send
+              <Button v-if="nextDetailedStatus == `Non-SLA – Transferred for Evaluation`"
+                variant="solid" class="bg-red-50"  @click="submitMail">
+                Confirm & Create Non Sla!
+              </Button>
+              <Button v-else variant="solid" @click="submitMail">
+                Confirm
               </Button>
               <Button class="ml-2" @click="nextStatusDialog = false">
                 Close

@@ -841,9 +841,9 @@ class HDTicket(Document):
                 "width": "22rem",
             },
             {
-                "label": "Status",
+                "label": "Detailed Status",
                 "type": "Select",
-                "key": "status",
+                "key": "ehda_detailed_status",
                 "width": "11rem",
             },
             {
@@ -883,7 +883,7 @@ class HDTicket(Document):
         rows = [
             "name",
             "subject",
-            "status",
+            "ehda_detailed_status",
             "priority",
             "ticket_type",
             "agent_group",

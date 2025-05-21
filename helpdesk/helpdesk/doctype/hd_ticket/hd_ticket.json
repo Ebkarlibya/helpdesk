@@ -54,6 +54,7 @@
   "via_customer_portal",
   "attachment",
   "content_type",
+  "last_replay_by",
   "split_and_merge_section",
   "is_merged",
   "merged_with",
@@ -432,13 +433,20 @@
    "label": "Merged With",
    "options": "HD Ticket",
    "read_only": 1
+  },
+  {
+   "fieldname": "last_replay_by",
+   "fieldtype": "Select",
+   "label": "Last Replay By",
+   "options": "Customer\nAgent\nAdmin",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "icon": "fa fa-issue",
  "idx": 61,
  "links": [],
- "modified": "2025-04-09 20:44:24.252633",
+ "modified": "2025-05-21 20:55:07.840658",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Ticket",

@@ -43,6 +43,15 @@
           </Tooltip>
         </div>
       </div>
+       <div  class="flex items-center text-base">
+        <div class="w-[126px] text-gray-600 text-sm">SLA Name</div>
+
+        <div class="break-words text-base text-gray-800">
+          <Tooltip text="Read SLA Description">
+            <p @click="readSlaDescription" style="cursor: pointer;">{{ ticket.data.sla }}<span> 📃</span></p>
+          </Tooltip>
+        </div>
+      </div>
     </div>
     <!-- feedback component -->
     <TicketFeedback v-if="ticket.data.feedback_rating" class="border-b text-base text-gray-600" :ticket="ticket.data" />
@@ -64,8 +73,11 @@ import { Tooltip, Avatar } from "frappe-ui";
 import { dayjs } from "@/dayjs";
 import { formatTime } from "@/utils";
 import { Field } from "@/types";
+import { onMounted } from "vue";
+import { globalStore } from "@/stores/globalStore";
 
 const emit = defineEmits(["open"]);
+const { $dialog } = globalStore();
 
 const ticket = inject(ITicket);
 
@@ -156,6 +168,23 @@ function resolutionData() {
   return resolution;
 }
 
+function readSlaDescription() {
+  $dialog({
+        title: `SLA Description (${ticket.data.sla})`,
+        html: ticket.data.sla_description,
+        actions: [
+          {
+            label: "Close",
+            variant: "solid",
+            // theme: theme,
+            onClick(close: Function) {
+              close();
+            },
+          },
+        ],
+      });
+}
+
 const ticketBasicInfo = computed(() => [
   {
     label: "Ticket ID",
@@ -196,6 +225,12 @@ const ticketAdditionalInfo = computed(() => {
         label: "Non SLA Form",
         value: ticket.data.ehda_non_sla_form,
       },
+      ...ticket.data.ehda_non_sla_form_project ? [
+        {
+          label: "Non SLA Project",
+          value: ticket.data.ehda_non_sla_form_project,
+        },
+      ] : []
     ] : []
   ];
   const custom_fields = ticket.data.template.fields
@@ -219,6 +254,7 @@ function transformStatus(status: string) {
       return status;
   }
 }
+
 </script>
 
 <style scoped></style>

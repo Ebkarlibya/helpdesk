@@ -89,6 +89,7 @@ export interface Ticket {
   status: string;
   ehda_detailed_status: string;
   ehda_non_sla_form: string;
+  ehda_non_sla_form_project: string;
   subject: string;
   ticket_type: string;
   via_customer_portal: string;
@@ -97,6 +98,8 @@ export interface Ticket {
   feedback_rating?: number;
   feedback_text?: string;
   feedback_extra?: string;
+  sla: string;
+  sla_description: string;
   contact: Contact;
   comments: Comment[];
   communications: Communication[];

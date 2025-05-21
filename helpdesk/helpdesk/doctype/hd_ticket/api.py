@@ -66,6 +66,22 @@ def get_one(name, is_customer_portal=False):
             "name": ticket.raised_by.split("@")[0],
         }
     template = ticket.template or DEFAULT_TICKET_TEMPLATE
+
+    # get non sla
+    if ticket.get("sla"):
+        ticket["sla_description"] = frappe.db.get_value(
+            "HD Service Level Agreement",
+            filters={ "name": ticket.get("sla") },
+            fieldname="description"
+        )
+
+    if ticket.get("ehda_non_sla_form") and ticket.get("ehda_detailed_status") == 'Transferred to Project Tracker':
+        ticket["ehda_non_sla_form_project"] = frappe.db.get_value(
+            "Non-SLA Request Evaluation Form",
+            filters={ "name": ticket["ehda_non_sla_form"] },
+            fieldname="related_project"
+        )
+
     return {
         **ticket,
         "comments": get_comments(name),

@@ -86,9 +86,9 @@
               </Dropdown>
             </template>
             <template #actions>
-              <Button v-if="nextDetailedStatus == `Non-SLA – Transferred for Evaluation`"
-                variant="solid" class="bg-red-50"  @click="submitMail">
-                Confirm & Create Non Sla!
+              <Button v-if="nextDetailedStatus == `Non-SLA – Transferred for Evaluation`" variant="solid"
+                class="bg-red-50" @click="submitMail">
+                Confirm & Create Non SLA!
               </Button>
               <Button v-else variant="solid" @click="submitMail">
                 Confirm
@@ -114,6 +114,7 @@ import {
   TextEditor,
   TextEditorFixedMenu,
   createResource,
+  call
 } from "frappe-ui";
 import {
   createToast,
@@ -197,14 +198,14 @@ const detailedStatusOptions = computed(() =>
     value: dstatus,
     onClick: () => {
       console.log('set to!! ', dstatus);
-      
+
       nextDetailedStatus.value = dstatus
     },
   }))
 );
 
 function openSubmitMailDialog() {
-  if(doc.value.ehda_detailed_status == 'Non-SLA – Transferred for Evaluation') {
+  if (doc.value.ehda_detailed_status == 'Non-SLA – Transferred for Evaluation') {
     submitMail()
     return
   }
@@ -227,9 +228,28 @@ const sendMail = createResource({
   }),
   onSuccess: () => {
     resetState();
-    doc.value.status = ticketStatusStore.getStatusFromDetailed(doc.value.ehda_detailed_status);
+    // doc.value.status = ticketStatusStore.getStatusFromDetailed(nextDetailedStatus.value);
     doc.value.ehda_detailed_status = nextDetailedStatus.value
-    updateTicket({ status: doc.value.status, ehda_detailed_status: doc.value.ehda_detailed_status })
+    console.log(doc.value);
+
+    updateTicket({ ehda_detailed_status: doc.value.ehda_detailed_status })
+    // call("etms_hd_addons.api.create_non_sla_form", {
+    //   ticket_name: doc.value.name
+    // }).then(res => {
+    //   if (res.status == 200) {
+    //     setTimeout(() => {
+    //           // updateTicket({ status: doc.value.status, ehda_detailed_status: doc.value.ehda_detailed_status })
+    //       // $(document.body).css("filter", "opacity(1)")
+    //       createToast({
+    //         title: "ETMS HD: Non-SLA Form Created & Linked",
+    //         icon: "alert-circle",
+    //       });
+    //       // setTimeout(() => location.reload(), 1500)
+    //     }, 1000)
+    //   }
+    // }).finally((er) => {
+    //   // $(document.body).css("filter", "opacity(1)")
+    // })
     emit("submit");
   },
   debounce: 300,

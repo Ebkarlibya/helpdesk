@@ -41,7 +41,8 @@
             </Button>
           </template>
         </Dropdown>
-        <!-- <Dropdown :options="dropdownOptions">
+      <!-- -->
+        <Dropdown :options="dropdownOptions">
           <template #default="{ open }">
             <Button :label="ticket.data.status">
               <template #prefix>
@@ -52,7 +53,7 @@
               </template>
             </Button>
           </template>
-        </Dropdown> -->
+        </Dropdown> 
       </template>
     </LayoutHeader>
     <div v-if="ticket.data" class="flex h-full overflow-hidden">
@@ -249,7 +250,7 @@ const detailedStatusOptions = computed(() =>
           icon: "check",
           iconClasses: "text-red-600",
         });
-        return
+        // return
       }
 
       let title = `Confirm Transition`
@@ -260,7 +261,7 @@ const detailedStatusOptions = computed(() =>
       if (toNonSla) {
         title += ` & Create Non-Sla Form`
         message += ` <br>And Create Non-SLA Evaluation Form for this ticket?`
-        confirmBtnText += ` & Create Non Sla!`
+        confirmBtnText += ` & Create Non SLA!`
         theme = "red"
       }
 
@@ -273,29 +274,30 @@ const detailedStatusOptions = computed(() =>
             variant: "solid",
             theme: theme,
             onClick(close: Function) {
-              ticket.data.status = ticketStatusStore.getStatusFromDetailed(ticket.data.ehda_detailed_status);
+              // ticket.data.status = ticketStatusStore.getStatusFromDetailed(ticket.data.ehda_detailed_status);
               ticket.data.ehda_detailed_status = o
+              updateTicket({ ehda_detailed_status: o })
 
-              if(toNonSla) {
-                call("etms_hd_addons.api.create_non_sla_form", {
-                  ticket_name: ticket.data.name
-                }).then(res => {
-                  if (res.status == 200) {
-                    setTimeout(() => {
-                      // $(document.body).css("filter", "opacity(1)")
-                      createToast({
-                        title: "ETMS HD: Non-SLA Form Created & Linked",
-                        icon: "alert-circle",
-                      });
-                      ticket.reload()
-                      // setTimeout(() => location.reload(), 1500)
-                    }, 1000)
-                  }
-                }).finally((er) => {
-                  // $(document.body).css("filter", "opacity(1)")
-                })
-              }
-              updateTicket({ status: ticket.data.status, ehda_detailed_status: o })
+              // if(toNonSla) {
+              //   call("etms_hd_addons.api.create_non_sla_form", {
+              //     ticket_name: ticket.data.name
+              //   }).then(res => {
+              //     if (res.status == 200) {
+              //       setTimeout(() => {
+              //         // $(document.body).css("filter", "opacity(1)")
+              //         createToast({
+              //           title: "ETMS HD: Non-SLA Form Created & Linked",
+              //           icon: "alert-circle",
+              //         });
+              //         ticket.reload()
+              //         // setTimeout(() => location.reload(), 1500)
+              //       }, 1000)
+              //     }
+              //   }).finally((er) => {
+              //     // $(document.body).css("filter", "opacity(1)")
+              //   })
+              // }
+              // updateTicket({ status: ticket.data.status, ehda_detailed_status: o })
 
               close();
             },

@@ -43,7 +43,7 @@
           </Tooltip>
         </div>
       </div>
-       <div  class="flex items-center text-base">
+      <div class="flex items-center text-base">
         <div class="w-[126px] text-gray-600 text-sm">Related SLA</div>
 
         <div class="break-words text-base text-gray-800">
@@ -170,19 +170,19 @@ function resolutionData() {
 
 function readSlaDescription() {
   $dialog({
-        title: `SLA Description (${ticket.data.sla})`,
-        html: ticket.data.sla_description,
-        actions: [
-          {
-            label: "Close",
-            variant: "solid",
-            // theme: theme,
-            onClick(close: Function) {
-              close();
-            },
-          },
-        ],
-      });
+    title: `SLA Description (${ticket.data.sla})`,
+    html: ticket.data.sla_description,
+    actions: [
+      {
+        label: "Close",
+        variant: "solid",
+        // theme: theme,
+        onClick(close: Function) {
+          close();
+        },
+      },
+    ],
+  });
 }
 
 const ticketBasicInfo = computed(() => [

@@ -1,26 +1,28 @@
 <template>
   <div class="flex flex-col gap-3 border-b px-6 py-3">
-    <div
-      v-for="s in sections"
-      :key="s.label"
-      class="flex items-center text-base leading-5"
-    >
+    <div v-for="s in sections" :key="s.label" class="flex items-center text-base leading-5">
       <Tooltip :text="s.label">
         <div class="w-[126px] text-sm text-gray-600">{{ s.label }}</div>
       </Tooltip>
       <div class="flex items-center justify-between">
         <div v-if="s.value">{{ s.value }}</div>
         <Tooltip :text="s.tooltipValue">
-          <Badge
-            v-if="s.badgeText"
-            class="-ml-1"
-            :label="s.badgeText"
-            variant="subtle"
-            :theme="s.badgeColor"
-          />
+          <Badge v-if="s.badgeText" class="-ml-1" :label="s.badgeText" variant="subtle" :theme="s.badgeColor" />
         </Tooltip>
       </div>
     </div>
+
+    <div class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Related SLA</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+          <Tooltip text="Read SLA Description">
+            <p @click="readSlaDescription" style="cursor: pointer;">{{ props.ticket.sla }}<span> 📃</span></p>
+          </Tooltip>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -30,6 +32,8 @@ import { dayjs } from "@/dayjs";
 import { formatTime } from "@/utils";
 import { dateFormat, dateTooltipFormat } from "@/utils";
 import { computed } from "vue";
+import { globalStore } from "@/stores/globalStore";
+const { $dialog } = globalStore();
 
 const props = defineProps({
   ticket: {
@@ -37,6 +41,23 @@ const props = defineProps({
     required: true,
   },
 });
+
+function readSlaDescription() {
+  $dialog({
+    title: `SLA Description (${props.ticket.sla})`,
+    html: props.ticket.sla_description,
+    actions: [
+      {
+        label: "Close",
+        variant: "solid",
+        // theme: theme,
+        onClick(close: Function) {
+          close();
+        },
+      },
+    ],
+  });
+}
 
 const firstResponseBadge = computed(() => {
   let firstResponse = null;

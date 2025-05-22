@@ -12,6 +12,8 @@
         doctype="HD Agent"
         :custom-filters="customFilters"
         :reset-input="true"
+        :search-field="'agent_name'"
+        :label-field="'agent_name'"
         @change="
           (option) => {
             addAssignee(option.value);

@@ -44,7 +44,7 @@
         </div>
       </div>
        <div  class="flex items-center text-base">
-        <div class="w-[126px] text-gray-600 text-sm">SLA Name</div>
+        <div class="w-[126px] text-gray-600 text-sm">Related SLA</div>
 
         <div class="break-words text-base text-gray-800">
           <Tooltip text="Read SLA Description">

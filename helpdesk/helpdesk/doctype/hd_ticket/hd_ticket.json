@@ -438,15 +438,14 @@
    "fieldname": "last_replay_by",
    "fieldtype": "Select",
    "label": "Last Replay By",
-   "options": "Customer\nAgent\nAdmin",
-   "read_only": 1
+   "options": "Customer\nSupport\nAdmin"
   }
  ],
  "grid_page_length": 50,
  "icon": "fa fa-issue",
  "idx": 61,
  "links": [],
- "modified": "2025-05-21 20:55:07.840658",
+ "modified": "2025-05-21 21:39:05.784074",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Ticket",

@@ -41,7 +41,7 @@
             </Button>
           </template>
         </Dropdown>
-      <!-- -->
+      <!-- 
         <Dropdown :options="dropdownOptions">
           <template #default="{ open }">
             <Button :label="ticket.data.status">
@@ -54,6 +54,7 @@
             </Button>
           </template>
         </Dropdown> 
+      -->
       </template>
     </LayoutHeader>
     <div v-if="ticket.data" class="flex h-full overflow-hidden">

@@ -65,6 +65,18 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
                     for alloc in todos],
             }
         )
+        quick_filters.append(
+            {
+                "label": _("Last Replied By"),
+                "name": "last_replay_by",
+                "type": "Select",
+                "options": [
+                    {"label": " ", "value": ""},
+                    {"label": "Customer", "value": "customer"},
+                    {"label": "Support", "value": "support"},
+                ]
+            }
+        )
 
     if doctype != "HD Ticket":
         return quick_filters
@@ -135,6 +147,8 @@ def get_list_data(
         rows = ["name"]
 
     # flake8: noqa
+    if "replied_by" in filters:
+        del filters["replied_by"]
     if is_default:
         default_view = default_view_exists(doctype)
         if not default_view:

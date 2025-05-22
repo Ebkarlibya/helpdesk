@@ -776,7 +776,13 @@ class HDTicket(Document):
                 "label": "Assigned To",
                 "type": "MultipleAvatar",
                 "key": "_assign",
-                "width": "8rem",
+                "width": "5rem",
+            },
+            {
+                "label": "Last Replied By",
+                "type": "Select",
+                "key": "last_replay_by",
+                "width": "9rem",
             },
             {
                 "label": "Customer",
@@ -844,7 +850,7 @@ class HDTicket(Document):
                 "label": "Detailed Status",
                 "type": "Select",
                 "key": "ehda_detailed_status",
-                "width": "11rem",
+                "width": "15rem",
             },
             {
                 "label": "Priority",
@@ -864,6 +870,12 @@ class HDTicket(Document):
                 "type": "Datetime",
                 "key": "resolution_by",
                 "width": "8rem",
+            },
+            {
+                "label": "Last Replied By",
+                "type": "Select",
+                "key": "last_replay_by",
+                "width": "9rem",
             },
             {
                 "label": "Team",
@@ -891,6 +903,7 @@ class HDTicket(Document):
             "agreement_status",
             "response_by",
             "resolution_by",
+            "last_replay_by",
             "customer",
             "first_responded_on",
             "modified",

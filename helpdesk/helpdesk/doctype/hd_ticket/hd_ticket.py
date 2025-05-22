@@ -51,11 +51,12 @@ class HDTicket(Document):
         self.set_first_responded_on()
         self.set_feedback_values()
         self.apply_escalation_rule()
-        self.set_sla()
 
         if self.via_customer_portal:
             self.set_contact()
             self.set_customer()
+
+        self.set_sla()
 
     def validate(self):
         self.validate_feedback()
@@ -697,6 +698,17 @@ class HDTicket(Document):
         """
         Find an SLA to apply to this ticket.
         """
+
+        if hd_customer_sla := frappe.db.get_value(
+            "HD Customer",
+            {
+                "name": self.customer
+            },
+            fieldname="ehda_ticket_creation_sla"
+        ):
+            self.sla = hd_customer_sla
+            return
+
         if sla := get_sla(self):
             self.sla = sla.name
 

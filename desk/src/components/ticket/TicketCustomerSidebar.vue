@@ -26,12 +26,19 @@
       </div>
 
       <!-- Ticket Info -->
-      <div class="flex items-center text-base leading-5" v-for="field in ticketBasicInfo">
-        <span class="w-[126px] text-sm text-gray-600">{{ field.label }}</span>
+      <div class="flex items-center text-base leading-5" >
+        <span class="w-[126px] text-sm text-gray-600">Ticket ID</span>
+        <span class="text-base text-gray-800 flex-1"> {{ ticket.data.name }} </span>
+      </div>
+
+       <div class="flex items-center text-base leading-5" >
+        <span class="w-[126px] text-sm text-gray-600">Detailed Status</span>
         <span class="text-base text-gray-800 flex-1">
-          {{ field.value }}
+          <Badge :label="ticket.data.ehda_detailed_status" 
+              :theme="detailedColorMap[ticket.data.ehda_detailed_status]" variant="outline" />
         </span>
       </div>
+
 
       <!-- sla info -->
       <div v-for="data in slaData" :key="data.label" class="flex items-center text-base">
@@ -75,9 +82,11 @@ import { formatTime } from "@/utils";
 import { Field } from "@/types";
 import { onMounted } from "vue";
 import { globalStore } from "@/stores/globalStore";
+import { useTicketStatusStore } from "@/stores/ticketStatus";
 
 const emit = defineEmits(["open"]);
 const { $dialog } = globalStore();
+const { detailedColorMap } = useTicketStatusStore();
 
 const ticket = inject(ITicket);
 
@@ -172,6 +181,7 @@ function readSlaDescription() {
   $dialog({
     title: `SLA Description (${ticket.data.sla})`,
     html: ticket.data.sla_description,
+    size: '30%',
     actions: [
       {
         label: "Close",

@@ -55,6 +55,7 @@
   "attachment",
   "content_type",
   "last_replay_by",
+  "metadata",
   "split_and_merge_section",
   "is_merged",
   "merged_with",
@@ -439,13 +440,18 @@
    "fieldtype": "Select",
    "label": "Last Replay By",
    "options": "Customer\nSupport\nAdmin"
+  },
+  {
+   "fieldname": "metadata",
+   "fieldtype": "Small Text",
+   "label": "Metadata"
   }
  ],
  "grid_page_length": 50,
  "icon": "fa fa-issue",
  "idx": 61,
  "links": [],
- "modified": "2025-05-21 21:39:05.784074",
+ "modified": "2025-05-22 16:09:57.290709",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Ticket",

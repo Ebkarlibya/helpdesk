@@ -169,13 +169,13 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "HTML Editor",
+   "fieldtype": "Text Editor",
    "label": "Description"
   }
  ],
  "grid_page_length": 50,
  "links": [],
- "modified": "2025-05-21 11:33:46.145469",
+ "modified": "2025-05-23 19:16:46.384034",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Service Level Agreement",

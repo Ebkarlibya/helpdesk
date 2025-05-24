@@ -22,16 +22,6 @@
           onClick: () => (showMergeModal = true),
           icon: LucideMerge,
           condition: () => !ticket.is_merged,
-        },
-        {
-          label: 'Restore Last Status',
-          onClick: async () => {
-            call('etms_hd_addons.api.restore_last_status', {
-              ticket_name: ticket.name
-            })
-          },
-          icon: () => h(Restore, { name: 'users' }),
-          condition: () => !ticket.ehda_telegram_recent_msg_id,
         }
       ]">
         <Button icon="more-horizontal" class="text-gray-600" variant="ghost" />
@@ -56,7 +46,7 @@ import TicketAgentContact from "./TicketAgentContact.vue";
 import TicketAgentFields from "./TicketAgentFields.vue";
 import TicketMergeModal from "./TicketMergeModal.vue";
 import LucideMerge from "~icons/lucide/merge";
-import Restore from '../icons/Restore.vue'
+import Restore from '../icons/Delete.vue'
 
 
 import { copyToClipboard } from "@/utils";

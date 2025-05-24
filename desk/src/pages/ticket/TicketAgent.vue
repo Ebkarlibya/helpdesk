@@ -65,9 +65,11 @@
             <TabList />
             <TabPanel v-slot="{ tab }" class="h-full">
               <TicketAgentActivities ref="ticketAgentActivitiesRef" :activities="filterActivities(tab.name)"
-                :title="tab.label" :ticket-status="ticket.data?.status" @update="
+                :title="tab.label" :ticket-status="ticket.data?.status" :ticket="ticket" @update="
                   () => {
                     ticket.reload();
+                    filterActivities(tab.name)
+                    console.log('update!!!!!!', filterActivities(tab.name))
                   }
                 " @email:reply="
                   (e) => {
@@ -251,7 +253,7 @@ const detailedStatusOptions = computed(() =>
           icon: "check",
           iconClasses: "text-red-600",
         });
-        // return
+        return
       }
 
       let title = `Confirm Transition`
@@ -368,6 +370,7 @@ const activities = computed(() => {
       attachments: email.attachments,
       name: email.name,
       isFirstEmail: idx === 0,
+      isLastEmail: email.isLastEmail
     };
   });
 

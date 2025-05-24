@@ -40,9 +40,10 @@
             <EmailArea
               v-if="activity.type === 'email'"
               :activity="activity"
-              :show-split-option="
-                !activity.isFirstEmail && ticketStatus !== 'Closed'
-              "
+              :ticket="props.ticket"
+              :isLastEmail="activity.isLastEmail"
+              :show-split-option="!activity.isFirstEmail && ticketStatus !== 'Closed'"
+              @deleted_replay="() => emit('update')"
               class="py-2 px-3"
               @reply="(e) => emit('email:reply', e)"
             />
@@ -89,22 +90,18 @@ import {
 import { EmailArea, CommentBox, HistoryBox } from "@/components";
 import { useUserStore } from "@/stores/user";
 import { Avatar } from "frappe-ui";
-import { TicketActivity } from "@/types";
+import type { TicketActivity, Resource, Ticket } from "@/types";
 import { FadedScrollableDiv } from "@/components";
-const props = defineProps({
-  activities: {
-    type: Array as PropType<TicketActivity[]>,
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  ticketStatus: {
-    type: String,
-    default: "",
-  },
-});
+
+interface Props {
+  activities: PropType<TicketActivity[]>;
+  title: string;
+  ticketStatus: string;
+  ticket: Resource<Ticket>
+}
+
+
+const props = defineProps<Props>();
 
 const emit = defineEmits(["email:reply", "update"]);
 

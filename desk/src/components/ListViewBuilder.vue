@@ -578,8 +578,11 @@ function handleViewChanges() {
     return;
   }
   defaultParams.filters = currentView.filters;
-  // reset assignee TODO: better way
+  // reset custom quick filters TODO: better way
+  console.log("Quick Filters", defaultParams.filters);
+  
   delete defaultParams.filters.assignee
+  delete defaultParams.filters.last_replay_by
   // console.log("defaultParams.filters: ", defaultParams.filters);
   
   defaultParams.order_by = currentView.order_by || "modified desc";

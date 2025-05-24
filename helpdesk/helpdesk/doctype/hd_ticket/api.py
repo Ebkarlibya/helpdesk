@@ -155,9 +155,15 @@ def get_communications(ticket: str):
         .orderby(QBCommunication.creation, order=Order.asc)
         .run(as_dict=True)
     )
-    for c in communications:
+    for idx, c in enumerate(communications):
         c.attachments = get_attachments("Communication", c.name)
         c.user = get_user_info_for_avatar(c.sender)
+
+        if idx == len(communications) - 1:
+            c.isLastEmail = True
+        else:
+            c.isLastEmail = False
+
     return communications
 
 

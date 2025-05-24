@@ -38,6 +38,7 @@ export interface Communication {
   subject: string;
   content: string;
   name: string;
+  isLastEmail: boolean;
   sender: string;
   bcc?: string;
   cc?: string;
@@ -45,7 +46,15 @@ export interface Communication {
 
 export interface Activity {
   action: string;
+  subject: string;
+  sender: string;
+  to: string;
+  cc: string;
+  bcc: string;
+  attachments: FileAttachment[];
+  content: string;
   name: string;
+  isLastEmail: boolean;
   owner: string;
   creation: string;
 }

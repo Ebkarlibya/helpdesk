@@ -180,7 +180,7 @@ function resolutionData() {
 function readSlaDescription() {
   $dialog({
     title: `SLA Description (${ticket.data.sla})`,
-    html: ticket.data.sla_description,
+    html: `<div style="direction: rtl">${ticket.data.sla_description}</div>`,
     style: 'direction: rtl;',
     size: '30%',
     actions: [

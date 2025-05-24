@@ -67,7 +67,8 @@ const props = defineProps({
 function readSlaDescription() {
   $dialog({
     title: `SLA Description (${props.ticket.sla})`,
-    html: props.ticket.sla_description,
+    html: `<div style="direction: rtl">${props.ticket.sla_description}</div>`,
+    size: '30%',
     actions: [
       {
         label: "Close",

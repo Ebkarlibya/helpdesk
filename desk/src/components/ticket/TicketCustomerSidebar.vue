@@ -181,6 +181,7 @@ function readSlaDescription() {
   $dialog({
     title: `SLA Description (${ticket.data.sla})`,
     html: ticket.data.sla_description,
+    style: 'direction: rtl;',
     size: '30%',
     actions: [
       {

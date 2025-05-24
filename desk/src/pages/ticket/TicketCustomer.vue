@@ -72,7 +72,7 @@ import { globalStore } from "@/stores/globalStore";
 import { Icon } from "@iconify/vue";
 import { ITicket } from "./symbols";
 import { useRouter } from "vue-router";
-import { createToast, isContentEmpty } from "@/utils";
+import { createToast, DetailedStatus, isContentEmpty } from "@/utils";
 import { setupCustomizations } from "@/composables/formCustomisation";
 import { socket } from "@/socket";
 import { LayoutHeader } from "@/components";
@@ -178,9 +178,13 @@ function updateTicket(fieldname: string, value: string) {
 }
 
 function handleClose() {
-  if(ticket.data.ehda_detailed_status == `Non-SLA – Transferred for Evaluation`) {
+  if(ticket.data.ehda_detailed_status !== DetailedStatus.resolved) {
     createToast({
-      text: "Cannot Close Non SLA Ticket at the moment",
+      text: `
+ فقط التذاكر (المحلولة) يمكن إغلاقها, لإغلاق هذه التذكرة، يُرجى إرسال رد لإعلام فريق الدعم، وسيقومون بإغلاقها وفقًا لذلك.
+<br><br><br>
+Only (Resolved) can be closed, To close this ticket, please reply to notify the support team, and they will proceed to close it accordingly.    
+      `,
       icon: "x",
       iconClasses: "text-red-600",
     });
@@ -204,7 +208,7 @@ function showConfirmationDialog() {
         onClick(close: Function) {
           ticket.data.status = "Closed";
           setValue.submit(
-            { fieldname: "status", value: "Closed" },
+            { fieldname: "ehda_detailed_status", value: DetailedStatus.closed },
             {
               onSuccess: () => {
                 createToast({

@@ -10,6 +10,20 @@ import dayjs from "dayjs";
  * https://frappeui.com/components/toast.html
  * @param options - `Toast` options
  */
+
+export enum DetailedStatus {
+    new = "New",
+    underReview = "Under Review",
+    awaitingCustomerInfo = "Awaiting Customer Info",
+    customerResponded = "Customer Responded",
+    workInProgress = "Work in Progress",
+    nonSlaEval = "Non-SLA – Transferred for Evaluation",
+    transferredToProj = "Transferred to Project Tracker",
+    resolved = "Resolved",
+    closed = "Closed",
+    cancelled = "Cancelled"
+}
+
 export function createToast(options?: Record<string, string>) {
   toast({
     position: "bottom-right",

@@ -1,12 +1,7 @@
 <template>
   <div class="flex flex-1 flex-col overflow-hidden overflow-y-auto border-b">
-    <UniInput2
-      v-for="field in fields"
-      :key="field.fieldname"
-      :field="field"
-      :value="ticket[field.fieldname]"
-      @change="(data) => update(data.fieldname, data.value)"
-    />
+    <UniInput2 v-for="field in fields" :key="field.fieldname" :field="field" :value="ticket[field.fieldname]"
+      @change="(data) => update(data.fieldname, data.value)" />
   </div>
 </template>
 
@@ -49,6 +44,7 @@ function update(field: Field["fieldname"], value: FieldValue, event = null) {
   border-color: transparent;
   background: white;
 }
+
 :deep(.form-control textarea) {
   field-sizing: content;
 }
@@ -56,6 +52,7 @@ function update(field: Field["fieldname"], value: FieldValue, event = null) {
 :deep(.form-control button) {
   gap: 0;
 }
+
 :deep(.form-control [type="checkbox"]) {
   margin-left: 9px;
   cursor: pointer;

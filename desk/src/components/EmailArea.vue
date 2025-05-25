@@ -2,7 +2,6 @@
   <div v-bind="$attrs"
     class="grow cursor-pointer border-transparent bg-white rounded-md shadow text-base leading-6 transition-all duration-300 ease-in-out">
     <div class="mb-1 flex items-center justify-between gap-2">
-      <h4>isLastEmail: {{ props.isLastEmail }}</h4>
       <!-- email design for mobile -->
       <div v-if="isMobileView" class="flex items-center gap-2 text-sm">
         <div class="leading-tight">

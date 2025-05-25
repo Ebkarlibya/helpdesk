@@ -34,6 +34,17 @@
       </div>
     </div>
 
+    <div v-if="props.ticket.ehda_non_sla_form" class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Non SLA Form</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+        <Tooltip text="Read SLA Description">
+          <p style="cursor: pointer;">{{ props.ticket.ehda_non_sla_form }}<span></span></p>
+        </Tooltip>
+      </div>
+    </div>
+
     <div v-if="props.ticket.ehda_non_sla_form_project" class="flex items-center text-base leading-5">
       <Tooltip text="s.label">
         <div class="w-[126px] text-sm text-gray-600">Non SLA Form</div>

@@ -181,7 +181,7 @@ function handleClose() {
   if(ticket.data.ehda_detailed_status !== DetailedStatus.resolved) {
     createToast({
       text: `
- فقط التذاكر (المحلولة) يمكن إغلاقها, لإغلاق هذه التذكرة، يُرجى إرسال رد لإعلام فريق الدعم، وسيقومون بإغلاقها وفقًا لذلك.
+ فقط التذاكر (التي تم حلها) يمكن إغلاقها, لإغلاق هذه التذكرة، يُرجى إرسال رد لإعلام فريق الدعم، وسيقومون بإغلاقها وفقًا لذلك.
 <br><br><br>
 Only (Resolved) can be closed, To close this ticket, please reply to notify the support team, and they will proceed to close it accordingly.    
       `,

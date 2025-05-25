@@ -8,6 +8,25 @@ from pypika import Criterion
 from helpdesk.utils import check_permissions
 
 @frappe.whitelist()
+def get_hd_agents():
+    _agents = frappe.get_all(
+        "HD Agent",
+        fields=["name", "user", "agent_name"],
+        filters={
+            "is_active": True
+        }
+    )
+
+    agents = []
+
+    for agent in _agents:
+        if frappe.db.get_value("User", filters={"name": agent["user"]}, fieldname="enabled"):
+            agents.append(agent)
+
+    return agents
+
+
+@frappe.whitelist()
 def get_quick_filters(doctype: str, show_customer_portal_fields=False):
     meta = frappe.get_meta(doctype)
     fields = [field for field in meta.fields if field.in_standard_filter or field.fieldname == 'ehda_detailed_status']
@@ -72,8 +91,8 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
             "type": "Select",
             "options": [
                 {"label": " ", "value": ""},
-                {"label": "Customer", "value": "customer"},
-                {"label": "Support", "value": "support"},
+                {"label": "Customer", "value": "Customer"},
+                {"label": "Support", "value": "Support"},
             ]
         }
     )

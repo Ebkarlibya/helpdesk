@@ -452,6 +452,11 @@ function handleFieldClick(e: MouseEvent, column, row, item) {
     return;
   }
   applyFilters({ ...defaultParams.filters, [column.key]: item });
+  
+  // custom: apply filters to quick filters values
+  let qf = listViewData.quickFilters.data.find(el => el.name == column.key)
+  qf.value = item
+  console.log(qf);
 }
 
 const showViewControls = computed(() => {

@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { Autocomplete } from "@/components";
-import { createListResource } from "frappe-ui";
+import { createResource } from "frappe-ui";
 import { computed, ref } from "vue";
 
 const emit = defineEmits(["change"]);
@@ -64,8 +64,8 @@ const props = defineProps({
   },
 });
 
-const r = createListResource({
-  doctype: props.doctype,
+const r = createResource({
+  url: "helpdesk.api.doc.get_hd_agents",
   pageLength: props.pageLength,
   auto: true,
   fields: [props.labelField, props.searchField, props.valueField],

@@ -465,12 +465,21 @@ function updateFilter(data, index) {
 }
 
 function removeFilter(index) {
-  filters.value.delete(Array.from(filters.value)[index]);
+  const val = Array.from(filters.value)[index]
+  filters.value.delete(val);
+
+  // custom: reset specific quick filter when removed
+  let qf = listViewData.quickFilters.data.find(el => el.name == val.fieldname)
+  qf.value = ""
+  console.log(val);
+  // debugger
+
   apply();
 }
 
 function clearfilter(close) {
   filters.value.clear();
+  listViewData.quickFilters.data.forEach(qf => qf.value = "")
   apply();
   close && close();
 }

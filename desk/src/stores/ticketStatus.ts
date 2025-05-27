@@ -1,32 +1,23 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
+import { StatusEnum } from "@/utils";
 
 export const useTicketStatusStore = defineStore("ticketStatus", () => {
-  const detailedToStatusMap = ref({
-    "New": "Open",
-    "Under Review": "Open",
-    "Awaiting Customer Info": "Replied",
-    "Customer Responded": "Open",
-    "Work in Progress": "Open",
-    "Non-SLA – Transferred for Evaluation": "Replied",
-    "Transferred to Project Tracker": "Resolved",
-    "Resolved": "Resolved",
-    "Closed": "Closed",
-    "Cancelled": "Closed"
-})
-  const options = ref(["Open", "Replied", "Resolved", "Closed"]);
-  const detailedOptions = ref([
-    "New",
-    "Under Review",
-    "Awaiting Customer Info",
-    "Customer Responded",
-    "Work in Progress",
-    "Non-SLA – Transferred for Evaluation",
-    "Transferred to Project Tracker",
-    "Resolved",
-    "Closed",
-    "Cancelled"
-  ]);
+
+  const options = ref(
+    [
+      "New",
+      "Under Review",
+      "Awaiting Customer Info",
+      "Customer Responded",
+      "Work in Progress",
+      "Non-SLA – Transferred for Evaluation",
+      "Transferred to Project Tracker",
+      "Resolved",
+      "Closed",
+      "Cancelled"
+    ]
+  );
 
 
   const dropdown = computed(() =>
@@ -44,13 +35,6 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
   );
 
   const colorMap = {
-    Open: "red",
-    Replied: "blue",
-    Resolved: "green",
-    Closed: "gray",
-  };
-
-  const detailedColorMap = {
     "New": "red",
     "Under Review": "red",
     "Awaiting Customer Info": "blue",
@@ -62,8 +46,9 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
     "Closed": "gray",
     "Cancelled": "gray",
   };
-  
-  const detailedTextColorMap = {
+
+
+  const textColorMap = {
     "New": "!text-red-600",
     "Under Review": "!text-red-600",
     "Awaiting Customer Info": "!text-blue-600",
@@ -76,34 +61,18 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
     "Cancelled": "!text-gray-700",
   };
 
-  const textColorMap = {
-    Open: "!text-red-600",
-    Replied: "!text-blue-600",
-    "Awaiting Response": "!text-blue-600",
-    Resolved: "!text-green-700",
-    Closed: "!text-gray-700",
-  };
-  const stateActive = ["Open", "Replied"];
-  const stateInactive = ["Resolved", "Closed"];
+  const stateActive = [StatusEnum.new, StatusEnum.awaitingCustomerInfo];
+  const stateInactive = [StatusEnum.resolved, StatusEnum.closed, StatusEnum.cancelled];
 
-
-  function getStatusFromDetailed(detailedStatus: string) {
-    return detailedToStatusMap.value[detailedStatus]
-  }
 
 
   return {
     colorMap,
-    detailedColorMap,
     dropdown,
     detailedDropdown,
     options,
-    detailedOptions,
     stateActive,
     stateInactive,
-    textColorMap,
-    detailedTextColorMap,
-    detailedToStatusMap,
-    getStatusFromDetailed
+    textColorMap
   };
 });

@@ -5,17 +5,18 @@
         <Breadcrumbs :items="breadcrumbs" />
       </template>
       <template #right-header>
-        <CustomActions
-          v-if="ticket.data._customActions"
-          :actions="ticket.data._customActions"
-        />
-        <Button
-          v-if="ticket.data.status !== 'Closed'"
-          label="Close"
-          theme="gray"
-          variant="solid"
-          @click="handleClose()"
-        >
+        <CustomActions v-if="ticket.data._customActions" :actions="ticket.data._customActions" />
+        <Dropdown :options="statusOptions">
+          <template #default="{ open }">
+            <Button :label="ticket.data.status">
+              <template #prefix>
+                <IndicatorIcon :class="ticketStatusStore.textColorMap[ticket.data.status]" />
+              </template>
+            </Button>
+          </template>
+        </Dropdown>
+        <Button v-if="ticket.data.status !== 'Closed'" label="Close" theme="gray" variant="solid"
+          @click="handleClose()">
           <template #prefix>
             <Icon icon="lucide:check" />
           </template>
@@ -29,30 +30,13 @@
         <TicketCustomerTemplateFields v-if="isMobileView" />
 
         <TicketConversation class="grow" />
-        <div
-          class="m-5"
-          @keydown.ctrl.enter.capture.stop="sendEmail"
-          @keydown.meta.enter.capture.stop="sendEmail"
-        >
-          <TicketTextEditor
-            v-if="showEditor"
-            ref="editor"
-            v-model:attachments="attachments"
-            v-model:content="editorContent"
-            v-model:expand="isExpanded"
-            :placeholder="placeholder"
-            autofocus
-            @clear="() => (isExpanded = false)"
-          >
+        <div class="m-5" @keydown.ctrl.enter.capture.stop="sendEmail" @keydown.meta.enter.capture.stop="sendEmail">
+          <TicketTextEditor v-if="showEditor" ref="editor" v-model:attachments="attachments"
+            v-model:content="editorContent" v-model:expand="isExpanded" :placeholder="placeholder" autofocus
+            @clear="() => (isExpanded = false)">
             <template #bottom-right>
-              <Button
-                label="Send"
-                theme="gray"
-                variant="solid"
-                :disabled="$refs.editor?.editor.isEmpty || send.loading"
-                :loading="send.loading"
-                @click="sendEmail"
-              />
+              <Button label="Send" theme="gray" variant="solid" :disabled="$refs.editor?.editor.isEmpty || send.loading"
+                :loading="send.loading" @click="sendEmail" />
             </template>
           </TicketTextEditor>
         </div>
@@ -72,8 +56,9 @@ import { globalStore } from "@/stores/globalStore";
 import { Icon } from "@iconify/vue";
 import { ITicket } from "./symbols";
 import { useRouter } from "vue-router";
-import { createToast, DetailedStatus, isContentEmpty } from "@/utils";
+import { createToast, isContentEmpty, StatusEnum } from "@/utils";
 import { setupCustomizations } from "@/composables/formCustomisation";
+import { IndicatorIcon } from "@/components/icons";
 import { socket } from "@/socket";
 import { LayoutHeader } from "@/components";
 import { useScreenSize } from "@/composables/screen";
@@ -83,11 +68,13 @@ import TicketTextEditor from "./TicketTextEditor.vue";
 import TicketFeedback from "./TicketFeedback.vue";
 import TicketCustomerSidebar from "@/components/ticket/TicketCustomerSidebar.vue";
 import { useTicket } from "./data";
+import { useTicketStatusStore } from "@/stores/ticketStatus";
 
 interface P {
   ticketId: string;
 }
 const router = useRouter();
+const ticketStatusStore = useTicketStatusStore();
 
 const props = defineProps<P>();
 const ticket = useTicket(
@@ -124,6 +111,15 @@ const isExpanded = ref(false);
 const { isMobileView } = useScreenSize();
 const { $dialog } = globalStore();
 
+const statusOptions = computed(() =>
+  ticketStatusStore.options.map((o) => ({
+    label: o,
+    value: o,
+   
+   
+  }))
+);
+
 const send = createResource({
   url: "run_doc_method",
   debounce: 300,
@@ -144,7 +140,7 @@ const send = createResource({
   },
 });
 
-function updateField(name, value, callback = () => {}) {
+function updateField(name, value, callback = () => { }) {
   updateTicket(name, value);
   callback();
 }
@@ -178,7 +174,7 @@ function updateTicket(fieldname: string, value: string) {
 }
 
 function handleClose() {
-  if(ticket.data.ehda_detailed_status !== DetailedStatus.resolved) {
+  if (ticket.data.status !== StatusEnum.resolved) {
     createToast({
       text: `
  فقط التذاكر (التي تم حلها) يمكن إغلاقها, لإغلاق هذه التذكرة، يُرجى إرسال رد لإعلام فريق الدعم، وسيقومون بإغلاقها وفقًا لذلك.
@@ -208,7 +204,7 @@ function showConfirmationDialog() {
         onClick(close: Function) {
           ticket.data.status = "Closed";
           setValue.submit(
-            { fieldname: "ehda_detailed_status", value: DetailedStatus.closed },
+            { fieldname: "status", value: StatusEnum.closed },
             {
               onSuccess: () => {
                 createToast({

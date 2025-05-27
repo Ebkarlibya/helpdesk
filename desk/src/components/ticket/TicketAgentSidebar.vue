@@ -8,9 +8,9 @@
           </span>
         </Tooltip>
         <!-- <Badge
-          v-if="ticket.ehda_detailed_status"
-          :class="detailedTextColorMap[ticket.ehda_detailed_status]"
-          :label="ticket.ehda_detailed_status"
+          v-if="ticket.status"
+          :class="detailedTextColorMap[ticket.status]"
+          :label="ticket.status"
           variant="subtle"
           theme="red"
         /> -->
@@ -73,8 +73,8 @@ function update(val = null) {
 const showMergeModal = ref(false);
 
 const showMergeOption = computed(() => {
-  return (
-    !props.ticket.is_merged && ["Open", "Replied"].includes(props.ticket.status)
-  );
+  // hd plus (need check) show merge
+  return false; 
+  //(!props.ticket.is_merged && ["Open", "Replied"].includes(props.ticket.status));
 });
 </script>

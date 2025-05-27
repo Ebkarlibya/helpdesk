@@ -23,13 +23,13 @@
       </div>
     </div>
 
-    <div v-if="props.ticket.ehda_detailed_status" class="flex items-center text-base leading-5">
+    <div v-if="props.ticket.ehda_non_sla_form" class="flex items-center text-base leading-5">
       <Tooltip text="s.label">
         <div class="w-[126px] text-sm text-gray-600">Non SLA Status</div>
       </Tooltip>
       <div class="flex items-center justify-between">
         <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.ehda_detailed_status }}<span></span></p>
+          <p style="cursor: pointer;">{{ props.ticket.ehda_non_sla_status }}<span></span></p>
         </Tooltip>
       </div>
     </div>
@@ -47,7 +47,7 @@
 
     <div v-if="props.ticket.ehda_non_sla_form_project" class="flex items-center text-base leading-5">
       <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Non SLA Form</div>
+        <div class="w-[126px] text-sm text-gray-600">Non SLA Project</div>
       </Tooltip>
       <div class="flex items-center justify-between">
         <Tooltip text="Read SLA Description">
@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { Badge, Tooltip } from "frappe-ui";
 import { dayjs } from "@/dayjs";
-import { formatTime } from "@/utils";
+import { formatTime, StatusEnum } from "@/utils";
 import { dateFormat, dateTooltipFormat } from "@/utils";
 import { computed } from "vue";
 import { globalStore } from "@/stores/globalStore";
@@ -130,9 +130,7 @@ const firstResponseBadge = computed(() => {
 
 const resolutionBadge = computed(() => {
   let resolution = null;
-  if (
-    props.ticket.status === "Replied" &&
-    props.ticket.on_hold_since &&
+  if (props.ticket.status === StatusEnum.awaitingCustomerInfo && props.ticket.on_hold_since &&
     dayjs(props.ticket.resolution_by).isAfter(dayjs(props.ticket.on_hold_since))
   ) {
     let time_left = formatTime(

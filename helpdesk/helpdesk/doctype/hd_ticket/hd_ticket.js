@@ -1,29 +1,41 @@
 // Copyright (c) 2023, Frappe Technologies and contributors
 // For license information, please see license.txt
 
-const detailedToStatusMap = {
-    "New": "Open",
-    "Under Review": "Open",
-    "Awaiting Customer Info": "Replied",
-    "Customer Responded": "Open",
-    "Work in Progress": "Open",
-    "Non-SLA – Transferred for Evaluation": "Replied",
-    "Transferred to Project Tracker": "Resolved",
-    "Resolved": "Resolved",
-    "Closed": "Closed",
-    "Cancelled": "Closed"
+const StatusEnum = {
+    new: "New",
+    underReview: "Under Review",
+    awaitingCustomerInfo: "Awaiting Customer Info",
+    customerResponded: "Customer Responded",
+    workInProgress: "Work in Progress",
+    nonSlaEval: "Non-SLA – Transferred for Evaluation",
+    transferredToProj: "Transferred to Project Tracker",
+    resolved: "Resolved",
+    closed: "Closed",
+    cancelled: "Cancelled"
 }
 
 frappe.ui.form.on("HD Ticket", {
     refresh(frm) {
-        frm.set_df_property("status", "read_only", true)
+        frm.hd_ticket_old_status = frm.doc.status
+        if ([StatusEnum.nonSlaEval, StatusEnum.transferredToProj].includes(frm.doc.status)) {
+            frm.set_df_property("status", "read_only", true)
+        }
+        frm.set_df_property("ehda_detailed_status", "read_only", true)
     },
-    ehda_detailed_status: function (frm) {
-        let status = getStatusFromDetailed(frm.doc.ehda_detailed_status)
-        frm.set_value("status", status) 
+    status: function (frm) {
+       if(frm.doc.status == StatusEnum.nonSlaEval){
+           frm.set_value("status", frm.hd_ticket_old_status)
+           frappe.show_alert("Cannot Change Ticket with Linked Non-SLA Form")
+       }
+
+       if(frm.doc.status == StatusEnum.transferredToProj){
+           frm.set_value("status", frm.hd_ticket_old_status)
+            frappe.show_alert("Transition to this status only allowed from Non SLA Form Workflow")
+       }
+
     }
 });
 
-function getStatusFromDetailed(detailedStatus) {
-    return detailedToStatusMap[detailedStatus]
-}
+// function getStatusFromDetailed(detailedStatus) {
+//     return detailedToStatusMap[detailedStatus]
+// }

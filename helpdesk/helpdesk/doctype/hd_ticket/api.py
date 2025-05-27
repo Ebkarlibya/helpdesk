@@ -9,7 +9,7 @@ from helpdesk.consts import DEFAULT_TICKET_TEMPLATE
 from helpdesk.helpdesk.doctype.hd_form_script.hd_form_script import get_form_script
 from helpdesk.helpdesk.doctype.hd_ticket_template.api import get_fields_meta
 from helpdesk.helpdesk.doctype.hd_ticket_template.api import get_one as get_template
-from helpdesk.utils import agent_only, check_permissions, get_customer, is_agent
+from helpdesk.utils import StatusEnum, agent_only, check_permissions, get_customer, is_agent
 
 
 @frappe.whitelist()
@@ -75,12 +75,20 @@ def get_one(name, is_customer_portal=False):
             fieldname="description"
         )
 
-    if ticket.get("ehda_non_sla_form") and ticket.get("ehda_detailed_status") == 'Transferred to Project Tracker':
-        ticket["ehda_non_sla_form_project"] = frappe.db.get_value(
+    if ticket.get("ehda_non_sla_form") and ticket.get("status") == StatusEnum.transferredToProj:
+        non_sla_data = frappe.db.get_value(
             "Non-SLA Request Evaluation Form",
             filters={ "name": ticket["ehda_non_sla_form"] },
-            fieldname="related_project"
+            fieldname=["workflow_state", "related_project"],
+            as_dict=True
         )
+
+        data = {
+            "ehda_non_sla_form_project": non_sla_data.get("related_project"),
+            "ehda_non_sla_status": non_sla_data.get("workflow_state")
+        }
+
+        ticket.update(**data)
 
     return {
         **ticket,
@@ -455,7 +463,7 @@ def duplicate_ticket(ticket_doc, subject):
 
     new_ticket = deepcopy(ticket_doc)
     new_ticket.subject = subject
-    new_ticket.status = "Open"
+    new_ticket.status = StatusEnum.new
     new_ticket.ticket_split_from = ticket_doc.name
     new_ticket.description = None
     new_ticket.first_response_time = 0

@@ -45,10 +45,16 @@ frappe.query_reports["Ticket Analytics"] = {
       fieldtype: "Select",
       options: [
         "",
-        { label: __("Open"), value: "Open" },
-        { label: __("Replied"), value: "Replied" },
+        { label: __("New"), value: "New" },
+        { label: __("Under Review"), value: "Under Review" },
+        { label: __("Awaiting Customer Info"), value: "Awaiting Customer Info" },
+        { label: __("Customer Responded"), value: "Customer Responded" },
+        { label: __("Work in Progress"), value: "Work in Progress" },
+        { label: __("Non-SLA – Transferred for Evaluation"), value: "Non-SLA – Transferred for Evaluation" },
+        { label: __("Transferred to Project Tracker"), value: "Transferred to Project Tracker" },
         { label: __("Resolved"), value: "Resolved" },
         { label: __("Closed"), value: "Closed" },
+        { label: __("Cancelled"), value: "Cancelled" },
       ],
     },
     {

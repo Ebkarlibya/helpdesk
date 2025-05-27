@@ -96,8 +96,8 @@ export interface Ticket {
   first_responded_on: string;
   resolution_date: string;
   status: string;
-  ehda_detailed_status: string;
   ehda_non_sla_form: string;
+  ehda_non_sla_status: string;
   ehda_non_sla_form_project: string;
   ehda_telegram_recent_msg_id: string;
   subject: string;

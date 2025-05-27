@@ -23,17 +23,17 @@
           theme="gray" size="sm" label="Button" :loading="false" :loadingText="null" :disabled="false" :link="null">
           Open Non-SLA Form
         </Button>
-        <!-- <Button :variant="'subtle'" :ref_for="true" v-if="!ticket.data.ehda_non_sla_form && ticket.data.ehda_detailed_status == `Non-SLA – Transferred for Evaluation`"
+        <!-- <Button :variant="'subtle'" :ref_for="true" v-if="!ticket.data.ehda_non_sla_form && ticket.data.status == `Non-SLA – Transferred for Evaluation`"
           @click="createNonSla" theme="gray" size="sm" label="Button" :loading="false" :loadingText="null"
           :disabled="false" :link="null">
           Create Non-SLA Form
         </Button> -->
         <!-- hd plus: detailed status -->
-        <Dropdown :options="detailedStatusOptions">
+        <Dropdown :options="statusOptions">
           <template #default="{ open }">
-            <Button :label="ticket.data.ehda_detailed_status">
+            <Button :label="ticket.data.status">
               <template #prefix>
-                <IndicatorIcon :class="ticketStatusStore.detailedTextColorMap[ticket.data.ehda_detailed_status]" />
+                <IndicatorIcon :class="ticketStatusStore.textColorMap[ticket.data.status]" />
               </template>
               <template #suffix>
                 <FeatherIcon :name="open ? 'chevron-up' : 'chevron-down'" class="h-4" />
@@ -41,7 +41,7 @@
             </Button>
           </template>
         </Dropdown>
-      <!-- 
+        <!-- 
         <Dropdown :options="dropdownOptions">
           <template #default="{ open }">
             <Button :label="ticket.data.status">
@@ -141,7 +141,7 @@ import { socket } from "@/socket";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
 import { useUserStore } from "@/stores/user";
 import { globalStore } from "@/stores/globalStore";
-import { createToast, getIcon } from "@/utils";
+import { createToast, getIcon, StatusEnum } from "@/utils";
 import { setupCustomizations } from "@/composables/formCustomisation";
 import { Resource, TabObject, Ticket, TicketTab, View } from "@/types";
 import { useView } from "@/composables/useView";
@@ -241,27 +241,27 @@ const handleRename = () => {
 };
 
 // hd plus detailed status map
-const detailedStatusOptions = computed(() =>
-  ticketStatusStore.detailedOptions.map((o) => ({
-    label: o,
-    value: o,
+const statusOptions = computed(() =>
+  ticketStatusStore.options.map((mappedStatus) => ({
+    label: mappedStatus,
+    value: mappedStatus,
     onClick: () => {
-      let toNonSla = o == "Non-SLA – Transferred for Evaluation"
-      if (ticket.data.ehda_detailed_status == "Non-SLA – Transferred for Evaluation") {
-        createToast({
-          title: "Cannot Change Ticket with Linked Non-SLA Form",
-          icon: "check",
-          iconClasses: "text-red-600",
-        });
+      if (mappedStatus == StatusEnum.transferredToProj) {
+        createToast({ title: "Transition to this status only allowed from Non SLA Form Workflow", icon: "check", iconClasses: "text-red-600", });
+        return
+      }
+      
+      if ([StatusEnum.nonSlaEval, StatusEnum.transferredToProj].includes(ticket.data.status)) {
+        createToast({ title: "Cannot Change Ticket with Linked Non-SLA Form", icon: "check", iconClasses: "text-red-600", });
         return
       }
 
       let title = `Confirm Transition`
-      let message = `Are you sure you want transition from: <br> - <strong>(${ticket.data.ehda_detailed_status}) to (${o})</strong>`
+      let message = `Are you sure you want transition from: <br> - <strong>(${ticket.data.status}) to (${mappedStatus})</strong>`
       let confirmBtnText = `Confirm`
       let theme = "green"
 
-      if (toNonSla) {
+      if (mappedStatus == StatusEnum.nonSlaEval) {
         title += ` & Create Non-Sla Form`
         message += ` <br>And Create Non-SLA Evaluation Form for this ticket?`
         confirmBtnText += ` & Create Non SLA!`
@@ -277,31 +277,8 @@ const detailedStatusOptions = computed(() =>
             variant: "solid",
             theme: theme,
             onClick(close: Function) {
-              // ticket.data.status = ticketStatusStore.getStatusFromDetailed(ticket.data.ehda_detailed_status);
-              ticket.data.ehda_detailed_status = o
-              updateTicket({ ehda_detailed_status: o })
-
-              // if(toNonSla) {
-              //   call("etms_hd_addons.api.create_non_sla_form", {
-              //     ticket_name: ticket.data.name
-              //   }).then(res => {
-              //     if (res.status == 200) {
-              //       setTimeout(() => {
-              //         // $(document.body).css("filter", "opacity(1)")
-              //         createToast({
-              //           title: "ETMS HD: Non-SLA Form Created & Linked",
-              //           icon: "alert-circle",
-              //         });
-              //         ticket.reload()
-              //         // setTimeout(() => location.reload(), 1500)
-              //       }, 1000)
-              //     }
-              //   }).finally((er) => {
-              //     // $(document.body).css("filter", "opacity(1)")
-              //   })
-              // }
-              // updateTicket({ status: ticket.data.status, ehda_detailed_status: o })
-
+              ticket.data.status = mappedStatus
+              updateTicket({ status: mappedStatus })
               close();
             },
           },
@@ -310,7 +287,7 @@ const detailedStatusOptions = computed(() =>
     },
     icon: () =>
       h(IndicatorIcon, {
-        class: ticketStatusStore.detailedTextColorMap[o],
+        class: ticketStatusStore.textColorMap[mappedStatus],
       }),
   }))
 );
@@ -540,6 +517,8 @@ function openRelatedNonSla() {
 
 onMounted(() => {
   socket.on("helpdesk:ticket-update", (ticketID) => {
+    console.log('socket io update !!!!!!', ticketID, ticket);
+
     if (ticketID === Number(props.ticketId)) {
       ticket.reload();
     }

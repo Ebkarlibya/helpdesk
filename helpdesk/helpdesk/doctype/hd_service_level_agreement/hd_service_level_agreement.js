@@ -41,7 +41,7 @@ frappe.ui.form.on("HD Service Level Agreement", {
         ).options;
         statuses = statuses.split("\n");
 
-        exclude_statuses = ["Open", "Closed"];
+        exclude_statuses = ["New", "Closed"];
         allow_statuses = statuses.filter(
           (status) => !exclude_statuses.includes(status)
         );
@@ -52,7 +52,7 @@ frappe.ui.form.on("HD Service Level Agreement", {
           [""].concat(allow_statuses)
         );
 
-        exclude_statuses = ["Open"];
+        exclude_statuses = ["New"];
         allow_statuses = statuses.filter(
           (status) => !exclude_statuses.includes(status)
         );

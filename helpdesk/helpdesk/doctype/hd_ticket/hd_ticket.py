@@ -13,6 +13,7 @@ from frappe.desk.form.assign_to import get as get_assignees
 from frappe.model.document import Document
 from frappe.permissions import add_permission, update_permission_property
 from frappe.query_builder import Order
+from helpdesk.helpdesk.doctype.hd_ticket.tele_notify import notify_tele_status, notify_tele_replay
 from pypika.functions import Count
 from pypika.queries import Query
 from pypika.terms import Criterion
@@ -26,7 +27,13 @@ from helpdesk.helpdesk.utils.email import (
     default_ticket_outgoing_email_account,
 )
 from helpdesk.search import HelpdeskSearch
-from helpdesk.utils import capture_event, get_customer, is_agent, publish_event
+from helpdesk.utils import (
+    StatusEnum,
+    capture_event,
+    get_customer,
+    is_agent,
+    publish_event,
+)
 
 from ..hd_notification.utils import clear as clear_notifications
 from ..hd_service_level_agreement.utils import get_sla
@@ -81,16 +88,20 @@ class HDTicket(Document):
 
     def on_update(self):
         # flake8: noqa
-        if self.status == "Open":
-            if (
-                self.get_doc_before_save()
-                and self.get_doc_before_save().status != "Open"
-            ):
+        # hd plus (need check) notify agents if ticket become in progess ?
+        pre_doc = self.get_doc_before_save()
 
+        if self.status == StatusEnum.workInProgress:
+            if (pre_doc and pre_doc.status != StatusEnum.workInProgress):
                 agents = self.get_assigned_agents()
                 if agents:
                     for agent in agents:
                         self.notify_agent(agent.name, "Reaction")
+
+        # skip inset
+        if pre_doc and pre_doc.status != self.status:
+            notify_tele_status(self)
+
 
         self.handle_ticket_activity_update()
         self.remove_assignment_if_not_in_team()
@@ -149,7 +160,7 @@ class HDTicket(Document):
                     ["name", "=", self.ehda_etms_erp_site],
                     # ["ehda_related_hd_customer", "in", customers]
                 ],
-                fieldname="ehda_related_hd_customer"
+                fieldname="ehda_related_hd_customer",
             )
 
             self.customer = site_related_hd_customer
@@ -171,12 +182,13 @@ class HDTicket(Document):
         old_status = (
             self.get_doc_before_save().status if self.get_doc_before_save() else None
         )
-        is_closed_or_resoled = old_status == "Open" and self.status in [
-            "Resolved",
-            "Closed",
+        # hd plus (need check) set first response alg
+        is_closed_or_resoled = old_status == StatusEnum.new and self.status in [
+            StatusEnum.resolved,
+            StatusEnum.closed,
         ]
 
-        if self.status == "Replied" or is_closed_or_resoled:
+        if self.status == StatusEnum.awaitingCustomerInfo or is_closed_or_resoled:
             self.first_responded_on = (
                 self.first_responded_on or frappe.utils.now_datetime()
             )
@@ -353,10 +365,7 @@ class HDTicket(Document):
         return bool(int(skip))
 
     def instantly_send_email(self):
-        check: str = (
-            frappe.get_value("HD Settings", None, "instantly_send_email") or "0"
-        )
-
+        check: str = (frappe.get_value("HD Settings", None, "instantly_send_email") or "0")
         return bool(int(check))
 
     @frappe.whitelist()
@@ -560,10 +569,11 @@ class HDTicket(Document):
             # send email to assigned agents
             self.send_reopen_email_to_agent(message)
 
-        if self.status == "Replied":
-            self.status = "Open"
-            log_ticket_activity(self.name, "set status to Open")
-            self.save(ignore_permissions=True)
+        # hd plus (need check) when com and status replied make it open it ???
+        # if self.status == "Replied":
+        #     self.status = "Open"
+        #     log_ticket_activity(self.name, "set status to Open")
+        #     self.save(ignore_permissions=True)
 
         c = frappe.new_doc("Communication")
         c.communication_type = "Communication"
@@ -700,11 +710,7 @@ class HDTicket(Document):
         """
 
         if hd_customer_sla := frappe.db.get_value(
-            "HD Customer",
-            {
-                "name": self.customer
-            },
-            fieldname="ehda_ticket_creation_sla"
+            "HD Customer", {"name": self.customer}, fieldname="ehda_ticket_creation_sla"
         ):
             self.sla = hd_customer_sla
             return
@@ -724,23 +730,26 @@ class HDTicket(Document):
     # is an external dependency. Refer `communication.py` of Frappe framework for more.
     # Since this is called from communication itself, `c` is the communication doc.
     def on_communication_update(self, c):
+        # hd plus (need check) change ticket status if we get replie aget/customer
         # If communication is incoming, then it is a reply from customer, and ticket must
         # be reopened.
         if c.sent_or_received == "Received":
-            self.status = "Open"
+            if self.status == StatusEnum.awaitingCustomerInfo:
+                self.status = StatusEnum.customerResponded
         # If communication is outgoing, it must be a reply from agent
         if c.sent_or_received == "Sent":
             # Set first response date if not set already
-            self.first_responded_on = (
-                self.first_responded_on or frappe.utils.now_datetime()
-            )
+            self.first_responded_on = ( self.first_responded_on or frappe.utils.now_datetime() )
 
             if frappe.db.get_single_value("HD Settings", "auto_update_status"):
-                self.status = "Replied"
+                # hd plus (need check) comm replied
+                self.status = StatusEnum.awaitingCustomerInfo
 
         # Fetch description from communication if not set already. This might not be needed
         # anymore as a communication is created when a ticket is created.
         self.description = self.description or c.content
+
+        notify_tele_replay(self, c)
         # Save the ticket, allowing for hooks to run.
         self.save()
 
@@ -767,9 +776,9 @@ class HDTicket(Document):
                 "width": "22rem",
             },
             {
-                "label": "Detailed Status",
+                "label": "Status",
                 "type": "Select",
-                "key": "ehda_detailed_status",
+                "key": "status",
                 "width": "15rem",
             },
             {
@@ -859,9 +868,9 @@ class HDTicket(Document):
                 "width": "22rem",
             },
             {
-                "label": "Detailed Status",
+                "label": "Status",
                 "type": "Select",
-                "key": "ehda_detailed_status",
+                "key": "status",
                 "width": "15rem",
             },
             {
@@ -907,7 +916,7 @@ class HDTicket(Document):
         rows = [
             "name",
             "subject",
-            "ehda_detailed_status",
+            "status",
             "priority",
             "ticket_type",
             "agent_group",
@@ -924,9 +933,9 @@ class HDTicket(Document):
             "resolution_date",
         ]
         return {
-            "columns": customer_portal_columns
-            if show_customer_portal_fields
-            else columns,
+            "columns": (
+                customer_portal_columns if show_customer_portal_fields else columns
+            ),
             "rows": rows,
         }
 

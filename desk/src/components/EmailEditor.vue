@@ -72,11 +72,11 @@
               <h3>Next Status Transition</h3>
             </template>
             <template #body-content>
-              <Dropdown class="w-full" v-model="nextDetailedStatus" :options="detailedStatusOptions">
+              <Dropdown class="w-full" v-model="nextStatus" :options="statusOptions">
                 <template #default="{ open }">
-                  <Button :label="nextDetailedStatus">
+                  <Button :label="nextStatus">
                     <template #prefix>
-                      <IndicatorIcon :class="ticketStatusStore.detailedTextColorMap[nextDetailedStatus]" />
+                      <IndicatorIcon :class="ticketStatusStore.colorMap[nextStatus]" />
                     </template>
                     <template #suffix>
                       <FeatherIcon :name="open ? 'chevron-up' : 'chevron-down'" class="h-4" />
@@ -86,7 +86,7 @@
               </Dropdown>
             </template>
             <template #actions>
-              <Button v-if="nextDetailedStatus == `Non-SLA – Transferred for Evaluation`" variant="solid"
+              <Button v-if="nextStatus == `Non-SLA – Transferred for Evaluation`" variant="solid"
                 class="bg-red-50" @click="submitMail">
                 Confirm & Create Non SLA!
               </Button>
@@ -122,6 +122,7 @@ import {
   textEditorMenuButtons,
   isContentEmpty,
   getFontFamily,
+StatusEnum,
 } from "@/utils";
 import {
   MultiSelectInput,
@@ -185,27 +186,37 @@ const cc = computed(() => (ccEmailsClone.value?.length ? true : false));
 const bcc = computed(() => (bccEmailsClone.value?.length ? true : false));
 const ccInput = ref(null);
 const bccInput = ref(null);
-const nextDetailedStatus = ref(doc.value.ehda_detailed_status)
+const nextStatus = ref(doc.value.status)
 
 function applyCannedResponse(template) {
   newEmail.value = template.message;
   showCannedResponseSelectorModal.value = false;
 }
 
-const detailedStatusOptions = computed(() =>
-  ticketStatusStore.detailedOptions.map((dstatus) => ({
-    label: dstatus,
-    value: dstatus,
+const statusOptions = computed(() =>
+  ticketStatusStore.options.map((mappedStatus) => ({
+    label: mappedStatus,
+    value: mappedStatus,
     onClick: () => {
-      console.log('set to!! ', dstatus);
+      if (mappedStatus == StatusEnum.transferredToProj) {
+        createToast({ title: "Transition to this status only allowed from Non SLA Form Workflow", icon: "check", iconClasses: "text-red-600", });
+        return
+      }
 
-      nextDetailedStatus.value = dstatus
+      if ([StatusEnum.nonSlaEval, StatusEnum.transferredToProj].includes(doc.value.status)) {
+        createToast({ title: "Cannot Change Ticket with Linked Non-SLA Form", icon: "check", iconClasses: "text-red-600", });
+        return
+      }
+
+
+
+      nextStatus.value = mappedStatus
     },
   }))
 );
 
 function openSubmitMailDialog() {
-  if (doc.value.ehda_detailed_status == 'Non-SLA – Transferred for Evaluation') {
+  if (doc.value.status == StatusEnum.nonSlaEval) {
     submitMail()
     return
   }
@@ -228,28 +239,8 @@ const sendMail = createResource({
   }),
   onSuccess: () => {
     resetState();
-    // doc.value.status = ticketStatusStore.getStatusFromDetailed(nextDetailedStatus.value);
-    doc.value.ehda_detailed_status = nextDetailedStatus.value
-    console.log(doc.value);
-
-    updateTicket({ ehda_detailed_status: doc.value.ehda_detailed_status })
-    // call("etms_hd_addons.api.create_non_sla_form", {
-    //   ticket_name: doc.value.name
-    // }).then(res => {
-    //   if (res.status == 200) {
-    //     setTimeout(() => {
-    //           // updateTicket({ status: doc.value.status, ehda_detailed_status: doc.value.ehda_detailed_status })
-    //       // $(document.body).css("filter", "opacity(1)")
-    //       createToast({
-    //         title: "ETMS HD: Non-SLA Form Created & Linked",
-    //         icon: "alert-circle",
-    //       });
-    //       // setTimeout(() => location.reload(), 1500)
-    //     }, 1000)
-    //   }
-    // }).finally((er) => {
-    //   // $(document.body).css("filter", "opacity(1)")
-    // })
+    doc.value.status = nextStatus.value
+    updateTicket({ status: doc.value.status })
     emit("submit");
   },
   debounce: 300,

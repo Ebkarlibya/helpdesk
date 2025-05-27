@@ -4,6 +4,7 @@ import frappe
 from frappe.permissions import add_permission, update_permission_property
 
 from helpdesk.consts import DEFAULT_ARTICLE_CATEGORY
+from helpdesk.utils import StatusEnum
 
 from .default_template import create_default_template
 from .file import create_helpdesk_folder
@@ -128,7 +129,7 @@ def add_default_sla():
     sla_doc.append("sla_fulfilled_on", sla_fullfilled_on_closed)
 
     sla_paused_on_replied = frappe.get_doc(
-        {"doctype": "HD Pause Service Level Agreement On Status", "status": "Replied"}
+        {"doctype": "HD Pause Service Level Agreement On Status", "status": StatusEnum.awaitingCustomerInfo}
     )
 
     sla_doc.append("pause_sla_on", sla_paused_on_replied)

@@ -96,7 +96,7 @@
    "options": "Email"
   },
   {
-   "default": "Open",
+   "default": "New",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -104,7 +104,7 @@
    "no_copy": 1,
    "oldfieldname": "status",
    "oldfieldtype": "Select",
-   "options": "Open\nReplied\nResolved\nClosed",
+   "options": "New\nUnder Review\nAwaiting Customer Info\nCustomer Responded\nWork in Progress\nNon-SLA \u2013 Transferred for Evaluation\nTransferred to Project Tracker\nResolved\nClosed\nCancelled",
    "search_index": 1
   },
   {
@@ -451,7 +451,7 @@
  "icon": "fa fa-issue",
  "idx": 61,
  "links": [],
- "modified": "2025-05-22 16:09:57.290709",
+ "modified": "2025-05-27 10:27:19.123629",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Ticket",

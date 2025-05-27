@@ -74,7 +74,19 @@ class TicketSummary:
                 }
             )
 
-        self.statuses = ["Open", "Replied", "Resolved", "Closed"]
+        self.statuses = [
+            "New",
+            "Under Review",
+            "Awaiting Customer Info",
+            "Customer Responded",
+            "Work in Progress",
+            "Non-SLA – Transferred for Evaluation",
+            "Transferred to Project Tracker",
+            "Resolved",
+            "Closed",
+            "Cancelled",
+        ]
+
         for status in self.statuses:
             self.columns.append(
                 {

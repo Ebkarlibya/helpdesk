@@ -4,6 +4,7 @@
 import frappe
 from frappe.desk.form.assign_to import add as assign
 from frappe.tests.utils import FrappeTestCase
+from helpdesk.utils import StatusEnum
 
 
 def get_ticket_obj():
@@ -60,10 +61,10 @@ class TestHDTicket(FrappeTestCase):
         )
         self.assertEqual(len(notification), 2)
 
-        ticket.status = "Replied"
+        ticket.status = StatusEnum.awaitingCustomerInfo
         ticket.save()
 
-        ticket.status = "Open"
+        ticket.status = StatusEnum.new
         ticket.save()
         self.assertTrue(ticket)
 
@@ -102,18 +103,18 @@ class TestHDTicket(FrappeTestCase):
         )
         self.assertEqual(len(notification), 1)
 
-        ticket.status = "Replied"
+        ticket.status = StatusEnum.awaitingCustomerInfo
         ticket.save()
         self.assertTrue(ticket)
 
-        ticket.status = "Open"
+        ticket.status = StatusEnum.new
         ticket.save()
         self.assertTrue(ticket)
 
-        ticket.status = "Resolved"
+        ticket.status = StatusEnum.resolved
         ticket.save()
         self.assertTrue(ticket)
 
-        ticket.status = "Closed"
+        ticket.status = StatusEnum.closed
         ticket.save()
         self.assertTrue(ticket)

@@ -11,6 +11,49 @@ from frappe.utils.safe_exec import get_safe_globals
 from frappe.utils.telemetry import capture as _capture
 from pypika import Criterion
 
+class StatusEnum():
+    new = "New"
+    underReview = "Under Review"
+    awaitingCustomerInfo = "Awaiting Customer Info"
+    customerResponded = "Customer Responded"
+    workInProgress = "Work in Progress"
+    nonSlaEval = "Non-SLA – Transferred for Evaluation"
+    transferredToProj = "Transferred to Project Tracker"
+    resolved = "Resolved"
+    closed = "Closed"
+    cancelled = "Cancelled"
+
+def build_status_emoji(status: str):
+    if status == _(StatusEnum.new):
+        return f"{StatusEnum.new} 📖"
+    
+    elif status == _(StatusEnum.underReview):
+        return f"{StatusEnum.underReview} 🔍"
+
+    elif status == _(StatusEnum.awaitingCustomerInfo):
+        return f"{StatusEnum.awaitingCustomerInfo} ⭕️"
+
+    elif status == _(StatusEnum.customerResponded):
+        return f"{StatusEnum.customerResponded} 🔅"
+    
+    elif status == _(StatusEnum.workInProgress):
+        return f"{StatusEnum.workInProgress} ❇️"
+
+    elif status == _(StatusEnum.nonSlaEval):
+        return f"{StatusEnum.nonSlaEval} 🧾"
+    
+    elif status == _(StatusEnum.transferredToProj):
+        return f"{StatusEnum.transferredToProj} 📊"
+    
+    elif status == _(StatusEnum.resolved):
+        return f"{StatusEnum.resolved} ↩️"
+
+    elif status == _(StatusEnum.closed):
+        return f"{StatusEnum.closed} 📕"
+
+    elif status == _(StatusEnum.cancelled):
+        return f"{StatusEnum.cancelled} 📕"
+
 
 def check_permissions(doctype, parent):
     user = frappe.session.user

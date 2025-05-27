@@ -26,18 +26,17 @@
       </div>
 
       <!-- Ticket Info -->
-      <div class="flex items-center text-base leading-5" >
+      <div class="flex items-center text-base leading-5">
         <span class="w-[126px] text-sm text-gray-600">Ticket ID</span>
         <span class="text-base text-gray-800 flex-1"> {{ ticket.data.name }} </span>
       </div>
 
-       <div class="flex items-center text-base leading-5" >
+      <!-- <div class="flex items-center text-base leading-5">
         <span class="w-[126px] text-sm text-gray-600">Detailed Status</span>
         <span class="text-base text-gray-800 flex-1">
-          <Badge :label="ticket.data.ehda_detailed_status" 
-              :theme="detailedColorMap[ticket.data.ehda_detailed_status]" variant="outline" />
+          <Badge :label="ticket.data.status" :theme="colorMap[ticket.data.status]" variant="outline" />
         </span>
-      </div>
+      </div> -->
 
 
       <!-- sla info -->
@@ -86,7 +85,7 @@ import { useTicketStatusStore } from "@/stores/ticketStatus";
 
 const emit = defineEmits(["open"]);
 const { $dialog } = globalStore();
-const { detailedColorMap } = useTicketStatusStore();
+const { colorMap } = useTicketStatusStore();
 
 const ticket = inject(ITicket);
 
@@ -202,8 +201,8 @@ const ticketBasicInfo = computed(() => [
     value: ticket.data.name,
   },
   {
-    label: "Detailed Status",
-    value: ticket.data.ehda_detailed_status,
+    label: "Status",
+    value: ticket.data.status,
     // value: transformStatus(ticket.data.status),
     bold: true,
   },
@@ -230,7 +229,7 @@ const ticketAdditionalInfo = computed(() => {
     ...ticket.data.ehda_non_sla_form ? [
       {
         label: "Non SLA Status",
-        value: ticket.data.ehda_detailed_status,
+        value: ticket.data.ehda_non_sla_status,
       },
       {
         label: "Non SLA Form",
@@ -257,14 +256,14 @@ const ticketAdditionalInfo = computed(() => {
 
   return [...fields, ...custom_fields, ...fields2];
 });
-function transformStatus(status: string) {
-  switch (status) {
-    case "Replied":
-      return "Awaiting reply";
-    default:
-      return status;
-  }
-}
+// function transformStatus(status: string) {
+//   switch (status) {
+//     case "Replied":
+//       return "Awaiting reply";
+//     default:
+//       return status;
+//   }
+// }
 
 </script>
 

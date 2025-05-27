@@ -49,14 +49,14 @@
 		},
 		{
 			"allow_read_on_all_link_options": 0,
-			"default": "Open",
+			"default": "New",
 			"fieldname": "status",
 			"fieldtype": "Select",
 			"hidden": 0,
 			"label": "Status",
 			"max_length": 0,
 			"max_value": 0,
-			"options": "Open\nReplied\nHold\nClosed",
+			"options": "New\nUnder Review\nAwaiting Customer Info\nCustomer Responded\nWork in Progress\nNon-SLA \u2013 Transferred for Evaluation\nTransferred to Project Tracker\nResolved\nClosed\nCancelled",
 			"read_only": 1,
 			"reqd": 0,
 			"show_in_filter": 1

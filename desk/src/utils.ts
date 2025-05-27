@@ -3,25 +3,20 @@ import { toast } from "frappe-ui";
 import { ref, h, markRaw } from "vue";
 import zod from "zod";
 import { gemoji } from "gemoji";
-import TicketIcon from "./components/icons/TicketIcon.vue";
+import { TicketIcon } from "./components/icons/index";
 import dayjs from "dayjs";
-/**
- * Wrapper to create toasts, supplied with default options.
- * https://frappeui.com/components/toast.html
- * @param options - `Toast` options
- */
 
-export enum DetailedStatus {
-    new = "New",
-    underReview = "Under Review",
-    awaitingCustomerInfo = "Awaiting Customer Info",
-    customerResponded = "Customer Responded",
-    workInProgress = "Work in Progress",
-    nonSlaEval = "Non-SLA – Transferred for Evaluation",
-    transferredToProj = "Transferred to Project Tracker",
-    resolved = "Resolved",
-    closed = "Closed",
-    cancelled = "Cancelled"
+export enum StatusEnum {
+  new = "New",
+  underReview = "Under Review",
+  awaitingCustomerInfo = "Awaiting Customer Info",
+  customerResponded = "Customer Responded",
+  workInProgress = "Work in Progress",
+  nonSlaEval = "Non-SLA – Transferred for Evaluation",
+  transferredToProj = "Transferred to Project Tracker",
+  resolved = "Resolved",
+  closed = "Closed",
+  cancelled = "Cancelled"
 }
 
 export function createToast(options?: Record<string, string>) {

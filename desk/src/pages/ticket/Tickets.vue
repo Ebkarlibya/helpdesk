@@ -71,7 +71,7 @@ import ViewModal from "@/components/ViewModal.vue";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
 import { useAuthStore } from "@/stores/auth";
 import { dayjs } from "@/dayjs";
-import { createToast, getIcon, isCustomerPortal } from "@/utils";
+import { createToast, getIcon, isCustomerPortal, StatusEnum } from "@/utils";
 import { capture } from "@/telemetry";
 import { TicketIcon } from "@/components/icons";
 import { useView, currentView } from "@/composables/useView";
@@ -224,7 +224,7 @@ function handle_response_by_field(row: any, item: string) {
 }
 
 function handle_resolution_by_field(row: any, item: string) {
-  if (row.status === "Replied") {
+  if (row.status === StatusEnum.awaitingCustomerInfo) {
     return h(Badge, {
       label: "Paused",
       theme: "blue",

@@ -1,23 +1,13 @@
 <template>
   <!-- View Controls -->
-  <div
-    class="flex items-center justify-between gap-2 px-5 pb-4 pt-3"
-    v-if="showViewControls"
-  >
+  <div class="flex items-center justify-between gap-2 px-5 pb-4 pt-3" v-if="showViewControls">
     <QuickFilters v-if="!isMobileView" class="flex-1" />
     <div class="flex items-start gap-2 justify-end h-full" v-if="!isMobileView">
-      <Button
-        label="Save Changes"
-        v-if="isViewUpdated && canSaveView"
-        @click="handleViewUpdate"
-      />
+      <Button label="Save Changes" v-if="isViewUpdated && canSaveView" @click="handleViewUpdate" />
       <Reload @click="handleReload" :loading="list.loading" />
       <Filter :default_filters="defaultParams.filters" />
       <SortBy :hide-label="isMobileView" />
-      <ColumnSettings
-        :hide-label="isMobileView"
-        v-if="!options.hideColumnSetting"
-      />
+      <ColumnSettings :hide-label="isMobileView" v-if="!options.hideColumnSetting" />
     </div>
     <div v-else class="flex justify-between items-center w-full">
       <Filter :default_filters="defaultParams.filters" />
@@ -29,45 +19,26 @@
   </div>
 
   <!-- List View -->
-  <ListView
-    v-if="list.data?.data.length > 0"
-    class="flex-1"
-    :columns="columns"
-    :rows="rows"
-    row-key="name"
-    :options="{
-      selectable: options.selectable,
-      showTooltip: false,
-      resizeColumn: false,
-      getRowRoute: (row) => ({
-        name: options.rowRoute?.name,
-        params: { [options.rowRoute?.prop]: row.name },
-        query: { view: route.query?.view },
-      }),
-      emptyState,
-    }"
-  >
+  <ListView v-if="list.data?.data.length > 0" class="flex-1" :columns="columns" :rows="rows" row-key="name" :options="{
+    selectable: options.selectable,
+    showTooltip: false,
+    resizeColumn: false,
+    getRowRoute: (row) => ({
+      name: options.rowRoute?.name,
+      params: { [options.rowRoute?.prop]: row.name },
+      query: { view: route.query?.view },
+    }),
+    emptyState,
+  }">
     <ListHeader class="sm:mx-5 mx-3">
-      <ListHeaderItem
-        v-for="column in columns"
-        :key="column.key"
-        :item="column"
-        @columnWidthUpdated="(width) => console.log(width)"
-      />
+      <ListHeaderItem v-for="column in columns" :key="column.key" :item="column"
+        @columnWidthUpdated="(width) => console.log(width)" />
     </ListHeader>
-    <ListRows
-      :rows="rows"
-      v-slot="{ idx, column, item, row }"
-      :group-by-actions="options.groupByActions"
-      @scrollend="handleListScroll"
-      class="list-rows"
-    >
+    <ListRows :rows="rows" v-slot="{ idx, column, item, row }" :group-by-actions="options.groupByActions"
+      @scrollend="handleListScroll" class="list-rows">
       <ListRowItem :item="item" :column="column" :row="row">
-        <component
-          :is="listCell(column, row, item, idx)"
-          :key="column.key"
-          @click="(e) => handleFieldClick(e, column, row, item)"
-        />
+        <component :is="listCell(column, row, item, idx)" :key="column.key"
+          @click="(e) => handleFieldClick(e, column, row, item)" />
       </ListRowItem>
     </ListRows>
     <ListSelectBanner v-if="options.showSelectBanner">
@@ -80,32 +51,20 @@
   </ListView>
 
   <!-- List Footer -->
-  <div
-    class="p-20 border-t sm:px-5 px-3 py-2"
-    v-if="list.data?.data.length > 0"
-  >
-    <ListFooter
-      :options="{
-        rowCount: list?.data?.row_count,
-        totalCount: list?.data?.total_count,
-      }"
-      :pageLengthCount="defaultParams.page_length_count"
-      @loadMore="handlePageLength(defaultParams.page_length_count, true)"
-      v-model="defaultParams.page_length_count"
+  <div class="p-20 border-t sm:px-5 px-3 py-2" v-if="list.data?.data.length > 0">
+    <ListFooter :options="{
+      rowCount: list?.data?.row_count,
+      totalCount: list?.data?.total_count,
+    }" :pageLengthCount="defaultParams.page_length_count"
+      @loadMore="handlePageLength(defaultParams.page_length_count, true)" v-model="defaultParams.page_length_count"
       @update:modelValue="
         (count) => {
           handlePageLength(count);
         }
-      "
-    />
+      " />
   </div>
   <!-- Empty State -->
-  <EmptyState
-    v-else
-    :title="emptyState.title"
-    :icon="emptyState.icon"
-    @emptyStateAction="emit('emptyStateAction')"
-  />
+  <EmptyState v-else :title="emptyState.title" :icon="emptyState.icon" @emptyStateAction="emit('emptyStateAction')" />
 </template>
 
 <script setup lang="ts">
@@ -252,12 +211,10 @@ const list = createResource({
     });
     if (options.value.doctype === "HD Ticket") {
       data.data.forEach((row) => {
-        if (
-          defaultParams.show_customer_portal_fields &&
-          row.status === "Replied"
-        ) {
-          row.status = "Awaiting Response";
-        }
+        // hd plus (need check)
+        // if (defaultParams.show_customer_portal_fields && row.status === "Replied") {
+        //   row.status = "Awaiting Response";
+        // }
       });
     }
     return data;
@@ -272,7 +229,7 @@ const exposeFunctions = {
   list,
   reload,
 };
-function selectBannerOptions(selections: Set<string>, unselectAll = () => {}) {
+function selectBannerOptions(selections: Set<string>, unselectAll = () => { }) {
   exposeFunctions["unselectAll"] = unselectAll;
   return options.value.selectBannerActions.map((action) => {
     return {
@@ -391,10 +348,10 @@ function listCell(column: any, row: any, item: any, idx: number) {
       innerHTML: item,
     });
   }
-  if(column.type === "Select") {
-    if(!item) return ""
+  if (column.type === "Select") {
+    if (!item) return ""
     return h("span", {
-      class: `inline-flex select-none items-center gap-1 rounded p-2 ${ticketStatusStore.detailedTextColorMap[item]} bg-transparent border border-outline-${ticketStatusStore.detailedColorMap[item]}-2 h-5 text-xs "`,
+      class: `inline-flex select-none items-center gap-1 rounded p-2 ${ticketStatusStore.textColorMap[item]} bg-transparent border border-outline-${ticketStatusStore.colorMap[item]}-2 h-5 text-xs "`,
       innerHTML: item
     })
   }
@@ -434,9 +391,11 @@ function handleFieldClick(e: MouseEvent, column, row, item) {
   }
   e.stopPropagation();
   e.preventDefault();
-  if (item == "Awaiting Response") {
-    item = "Replied";
-  }
+
+  // hd plus (need check)
+  // if (item == "Awaiting Response") {
+  //   item = "Replied";
+  // }
 
   if (column.type === "MultipleAvatar") {
     if (item.length > 1) {
@@ -452,7 +411,7 @@ function handleFieldClick(e: MouseEvent, column, row, item) {
     return;
   }
   applyFilters({ ...defaultParams.filters, [column.key]: item });
-  
+
   // custom: apply filters to quick filters values
   let qf = listViewData.quickFilters.data.find(el => el.name == column.key)
   qf.value = item
@@ -585,11 +544,11 @@ function handleViewChanges() {
   defaultParams.filters = currentView.filters;
   // reset custom quick filters TODO: better way
   console.log("Quick Filters", defaultParams.filters);
-  
+
   delete defaultParams.filters.assignee
   delete defaultParams.filters.last_replay_by
   // console.log("defaultParams.filters: ", defaultParams.filters);
-  
+
   defaultParams.order_by = currentView.order_by || "modified desc";
   defaultParams.columns = currentView.columns;
   defaultParams.rows = currentView.rows;

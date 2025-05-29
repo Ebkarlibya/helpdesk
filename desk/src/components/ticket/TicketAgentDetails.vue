@@ -40,7 +40,8 @@
       </Tooltip>
       <div class="flex items-center justify-between">
         <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.ehda_non_sla_form }}<span></span></p>
+          <span @click="readNonSlaDetails" class="text-base text-gray-800 flex-1" style="cursor: pointer;">{{
+            props.ticket.ehda_non_sla_form }} <span> 📃</span></span>
         </Tooltip>
       </div>
     </div>
@@ -56,16 +57,78 @@
       </div>
     </div>
 
+
+    <Dialog v-model="readNonSlaDetailsDialog">
+      <template #body-title>
+        <h3>{{ ticket.ehda_non_sla_form }}</h3>
+      </template>
+      <template #body-content>
+
+        <div class="grid grid-cols-2 gap-4" v-if="nonSlaEvalForm">
+          <Input :modelValue="nonSlaEvalForm.workflow_state" label="Workflow Status" type="text" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.related_quotation" label="Related Quotation (if paid)" disabled />
+
+          <!-- ----- -->
+          <div></div>
+
+          <Input :modelValue="nonSlaEvalForm.related_project" label="Related Project (if approved)" disabled />
+
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.employee" label="Assigned Evaluator" disabled />
+          <Tooltip :text="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')">
+            <Input :modelValue="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')"
+              label="Type of Non SLA Request" disabled />
+          </Tooltip>
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.assigned_evaluator_name" label="Assigned Evaluator Name" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.assigned_evaluator_email" label="Assigned Evaluator Email" disabled />
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.impact_scope" label="Impact Scope" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.technical_complexity" label="Technical Complexity" disabled />
+
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled />
+        </div>
+        
+        <br>
+        <div class="grid grid-cols-1">
+          <p style="color: gray;">Additional Notes</p>
+          <Textarea :variant="'subtle'" :ref_for="true" size="sm" placeholder="Placeholder"
+            :modelValue="nonSlaEvalForm.additional_notes" disabled />
+        </div>
+
+      </template>
+
+      <template #actions>
+        <Button class="ml-2" @click="readNonSlaDetailsDialog = false">
+          Close
+        </Button>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Badge, Tooltip } from "frappe-ui";
+import { Badge, Tooltip, call } from "frappe-ui";
 import { dayjs } from "@/dayjs";
 import { formatTime, StatusEnum } from "@/utils";
 import { dateFormat, dateTooltipFormat } from "@/utils";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { globalStore } from "@/stores/globalStore";
+import { NonSLAEvalForm } from "@/types";
 const { $dialog } = globalStore();
 
 const props = defineProps({
@@ -74,6 +137,25 @@ const props = defineProps({
     required: true,
   },
 });
+
+let nonSlaEvalForm = ref<NonSLAEvalForm>()
+let readNonSlaDetailsDialog = ref(false)
+
+function readNonSlaDetails() {
+  call("helpdesk.api.doc.get_non_sla_doc", {
+    ticket_name: props.ticket.name,
+    non_sla_name: props.ticket.ehda_non_sla_form
+  }).then((res: NonSLAEvalForm) => {
+    // if (res.status == 200) {
+    nonSlaEvalForm.value = res
+    readNonSlaDetailsDialog.value = true
+    console.log(res);
+
+    // }
+  }).finally((er) => {
+    // $(document.body).css("filter", "opacity(1)")
+  })
+}
 
 function readSlaDescription() {
   $dialog({

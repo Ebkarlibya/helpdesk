@@ -18,7 +18,7 @@ frappe.ui.form.on("HD Ticket", {
     refresh(frm) {
         frm.hd_ticket_old_status = frm.doc.status
         if ([StatusEnum.nonSlaEval, StatusEnum.transferredToProj].includes(frm.doc.status)) {
-            frm.set_df_property("status", "read_only", true)
+            // frm.set_df_property("status", "read_only", true)
         }
         frm.set_df_property("ehda_detailed_status", "read_only", true)
     },

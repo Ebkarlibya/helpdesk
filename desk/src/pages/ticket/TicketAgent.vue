@@ -477,7 +477,6 @@ function createNonSla() {
         theme: "green",
         variant: "solid",
         async onClick(close) {
-          // $(document.body).css("filter", "opacity(0.3)")
           call("etms_hd_addons.api.create_non_sla_form", {
             ticket_name: ticket.data.name
           }).then(res => {

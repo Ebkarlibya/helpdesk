@@ -75,7 +75,7 @@ def get_one(name, is_customer_portal=False):
             fieldname="description"
         )
 
-    if ticket.get("ehda_non_sla_form") and ticket.get("status") == StatusEnum.transferredToProj:
+    if ticket.get("ehda_non_sla_form") and ticket.get("status") in [StatusEnum.nonSlaEval, StatusEnum.transferredToProj]:
         non_sla_data = frappe.db.get_value(
             "Non-SLA Request Evaluation Form",
             filters={ "name": ticket["ehda_non_sla_form"] },

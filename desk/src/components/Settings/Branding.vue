@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4">
-    <h1 class="text-lg font-semibold">Customise your Helpdesk</h1>
+    <h1 class="text-lg font-semibold">Customise your Support Link</h1>
 
     <!-- Brand Logo & Favicon -->
     <div v-for="config in brandingConfig" class="flex flex-col gap-2">

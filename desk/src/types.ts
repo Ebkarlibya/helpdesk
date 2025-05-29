@@ -100,6 +100,7 @@ export interface Ticket {
   ehda_non_sla_status: string;
   ehda_non_sla_form_project: string;
   ehda_telegram_recent_msg_id: string;
+  ehda_etms_erp_site: string;
   subject: string;
   ticket_type: string;
   via_customer_portal: string;
@@ -118,6 +119,87 @@ export interface Ticket {
   views: ViewLog[];
   _customActions: Function[];
   is_merged?: boolean;
+}
+
+export interface NonSLAEvalForm {
+  name: string
+  owner: string
+  creation: string
+  modified: string
+  modified_by: string
+  docstatus: number
+  idx: number
+  naming_series: string
+  workflow_state: string
+  related_quotation: string
+  related_ticket_id: number
+  related_ticket_creation_date: string
+  related_hd_customer: string
+  related_ticket_subject: string
+  description: string
+  employee: string
+  assigned_evaluator_name: string
+  assigned_evaluator_email: string
+  doctype: string
+  type_of_non_sla_request: TypeOfNonSlaRequest[]
+  cancellation_reason: CancellationReason[]
+  quotation_rejection_reason: QuotationRejectionReason[]
+  related_project: string
+  meeting_with_customer_details_if_any: string
+  estimated_effort_in_hours: string
+  can_it_be_reused: string
+  urgency_from_customer: string
+  technical_complexity: string
+  impact_scope: string
+  additional_notes: string
+}
+
+export interface TypeOfNonSlaRequest {
+  docstatus: number
+  doctype: string
+  name: string
+  __unsaved: number
+  owner: string
+  parent: string
+  parentfield: string
+  parenttype: string
+  idx: number
+  type_of_non_sla_request: string
+  creation: string
+  modified: string
+  modified_by: string
+}
+
+export interface CancellationReason {
+  docstatus: number
+  doctype: string
+  name: string
+  __unsaved: number
+  owner: string
+  parent: string
+  parentfield: string
+  parenttype: string
+  idx: number
+  link_afkn: string
+  creation: string
+  modified: string
+  modified_by: string
+}
+
+export interface QuotationRejectionReason {
+  docstatus: number
+  doctype: string
+  name: string
+  __unsaved: number
+  owner: string
+  parent: string
+  parentfield: string
+  parenttype: string
+  idx: number
+  link_kyjp: string
+  creation: string
+  modified: string
+  modified_by: string
 }
 
 export interface DocField {

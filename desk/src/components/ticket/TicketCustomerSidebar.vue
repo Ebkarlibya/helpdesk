@@ -2,7 +2,7 @@
   <div class="flex w-[382px] flex-col border-l gap-4">
     <!-- Ticket ID -->
     <div class="flex items-center justify-between border-b px-5 py-3">
-      <span class="cursor-copy text-lg font-semibold">Ticket details</span>
+      <span class="cursor-copy text-lg font-semibold">Ticket details</span> <span>#{{ ticket.data.name }}</span>
     </div>
     <!-- user info and sla info -->
     <div class="flex flex-col gap-4 pt-0 px-5 py-3 border-b">
@@ -26,10 +26,10 @@
       </div>
 
       <!-- Ticket Info -->
-      <div class="flex items-center text-base leading-5">
+      <!-- <div class="flex items-center text-base leading-5">
         <span class="w-[126px] text-sm text-gray-600">Ticket ID</span>
         <span class="text-base text-gray-800 flex-1"> {{ ticket.data.name }} </span>
-      </div>
+      </div> -->
 
       <!-- <div class="flex items-center text-base leading-5">
         <span class="w-[126px] text-sm text-gray-600">Detailed Status</span>
@@ -61,34 +61,127 @@
     </div>
     <!-- feedback component -->
     <TicketFeedback v-if="ticket.data.feedback_rating" class="border-b text-base text-gray-600" :ticket="ticket.data" />
+
+    <Dialog v-model="readNonSlaDetailsDialog">
+      <template #body-title>
+        <h3>{{ ticket.data.ehda_non_sla_form }}</h3>
+      </template>
+      <template #body-content>
+
+        <div class="grid grid-cols-2 gap-4" v-if="nonSlaEvalForm">
+          <Input :modelValue="nonSlaEvalForm.workflow_state" label="Workflow Status" type="text" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.related_quotation" label="Related Quotation (if paid)" disabled />
+
+          <!-- ----- -->
+          <div></div>
+
+          <Input :modelValue="nonSlaEvalForm.related_project" label="Related Project (if approved)" disabled />
+
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.employee" label="Assigned Evaluator" disabled />
+          <Tooltip :text="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')">
+            <Input :modelValue="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')"
+              label="Type of Non SLA Request" disabled />
+          </Tooltip>
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.assigned_evaluator_name" label="Assigned Evaluator Name" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.assigned_evaluator_email" label="Assigned Evaluator Email" disabled />
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.impact_scope" label="Impact Scope" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.technical_complexity" label="Technical Complexity" disabled />
+
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
+
+          <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled />
+        </div>
+        
+        <br>
+        <div class="grid grid-cols-1">
+          <p style="color: gray;">Additional Notes</p>
+          <Textarea :variant="'subtle'" :ref_for="true" size="sm" placeholder="Placeholder"
+            :modelValue="nonSlaEvalForm.additional_notes" disabled />
+        </div>
+
+      </template>
+
+      <template #actions>
+        <Button class="ml-2" @click="readNonSlaDetailsDialog = false">
+          Close
+        </Button>
+      </template>
+    </Dialog>
+
     <div class="flex flex-col gap-4 pt-0 px-5 py-3">
-      <div class="flex items-center text-base leading-5" v-for="field in ticketAdditionalInfo">
-        <span class="w-[126px] text-sm text-gray-600">{{ field.label }}</span>
-        <span class="text-base text-gray-800 flex-1">
-          {{ field.value }}
-        </span>
+      <div class="flex items-center text-base leading-5">
+        <span class="w-[126px] text-sm text-gray-600">Subject</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.subject }}</span>
       </div>
+
+      <div class="flex items-center text-base leading-5" v-if="ticket.data.agent_group">
+        <span class="w-[126px] text-sm text-gray-600">Team</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.agent_group || "-" }}</span>
+      </div>
+
+      <div class="flex items-center text-base leading-5">
+        <span class="w-[126px] text-sm text-gray-600">Priority</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.priority }}</span>
+      </div>
+
+      <div class="flex items-center text-base leading-5">
+        <span class="w-[126px] text-sm text-gray-600">ETMS ERP Site</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_etms_erp_site }}</span>
+      </div>
+
+      <div class="flex items-center text-base leading-5" v-if="ticket.data.ehda_non_sla_form">
+        <span class="w-[126px] text-sm text-gray-600">Non SLA Status</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_non_sla_status }}</span>
+      </div>
+
+      <div class="flex items-center text-base leading-5" v-if="ticket.data.ehda_non_sla_form">
+        <span class="w-[126px] text-sm text-gray-600">Non SLA Form</span>
+        <span @click="readNonSlaDetails" class="text-base text-gray-800 flex-1" style="cursor: pointer;">{{
+          ticket.data.ehda_non_sla_form }} <span> 📃</span></span>
+      </div>
+
+      <div class="flex items-center text-base leading-5" v-if="ticket.data.ehda_non_sla_form_project">
+        <span class="w-[126px] text-sm text-gray-600">Non SLA Project</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_non_sla_form_project }}</span>
+      </div>
+
+
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, computed } from "vue";
+import { inject, computed, ref } from "vue";
 import { ITicket } from "@/pages/ticket/symbols";
-import { Tooltip, Avatar } from "frappe-ui";
+import { Tooltip, Avatar, call, Input, Textarea } from "frappe-ui";
 import { dayjs } from "@/dayjs";
 import { formatTime } from "@/utils";
-import { Field } from "@/types";
-import { onMounted } from "vue";
 import { globalStore } from "@/stores/globalStore";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
+import { NonSLAEvalForm } from "@/types";
 
 const emit = defineEmits(["open"]);
 const { $dialog } = globalStore();
 const { colorMap } = useTicketStatusStore();
 
 const ticket = inject(ITicket);
-
+let nonSlaEvalForm = ref<NonSLAEvalForm>()
+let readNonSlaDetailsDialog = ref(false)
 const slaData = computed(() => {
   const firstResponse = firstResponseData();
   const resolution = resolutionData();
@@ -176,6 +269,20 @@ function resolutionData() {
   return resolution;
 }
 
+function readNonSlaDetails() {
+  call("helpdesk.api.doc.get_non_sla_doc", {
+    ticket_name: ticket.data.name,
+    non_sla_name: ticket.data.ehda_non_sla_form
+  }).then((res: NonSLAEvalForm) => {
+    // if (res.status == 200) {
+    nonSlaEvalForm.value = res
+    readNonSlaDetailsDialog.value = true
+    // }
+  }).finally((er) => {
+    // $(document.body).css("filter", "opacity(1)")
+  })
+}
+
 function readSlaDescription() {
   $dialog({
     title: `SLA Description (${ticket.data.sla})`,
@@ -195,67 +302,69 @@ function readSlaDescription() {
   });
 }
 
-const ticketBasicInfo = computed(() => [
-  {
-    label: "Ticket ID",
-    value: ticket.data.name,
-  },
-  {
-    label: "Status",
-    value: ticket.data.status,
-    // value: transformStatus(ticket.data.status),
-    bold: true,
-  },
-]);
+// const ticketBasicInfo = computed(() => [
+//   {
+//     label: "Ticket ID",
+//     value: ticket.data.name,
+//   },
+//   {
+//     label: "Status",
+//     value: ticket.data.status,
+//     // value: transformStatus(ticket.data.status),
+//     bold: true,
+//   },
+// ]);
 
-const ticketAdditionalInfo = computed(() => {
-  const fields = [
-    {
-      label: "Subject",
-      value: ticket.data.subject,
-    },
-    {
-      label: "Team",
-      value: ticket.data.agent_group || "-",
-    },
-    {
-      label: "Priority",
-      value: ticket.data.priority,
-    },
-  ];
+// const ticketAdditionalInfo = computed(() => {
 
-  const fields2 = [
+//   const fields = [
+//     {
+//       label: "Subject",
+//       value: ticket.data.subject,
+//     },
+//     {
+//       label: "Team",
+//       value: ticket.data.agent_group || "-",
+//     },
+//     {
+//       label: "Priority",
+//       value: ticket.data.priority,
+//     },
+//   ];
 
-    ...ticket.data.ehda_non_sla_form ? [
-      {
-        label: "Non SLA Status",
-        value: ticket.data.ehda_non_sla_status,
-      },
-      {
-        label: "Non SLA Form",
-        value: ticket.data.ehda_non_sla_form,
-      },
-      ...ticket.data.ehda_non_sla_form_project ? [
-        {
-          label: "Non SLA Project",
-          value: ticket.data.ehda_non_sla_form_project,
-        },
-      ] : []
-    ] : []
-  ];
-  const custom_fields = ticket.data.template.fields
-    .filter(
-      (field: Field) =>
-        !field.hide_from_customer &&
-        ["subject", "team", "priority"].indexOf(field.fieldname) === -1
-    )
-    .map((field: Field) => ({
-      label: field.label,
-      value: ticket.data[field.fieldname],
-    }));
+//   const fields2 = [
 
-  return [...fields, ...custom_fields, ...fields2];
-});
+//     ...ticket.data.ehda_non_sla_form ? [
+//       {
+//         label: "Non SLA Status",
+//         value: ticket.data.ehda_non_sla_status,
+//       },
+//       {
+//         label: "Non SLA Form",
+//         value: ticket.data.ehda_non_sla_form,
+//       },
+//       ...ticket.data.ehda_non_sla_form_project ? [
+//         {
+//           label: "Non SLA Project",
+//           value: ticket.data.ehda_non_sla_form_project,
+//         },
+//       ] : []
+//     ] : []
+//   ];
+//   const custom_fields = ticket.data.template.fields
+//     .filter(
+//       (field: Field) =>
+//         !field.hide_from_customer &&
+//         ["subject", "team", "priority"].indexOf(field.fieldname) === -1
+//     )
+//     .map((field: Field) => ({
+//       label: field.label,
+//       value: ticket.data[field.fieldname],
+//     }));
+//   console.log('custom_fields: ', custom_fields);
+
+//   return [...fields, ...custom_fields, ...fields2];
+// });
 // function transformStatus(status: string) {
 //   switch (status) {
 //     case "Replied":
@@ -264,7 +373,6 @@ const ticketAdditionalInfo = computed(() => {
 //       return status;
 //   }
 // }
-
 </script>
 
 <style scoped></style>

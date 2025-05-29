@@ -5,7 +5,38 @@ from frappe.model.document import get_controller
 from frappe.utils.caching import redis_cache
 from pypika import Criterion
 
-from helpdesk.utils import check_permissions
+from helpdesk.utils import StatusEnum, check_permissions, get_customer
+
+def patch_tickets():
+    tickets: dict = frappe.get_list("HD Ticket", fields=["name", "status"])
+    
+    for ticket in tickets:
+        if ticket.get("status") == "Open":
+            hd_ticket = frappe.get_doc("HD Ticket", ticket.get("name"))
+            hd_ticket.status = StatusEnum.new
+            hd_ticket.save()
+
+        if ticket.get("status") == "Replied":
+            hd_ticket = frappe.get_doc("HD Ticket", ticket.get("name"))
+            hd_ticket.status = StatusEnum.awaitingCustomerInfo
+            hd_ticket.save()
+
+    print(len(tickets))
+
+
+
+
+@frappe.whitelist()
+def get_non_sla_doc():
+    ticket_name = str(frappe.form_dict["ticket_name"])
+    # non_sla_name = str(frappe.form_dict["non_sla_name"])
+
+    hd_ticket = frappe.get_doc("HD Ticket", ticket_name)
+    customers = get_customer(frappe.session.user)
+    if hd_ticket.customer in customers:
+        non_sla = frappe.get_doc("Non-SLA Request Evaluation Form", hd_ticket.ehda_non_sla_form)
+        return non_sla
+    
 
 @frappe.whitelist()
 def get_hd_agents():
@@ -84,6 +115,7 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
                     for alloc in todos],
             }
         )
+
     quick_filters.append(
         {
             "label": _("Last Replied By"),
@@ -94,6 +126,15 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
                 {"label": "Customer", "value": "Customer"},
                 {"label": "Support", "value": "Support"},
             ]
+        }
+    )
+
+    quick_filters.append(
+        {
+            "label": _("Non SLA Form"),
+            "name": "ehda_non_sla_form",
+            "type": "Link",
+            "options": "Non-SLA Request Evaluation Form",
         }
     )
 

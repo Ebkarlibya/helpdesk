@@ -806,6 +806,12 @@ class HDTicket(Document):
                 "width": "9rem",
             },
             {
+                "label": "Last Replied By",
+                "type": "Select",
+                "key": "ehda_non_sla_form",
+                "width": "9rem",
+            },
+            {
                 "label": "Customer",
                 "type": "Link",
                 "key": "customer",
@@ -896,6 +902,12 @@ class HDTicket(Document):
                 "label": "Last Replied By",
                 "type": "Select",
                 "key": "last_replay_by",
+                "width": "9rem",
+            },
+            {
+                "label": "Last Replied By",
+                "type": "Select",
+                "key": "ehda_non_sla_form",
                 "width": "9rem",
             },
             {
@@ -1012,10 +1024,10 @@ def close_tickets_after_n_days():
                 SELECT t.name
                 FROM `tabHD Ticket` t
                 INNER JOIN `tabCommunication` c ON t.name = c.reference_name
-                WHERE t.status = 'Replied'
+                WHERE t.status = %(target_status)s
                 AND c.communication_date < DATE_SUB(NOW(), INTERVAL %(days_threshold)s DAY)
             """,
-            {"days_threshold": days_threshold},
+            {"days_threshold": days_threshold, "target_status": StatusEnum.awaitingCustomerInfo},
             pluck="t.name",
         )
         or []
@@ -1024,7 +1036,7 @@ def close_tickets_after_n_days():
     # cant do set_value because SLA will not be applied as setting directly to db and doc is not running.
     for ticket in tickets_to_close:
         doc = frappe.get_doc("HD Ticket", ticket)
-        doc.status = "Closed"
+        doc.status = StatusEnum.closed
         doc.flags.ignore_validate = True
         doc.save(ignore_permissions=True)
         doc.flags.ignore_validate = False

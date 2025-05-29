@@ -106,7 +106,7 @@
 
           <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled />
         </div>
-        
+
         <br>
         <div class="grid grid-cols-1" v-if="nonSlaEvalForm.additional_notes">
           <p style="color: gray;">Additional Notes</p>
@@ -274,10 +274,12 @@ function readNonSlaDetails() {
     ticket_name: ticket.data.name,
     non_sla_name: ticket.data.ehda_non_sla_form
   }).then((res: NonSLAEvalForm) => {
-    // if (res.status == 200) {
-    nonSlaEvalForm.value = res
-    readNonSlaDetailsDialog.value = true
-    // }
+    if (res) {
+      nonSlaEvalForm.value = res
+      readNonSlaDetailsDialog.value = true
+    } else {
+      console.log('no customer linked to user: ');
+    }
   }).finally((er) => {
     // $(document.body).css("filter", "opacity(1)")
   })

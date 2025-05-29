@@ -33,10 +33,10 @@ def get_non_sla_doc():
     # non_sla_name = str(frappe.form_dict["non_sla_name"])
 
     hd_ticket = frappe.get_doc("HD Ticket", ticket_name)
-    customers = get_customer(frappe.session.user)
-    if hd_ticket.customer in customers:
-        non_sla = frappe.get_doc("Non-SLA Request Evaluation Form", hd_ticket.ehda_non_sla_form)
-        return non_sla
+    # customers = get_customer(frappe.session.user)
+    # if hd_ticket.customer in customers:
+    non_sla = frappe.get_doc("Non-SLA Request Evaluation Form", hd_ticket.ehda_non_sla_form)
+    return non_sla
     
 
 @frappe.whitelist()

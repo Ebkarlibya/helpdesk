@@ -7,6 +7,7 @@ from pypika import Criterion
 
 from helpdesk.utils import StatusEnum, check_permissions, get_customer
 
+# TODO: remove soon
 def patch_tickets():
     tickets: dict = frappe.get_list("HD Ticket", fields=["name", "status"])
     

@@ -150,7 +150,7 @@
         <div class="grid grid-cols-1" v-if="nonSlaEvalForm.additional_notes">
           <p style="color: gray;">Additional Notes</p>
           <Textarea :variant="'subtle'" :ref_for="true" size="sm" placeholder="Placeholder"
-            :modelValue="nonSlaEvalForm.additional_notes" disabled />
+            :value="nonSlaEvalForm.additional_notes" disabled />
         </div>
 
       </template>
@@ -197,6 +197,8 @@ function readNonSlaDetails() {
     if (res) {
       nonSlaEvalForm.value = res
       readNonSlaDetailsDialog.value = true
+      console.log(res);
+      
     } else {
       console.log('no customer linked to user: ');
     }

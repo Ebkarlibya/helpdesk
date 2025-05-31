@@ -90,7 +90,7 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
                 "options": options,
             }
         )
-    if not is_customer_portal:
+    if not is_customer_portal and doctype == "HD Ticket":
         todos = frappe.get_all(
             "ToDo",
             fields=["allocated_to"],
@@ -117,27 +117,27 @@ def get_quick_filters(doctype: str, show_customer_portal_fields=False):
             }
         )
 
-    quick_filters.append(
-        {
-            "label": _("Last Replied By"),
-            "name": "last_replay_by",
-            "type": "Select",
-            "options": [
-                {"label": " ", "value": ""},
-                {"label": "Customer", "value": "Customer"},
-                {"label": "Support", "value": "Support"},
-            ]
-        }
-    )
+        quick_filters.append(
+            {
+                "label": _("Last Replied By"),
+                "name": "last_replay_by",
+                "type": "Select",
+                "options": [
+                    {"label": " ", "value": ""},
+                    {"label": "Customer", "value": "Customer"},
+                    {"label": "Support", "value": "Support"},
+                ]
+            }
+        )
 
-    quick_filters.append(
-        {
-            "label": _("Non SLA Form"),
-            "name": "ehda_non_sla_form",
-            "type": "Link",
-            "options": "Non-SLA Request Evaluation Form",
-        }
-    )
+        quick_filters.append(
+            {
+                "label": _("Non SLA Form"),
+                "name": "ehda_non_sla_form",
+                "type": "Link",
+                "options": "Non-SLA Request Evaluation Form",
+            }
+        )
 
     if doctype != "HD Ticket":
         return quick_filters

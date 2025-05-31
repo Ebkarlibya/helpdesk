@@ -101,6 +101,7 @@ export interface Ticket {
   ehda_non_sla_form_project: string;
   ehda_telegram_recent_msg_id: string;
   ehda_etms_erp_site: string;
+  last_replay_by: string;
   subject: string;
   ticket_type: string;
   via_customer_portal: string;

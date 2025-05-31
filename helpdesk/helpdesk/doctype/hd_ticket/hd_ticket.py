@@ -31,6 +31,7 @@ from helpdesk.utils import (
     StatusEnum,
     capture_event,
     get_customer,
+    is_admin,
     is_agent,
     publish_event,
 )
@@ -68,6 +69,7 @@ class HDTicket(Document):
     def validate(self):
         self.validate_feedback()
         self.validate_ticket_type()
+        self.validate_status_transition()
 
     def before_save(self):
         self.apply_sla()
@@ -107,6 +109,7 @@ class HDTicket(Document):
         self.remove_assignment_if_not_in_team()
         self.publish_update()
         self.update_search_index()
+        self.update_replay_by()
 
     def notify_agent(self, agent, notification_type="Assignment"):
         frappe.get_doc(
@@ -152,7 +155,7 @@ class HDTicket(Document):
             return
 
         if self.contact:
-            customers = get_customer(self.contact)
+            # customers = get_customer(self.contact)
 
             site_related_hd_customer = frappe.db.get_value(
                 "ETMS ERP Site",
@@ -192,6 +195,13 @@ class HDTicket(Document):
             self.first_responded_on = (
                 self.first_responded_on or frappe.utils.now_datetime()
             )
+    def update_replay_by(self):
+        if(is_agent(frappe.session.user)):
+            self.last_replay_by = _("Support")
+        elif is_admin(frappe.session.user):
+            self.last_replay_by = _("Support")
+        else:
+            self.last_replay_by = _("Customer")
 
     def set_feedback_values(self):
         if not self.feedback:
@@ -216,6 +226,13 @@ class HDTicket(Document):
         frappe.throw(
             _("Ticket must be resolved with a feedback"), frappe.ValidationError
         )
+
+    def validate_status_transition(self):
+        if not self.is_new() and self.has_value_changed("status"):
+            pre_doc = self.get_doc_before_save()
+
+            if pre_doc.status == StatusEnum.closed:
+                frappe.throw("Cannot Interact with closed ticket, Please make new ticket")
 
     def check_update_perms(self):
         if self.is_new() or is_agent():
@@ -806,7 +823,7 @@ class HDTicket(Document):
                 "width": "9rem",
             },
             {
-                "label": "Last Replied By",
+                "label": "Non-SLA",
                 "type": "Select",
                 "key": "ehda_non_sla_form",
                 "width": "9rem",
@@ -905,7 +922,7 @@ class HDTicket(Document):
                 "width": "9rem",
             },
             {
-                "label": "Last Replied By",
+                "label": "Non-SLA",
                 "type": "Select",
                 "key": "ehda_non_sla_form",
                 "width": "9rem",

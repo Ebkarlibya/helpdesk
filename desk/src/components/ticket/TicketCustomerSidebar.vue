@@ -53,7 +53,7 @@
         <div class="w-[126px] text-gray-600 text-sm">Related SLA</div>
 
         <div class="break-words text-base text-gray-800">
-          <Tooltip text="Read SLA Description">
+          <Tooltip text="Read Service Level Agreement">
             <p @click="readSlaDescription" style="cursor: pointer;">{{ ticket.data.sla }}<span> 📃</span></p>
           </Tooltip>
         </div>
@@ -64,7 +64,7 @@
 
     <Dialog v-model="readNonSlaDetailsDialog">
       <template #body-title>
-        <h3>{{ ticket.data.ehda_non_sla_form }}</h3>
+        <h3>Non-SLA Request Evaluation Form ({{ ticket.data.ehda_non_sla_form }})</h3>
       </template>
       <template #body-content>
 
@@ -82,6 +82,7 @@
           <!-- ----- -->
 
           <Input :modelValue="nonSlaEvalForm.employee" label="Assigned Evaluator" disabled />
+
           <Tooltip :text="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')">
             <Input :modelValue="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')"
               label="Type of Non SLA Request" disabled />
@@ -105,6 +106,16 @@
           <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
 
           <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled />
+
+          <Tooltip :text="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')">
+            <Input :modelValue="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')"
+              label="Request Cancellation Reason" disabled />
+          </Tooltip>
+
+          <Tooltip :text="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')">
+            <Input :modelValue="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')"
+              label="Quotation Rejection Reason" disabled />
+          </Tooltip>
         </div>
 
         <br>
@@ -140,7 +151,7 @@
       </div>
 
       <div class="flex items-center text-base leading-5">
-        <span class="w-[126px] text-sm text-gray-600">ETMS ERP Site</span>
+        <span class="w-[126px] text-sm text-gray-600">Site</span>
         <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_etms_erp_site }}</span>
       </div>
 
@@ -160,6 +171,10 @@
         <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_non_sla_form_project }}</span>
       </div>
 
+      <div class="flex items-center text-base leading-5" v-if="ticket.data.last_replay_by">
+        <span class="w-[126px] text-sm text-gray-600">Last Replay By</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.last_replay_by }}</span>
+      </div>
 
     </div>
   </div>
@@ -287,7 +302,7 @@ function readNonSlaDetails() {
 
 function readSlaDescription() {
   $dialog({
-    title: `SLA Description (${ticket.data.sla})`,
+    title: `Service Level Agreement (${ticket.data.sla})`,
     html: `<div style="direction: rtl">${ticket.data.sla_description}</div>`,
     style: 'direction: rtl;',
     size: '30%',

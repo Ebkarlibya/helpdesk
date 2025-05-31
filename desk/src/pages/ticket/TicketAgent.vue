@@ -29,7 +29,7 @@
           Create Non-SLA Form
         </Button> -->
         <!-- hd plus: detailed status -->
-        <Dropdown :options="statusOptions">
+        <Dropdown :options="statusOptions" disabled>
           <template #default="{ open }">
             <Button :label="ticket.data.status">
               <template #prefix>
@@ -246,6 +246,10 @@ const statusOptions = computed(() =>
     label: mappedStatus,
     value: mappedStatus,
     onClick: () => {
+      // if (ticket.data.status == StatusEnum.closed) {
+      //   createToast({ title: "Cannot Interact with closed ticket, Please make new ticket", icon: "check", iconClasses: "text-red-600", });
+      //   return
+      // }
       if (mappedStatus == StatusEnum.transferredToProj) {
         createToast({ title: "Transition to this status only allowed from Non SLA Form Workflow", icon: "check", iconClasses: "text-red-600", });
         return

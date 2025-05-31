@@ -57,10 +57,42 @@
       </div>
     </div>
 
+    <div v-if="props.ticket.customer" class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Customer</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+        <Tooltip text="Read SLA Description">
+          <p style="cursor: pointer;">{{ props.ticket.customer }}<span></span></p>
+        </Tooltip>
+      </div>
+    </div>
+
+    <div v-if="props.ticket.ehda_etms_erp_site" @click="openSiteTab" class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Site</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+        <Tooltip text="Read SLA Description">
+          <p style="cursor: pointer;">{{ props.ticket.ehda_etms_erp_site }}<span><span> 🌐</span></span></p>
+        </Tooltip>
+      </div>
+    </div>
+
+    <div v-if="props.ticket.last_replay_by" class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Last Replay By</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+        <Tooltip text="Last Replay By">
+          <p style="cursor: pointer;">{{ props.ticket.last_replay_by }}<span></span></p>
+        </Tooltip>
+      </div>
+    </div>
 
     <Dialog v-model="readNonSlaDetailsDialog">
       <template #body-title>
-        <h3>{{ ticket.ehda_non_sla_form }}</h3>
+        <h3>Non-SLA Request Evaluation Form ({{ ticket.ehda_non_sla_form }})</h3>
       </template>
       <template #body-content>
 
@@ -78,6 +110,7 @@
           <!-- ----- -->
 
           <Input :modelValue="nonSlaEvalForm.employee" label="Assigned Evaluator" disabled />
+
           <Tooltip :text="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')">
             <Input :modelValue="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')"
               label="Type of Non SLA Request" disabled />
@@ -101,6 +134,16 @@
           <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
 
           <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled />
+
+          <Tooltip :text="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')">
+            <Input :modelValue="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')"
+              label="Request Cancellation Reason" disabled />
+          </Tooltip>
+
+          <Tooltip :text="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')">
+            <Input :modelValue="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')"
+              label="Quotation Rejection Reason" disabled />
+          </Tooltip>
         </div>
 
         <br>
@@ -137,9 +180,14 @@ const props = defineProps({
     required: true,
   },
 });
+console.log(props.ticket);
 
 let nonSlaEvalForm = ref<NonSLAEvalForm>()
 let readNonSlaDetailsDialog = ref(false)
+
+function openSiteTab() {
+  open(`/app/etms-erp-site/${props.ticket.ehda_etms_erp_site}`, '_blank').focus()
+}
 
 function readNonSlaDetails() {
   call("helpdesk.api.doc.get_non_sla_doc", {
@@ -159,7 +207,7 @@ function readNonSlaDetails() {
 
 function readSlaDescription() {
   $dialog({
-    title: `SLA Description (${props.ticket.sla})`,
+    title: `Service Level Agreement (${props.ticket.sla})`,
     html: `<div style="direction: rtl">${props.ticket.sla_description}</div>`,
     size: '30%',
     actions: [

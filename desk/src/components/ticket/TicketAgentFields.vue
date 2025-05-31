@@ -20,7 +20,13 @@ const props = defineProps({
 });
 
 const fields = computed(() => {
-  return props.ticket.fields;
+  let fields = []
+
+  for(let field of props.ticket.fields) {
+    if(field.fieldname == 'ehda_etms_erp_site' || field.fieldname == 'customer' ) continue
+    fields.push(field)
+  }
+  return fields
 });
 
 function update(field: Field["fieldname"], value: FieldValue, event = null) {

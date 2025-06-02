@@ -12,6 +12,39 @@
       </div>
     </div>
 
+    <div v-if="props.ticket.ehda_etms_erp_site" @click="openSiteTab" class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Site</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+        <Tooltip text="Read SLA Description">
+          <p style="cursor: pointer;">{{ props.ticket.ehda_etms_erp_site }}<span><span> 🌐</span></span></p>
+        </Tooltip>
+      </div>
+    </div>
+
+    <div v-if="props.ticket.customer" class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Customer</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+        <Tooltip text="Read SLA Description">
+          <p style="cursor: pointer;">{{ props.ticket.customer }}<span></span></p>
+        </Tooltip>
+      </div>
+    </div>
+
+    <div v-if="props.ticket.last_replay_by" class="flex items-center text-base leading-5">
+      <Tooltip text="s.label">
+        <div class="w-[126px] text-sm text-gray-600">Last Replay By</div>
+      </Tooltip>
+      <div class="flex items-center justify-between">
+        <Tooltip text="Last Replay By">
+          <p style="cursor: pointer;">{{ props.ticket.last_replay_by }}<span></span></p>
+        </Tooltip>
+      </div>
+    </div>
+
     <div class="flex items-center text-base leading-5">
       <Tooltip text="s.label">
         <div class="w-[126px] text-sm text-gray-600">Related SLA</div>
@@ -53,39 +86,6 @@
       <div class="flex items-center justify-between">
         <Tooltip text="Read SLA Description">
           <p style="cursor: pointer;">{{ props.ticket.ehda_non_sla_form_project }}<span></span></p>
-        </Tooltip>
-      </div>
-    </div>
-
-    <div v-if="props.ticket.customer" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Customer</div>
-      </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.customer }}<span></span></p>
-        </Tooltip>
-      </div>
-    </div>
-
-    <div v-if="props.ticket.ehda_etms_erp_site" @click="openSiteTab" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Site</div>
-      </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.ehda_etms_erp_site }}<span><span> 🌐</span></span></p>
-        </Tooltip>
-      </div>
-    </div>
-
-    <div v-if="props.ticket.last_replay_by" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Last Replay By</div>
-      </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Last Replay By">
-          <p style="cursor: pointer;">{{ props.ticket.last_replay_by }}<span></span></p>
         </Tooltip>
       </div>
     </div>
@@ -198,7 +198,7 @@ function readNonSlaDetails() {
       nonSlaEvalForm.value = res
       readNonSlaDetailsDialog.value = true
       console.log(res);
-      
+
     } else {
       console.log('no customer linked to user: ');
     }

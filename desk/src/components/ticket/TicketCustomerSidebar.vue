@@ -2,7 +2,7 @@
   <div class="flex w-[382px] flex-col border-l gap-4">
     <!-- Ticket ID -->
     <div class="flex items-center justify-between border-b px-5 py-3">
-      <span class="cursor-copy text-lg font-semibold">Ticket details</span> <span>#{{ ticket.data.name }}</span>
+      <span class="cursor-copy text-lg font-semibold me-3">#{{ ticket.data.name }}</span>
     </div>
     <!-- user info and sla info -->
     <div class="flex flex-col gap-4 pt-0 px-5 py-3 border-b">
@@ -155,6 +155,11 @@
         <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_etms_erp_site }}</span>
       </div>
 
+      <div class="flex items-center text-base leading-5" v-if="ticket.data.last_replay_by">
+        <span class="w-[126px] text-sm text-gray-600">Last Replay By</span>
+        <span class="text-base text-gray-800 flex-1">{{ ticket.data.last_replay_by }}</span>
+      </div>
+
       <div class="flex items-center text-base leading-5" v-if="ticket.data.ehda_non_sla_form">
         <span class="w-[126px] text-sm text-gray-600">Non SLA Status</span>
         <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_non_sla_status }}</span>
@@ -169,11 +174,6 @@
       <div class="flex items-center text-base leading-5" v-if="ticket.data.ehda_non_sla_form_project">
         <span class="w-[126px] text-sm text-gray-600">Non SLA Project</span>
         <span class="text-base text-gray-800 flex-1">{{ ticket.data.ehda_non_sla_form_project }}</span>
-      </div>
-
-      <div class="flex items-center text-base leading-5" v-if="ticket.data.last_replay_by">
-        <span class="w-[126px] text-sm text-gray-600">Last Replay By</span>
-        <span class="text-base text-gray-800 flex-1">{{ ticket.data.last_replay_by }}</span>
       </div>
 
     </div>

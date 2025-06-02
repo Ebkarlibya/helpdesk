@@ -16,7 +16,7 @@ export const AGENT_PORTAL_KNOWLEDGE_BASE = "DeskKBHome";
 
 export const CUSTOMER_PORTAL_LANDING = "TicketsCustomer";
 export const AGENT_PORTAL_LANDING = AGENT_PORTAL_TICKET_LIST;
-export const LOGIN_PAGE = "/login?redirect-to=/helpdesk";
+export const LOGIN_PAGE = "/login?redirect-to=/support-link";
 
 // type the meta fields
 declare module "vue-router" {
@@ -196,7 +196,7 @@ const handleMobileView = (componentName) => {
 };
 
 export const router = createRouter({
-  history: createWebHistory("/helpdesk/"),
+  history: createWebHistory("/support-link/"),
   routes,
 });
 

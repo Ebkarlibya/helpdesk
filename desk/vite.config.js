@@ -41,11 +41,11 @@ export default defineConfig({
       },
       manifest: {
         display: "standalone",
-        name: "Frappe Helpdesk",
-        short_name: "Helpdesk",
-        start_url: "/helpdesk",
+        name: "Support Link",
+        short_name: "Support Link",
+        start_url: "/support-link",
         description:
-          "Modern, Streamlined, Free and Open Source Customer Service Software",
+          "Support Link, Customer Service Software",
         icons: [
           {
             src: "/assets/helpdesk/desk/manifest/manifest-icon-192.maskable.png",

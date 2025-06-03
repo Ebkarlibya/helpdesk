@@ -10,7 +10,7 @@ app_license = "AGPLv3"
 add_to_apps_screen = [
     {
         "name": "support_link",
-        "logo": "/assets/helpdesk/desk/support-link-logo.png",
+        "logo": "/assets/helpdesk/desk/favicon.svg",
         "title": "Support Link",
         "route": "/support_link",
         "has_permission": "helpdesk.api.permission.has_app_permission",

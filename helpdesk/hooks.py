@@ -1,5 +1,5 @@
-app_name = "helpdesk"
-app_title = "Helpdesk"
+app_name = "support-link"
+app_title = "Support Link"
 app_publisher = "Frappe Technologies"
 app_description = "Customer Service Software"
 app_icon = "octicon octicon-file-directory"
@@ -9,7 +9,7 @@ app_license = "AGPLv3"
 
 add_to_apps_screen = [
     {
-        "name": "helpdesk",
+        "name": "support-link",
         "logo": "/assets/helpdesk/desk/favicon.svg",
         "title": "Support Link",
         "route": "/support-link",

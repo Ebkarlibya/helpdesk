@@ -28,7 +28,7 @@ def notify_tele_status(hd_ticket: Document):
 
 <b>Date:</b> { datetime.strftime("%H:%M  %Y-%m-%d") }
 For More Visit Support Portal:
-https://{hd_ticket.portal_uri}/helpdesk/tickets/{hd_ticket.name}
+https://{hd_ticket.portal_uri}
     """
             print(msg)
             notify_tele(hd_ticket, hd_customer.ehda_telegram_group_id, msg)
@@ -65,7 +65,7 @@ def notify_tele_replay(hd_ticket: Document, comm: Document):
 
 <b>Date:</b> { datetime.strftime("%H:%M  %Y-%m-%d") }
 For More Visit Support Portal:
-https://{hd_ticket.portal_uri}/helpdesk/tickets/{hd_ticket.name}
+https://{hd_ticket.portal_uri}
     """
             print(msg)
             notify_tele(hd_ticket, hd_customer.ehda_telegram_group_id, msg)

@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"jz3qSaVg6j\",\"type\":\"header\",\"data\":{\"text\":\"<a href=\\\"/support-link/tickets\\\">Open Support Link Dashboard</a>\",\"col\":12}},{\"id\":\"R-9GlrzMR_\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sINmuleRWp\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Helpdesk Configuration<br></span>\",\"col\":12}},{\"id\":\"oJjl613v4U\",\"type\":\"card\",\"data\":{\"card_name\":\"Ticket Configuration\",\"col\":4}},{\"id\":\"NcyqPcX7GM\",\"type\":\"card\",\"data\":{\"card_name\":\"Agent Configuration\",\"col\":4}},{\"id\":\"bV--MnKVSe\",\"type\":\"card\",\"data\":{\"card_name\":\"Helpdesk Reports\",\"col\":4}},{\"id\":\"pUUubUV3GE\",\"type\":\"card\",\"data\":{\"card_name\":\"Automation\",\"col\":4}},{\"id\":\"OAYrVL9gxk\",\"type\":\"card\",\"data\":{\"card_name\":\"Channels\",\"col\":4}}]",
+ "content": "[{\"id\":\"WsEIk8r1Wf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Support Link Portal\",\"col\":3}},{\"id\":\"R-9GlrzMR_\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sINmuleRWp\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Helpdesk Configuration<br></span>\",\"col\":12}},{\"id\":\"oJjl613v4U\",\"type\":\"card\",\"data\":{\"card_name\":\"Ticket Configuration\",\"col\":4}},{\"id\":\"NcyqPcX7GM\",\"type\":\"card\",\"data\":{\"card_name\":\"Agent Configuration\",\"col\":4}},{\"id\":\"bV--MnKVSe\",\"type\":\"card\",\"data\":{\"card_name\":\"Helpdesk Reports\",\"col\":4}},{\"id\":\"pUUubUV3GE\",\"type\":\"card\",\"data\":{\"card_name\":\"Automation\",\"col\":4}},{\"id\":\"OAYrVL9gxk\",\"type\":\"card\",\"data\":{\"card_name\":\"Channels\",\"col\":4}}]",
  "creation": "2022-09-17 11:48:26.825712",
  "custom_blocks": [],
  "docstatus": 0,
@@ -155,7 +155,7 @@
    "type": "Link"
   }
  ],
- "modified": "2025-06-03 12:51:52.343894",
+ "modified": "2025-06-03 14:28:35.914718",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "Helpdesk",
@@ -166,6 +166,14 @@
  "quick_lists": [],
  "roles": [],
  "sequence_id": 1.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Support Link Portal",
+   "type": "URL",
+   "url": "/"
+  }
+ ],
  "title": "Helpdesk"
 }

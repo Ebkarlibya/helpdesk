@@ -39,11 +39,11 @@ def get_boot():
 
 
 def get_default_route():
-    return "/helpdesk"
+    return "/support-link"
 
 
 def get_favicon():
     return (
         frappe.db.get_single_value("Website Settings", "favicon")
-        or "/assets/helpdesk/desk/favicon.svg"
+        or "/assets/support-link/desk/favicon.svg"
     )

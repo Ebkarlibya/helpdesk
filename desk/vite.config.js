@@ -20,7 +20,7 @@ export default defineConfig({
       buildConfig: {
         outDir: `../helpdesk/public/desk`,
         emptyOutDir: true,
-        indexHtmlPath: "../helpdesk/www/helpdesk/index.html",
+        indexHtmlPath: "../helpdesk/www/support-link/index.html",
       },
     }),
     vue(),

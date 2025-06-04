@@ -155,7 +155,7 @@
    "type": "Link"
   }
  ],
- "modified": "2025-06-03 14:28:35.914718",
+ "modified": "2025-06-04 10:11:13.182379",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "Helpdesk",
@@ -172,7 +172,7 @@
    "doc_view": "List",
    "label": "Support Link Portal",
    "type": "URL",
-   "url": "/"
+   "url": "/support-link/tickets"
   }
  ],
  "title": "Helpdesk"

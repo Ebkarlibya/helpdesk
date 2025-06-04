@@ -20,7 +20,7 @@ export default defineConfig({
       buildConfig: {
         outDir: `../helpdesk/public/desk`,
         emptyOutDir: true,
-        indexHtmlPath: "../helpdesk/www/support-link/index.html",
+        indexHtmlPath: "../helpdesk/www/support_link/index.html",
       },
     }),
     vue(),
@@ -43,7 +43,7 @@ export default defineConfig({
         display: "standalone",
         name: "Support Link",
         short_name: "Support Link",
-        start_url: "/support-link",
+        start_url: "/support_link",
         description:
           "Support Link, Customer Service Software",
         icons: [

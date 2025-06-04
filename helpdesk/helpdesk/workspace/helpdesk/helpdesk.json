@@ -172,7 +172,7 @@
    "doc_view": "List",
    "label": "Support Link Portal",
    "type": "URL",
-   "url": "/support-link/tickets"
+   "url": "/support_link/tickets"
   }
  ],
  "title": "Helpdesk"

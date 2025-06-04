@@ -1,4 +1,4 @@
-app_name = "support-link"
+app_name = "support_link"
 app_title = "Support Link"
 app_publisher = "Frappe Technologies"
 app_description = "Customer Service Software"
@@ -9,10 +9,10 @@ app_license = "AGPLv3"
 
 add_to_apps_screen = [
     {
-        "name": "support-link",
+        "name": "support_link",
         "logo": "/assets/helpdesk/desk/favicon.svg",
         "title": "Support Link",
-        "route": "/support-link/tickets",
+        "route": "/support_link/tickets",
         "has_permission": "helpdesk.api.permission.has_app_permission",
     }
 ]
@@ -32,12 +32,12 @@ scheduler_events = {
 }
 
 
-# website_route_rules = [
-#     {
-#         "from_route": "/support-link/<path:app_path>",
-#         "to_route": "support-link",
-#     },
-# ]
+website_route_rules = [
+    {
+        "from_route": "/support_link/<path:app_path>",
+        "to_route": "support_link",
+    },
+]
 
 doc_events = {
     "Contact": {
@@ -75,5 +75,5 @@ setup_wizard_complete = "helpdesk.setup.setup_wizard.setup_complete"
 
 
 website_route_rules = [
-    {"from_route": "/support-link/<path:app_path>", "to_route": "support-link"},
+    {"from_route": "/support_link/<path:app_path>", "to_route": "support_link"},
 ]

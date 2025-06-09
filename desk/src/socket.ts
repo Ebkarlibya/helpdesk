@@ -4,10 +4,19 @@ import { socketio_port } from "../../../../sites/common_site_config.json";
 
 function init() {
   const url = getUrl();
+  console.log('IO url', url);
+
   const socket = io(url, {
     withCredentials: true,
     reconnectionAttempts: 5,
   });
+
+  socket.on("connection", (socket) => {
+    console.log('connection');
+
+  });
+
+  console.log(socket);
 
   socket.onAny((data) => {
     console.log("Socket IO ANY: ", data);
@@ -32,6 +41,7 @@ function getUrl() {
   const port = window.location.port ? `:${socketio_port}` : "";
   const protocol = port ? "http" : "https";
   const fVersion = window["frappe_version"];
+  debugger
   if (fVersion && fVersion.startsWith("14")) {
     return `${protocol}://${host}${port}`;
   }

@@ -62,15 +62,15 @@ app.config.globalProperties.$socket = socket;
 app.config.globalProperties.$toast = createToast;
 app.config.globalProperties.$dialog = createDialog;
 
-// if (import.meta.env.DEV) {
-//   frappeRequest({
-//     url: "/api/method/helpdesk.www.support_link.index.get_context_for_dev",
-//   }).then((values) => {
-//     for (let key in values) {
-//       window[key] = values[key];
-//     }
-//     app.mount("#app");
-//   });
-// } else {
+if (import.meta.env.DEV) {
+  frappeRequest({
+    url: "/api/method/helpdesk.www.support_link.index.get_context_for_dev",
+  }).then((values) => {
+    for (let key in values) {
+      window[key] = values[key];
+    }
+    app.mount("#app");
+  });
+} else {
   app.mount("#app");
-// }
+}

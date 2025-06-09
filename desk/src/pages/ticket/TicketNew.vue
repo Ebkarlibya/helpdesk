@@ -20,7 +20,7 @@
           :value="templateFields[field.fieldname]" @change="
             (e) => handleOnFieldChange(e, field.fieldname, field.fieldtype)
           " />
-        <Button @click="readSlaDescription" v-if="customerSlaInfo" class="h-8" style="">
+        <Button @click="readSlaDescription" v-if="customerSlaInfo" class="h-8" style="width: fit-content;">
           <span>{{ customerSlaInfo.name }} 📃</span>
         </Button>
       </div>

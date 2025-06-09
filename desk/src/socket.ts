@@ -9,6 +9,10 @@ function init() {
     reconnectionAttempts: 5,
   });
 
+  socket.onAny((data) => {
+    console.log("Socket IO ANY: ", data);
+  })
+
   socket.on("refetch_resource", (data) => {
     if (data.cache_key) {
       const resource =

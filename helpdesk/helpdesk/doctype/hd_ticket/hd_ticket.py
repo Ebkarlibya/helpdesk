@@ -43,7 +43,7 @@ from ..hd_service_level_agreement.utils import get_sla
 class HDTicket(Document):
     def publish_update(self):
         publish_event("helpdesk:ticket-update", self.name)
-        capture_event("ticket_updated")
+        # capture_event("ticket_updated")
 
     def autoname(self):
         return self.name
@@ -111,7 +111,6 @@ class HDTicket(Document):
         self.publish_update()
         self.update_search_index()
         self.set_last_replay_by()
-        publish_event("helpdesk:list-update", {"name": self.name})
 
     def notify_agent(self, agent, notification_type="Assignment"):
         frappe.get_doc(

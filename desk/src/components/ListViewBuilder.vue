@@ -603,7 +603,7 @@ function handleScrollPosition() {
 }
 
 onMounted(async () => {
-  socket.on("helpdesk:list-update", () => {
+  socket.on("helpdesk:ticket-update", () => {
     console.log('event helpdesk:list-update');
     reload(false)
   });

@@ -77,6 +77,7 @@ import { TicketIcon } from "@/components/icons";
 import { useView, currentView } from "@/composables/useView";
 import { View } from "@/types";
 import { globalStore } from "@/stores/globalStore";
+import { socket } from "@/socket";
 
 const router = useRouter();
 const route = useRoute();
@@ -579,6 +580,11 @@ function resetState() {
 }
 
 onMounted(() => {
+    socket.on("helpdesk:ticket-update", () => {
+    console.log('event helpdesk:list-update tickets');
+    // reload(false)
+  });
+
   if (!route.query.view) {
     currentView.value = {
       label: "List",

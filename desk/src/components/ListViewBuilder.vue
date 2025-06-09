@@ -607,6 +607,7 @@ onMounted(async () => {
     console.log('event helpdesk:list-update');
     reload(false)
   });
+
   handleScrollPosition();
 
   if (views.data?.length > 0 && views.filters?.dt === options.value.doctype) {

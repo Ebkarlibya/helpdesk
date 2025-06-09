@@ -111,6 +111,7 @@ class HDTicket(Document):
         self.publish_update()
         self.update_search_index()
         self.set_last_replay_by()
+        publish_event("helpdesk:list-update", {"name": self.name})
 
     def notify_agent(self, agent, notification_type="Assignment"):
         frappe.get_doc(

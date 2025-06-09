@@ -352,7 +352,7 @@ function listCell(column: any, row: any, item: any, idx: number) {
   if (column.key === "last_replay_by") {
     if (!item) return ""
     return h("span", {
-      class: `inline-flex select-none items-center gap-1 rounded p-2 border border-outline-${item == "Customer" ? 'red': 'white'}-2 h-5 text-xs "`,
+      class: `inline-flex select-none items-center gap-1 rounded p-2 border border-outline-${item == "Customer" ? 'red' : 'white'}-2 h-5 text-xs "`,
       innerHTML: item
     })
   }
@@ -603,6 +603,10 @@ function handleScrollPosition() {
 }
 
 onMounted(async () => {
+  socket.on("helpdesk:list-update", () => {
+    console.log('event helpdesk:list-update');
+    reload(false)
+  });
   handleScrollPosition();
 
   if (views.data?.length > 0 && views.filters?.dt === options.value.doctype) {
@@ -621,10 +625,7 @@ onMounted(async () => {
     return;
   }
 
-  socket.on("helpdesk:list-update", () => {
-    console.log('event helpdesk:list-update');
-    reload(false)
-  });
+
 
 });
 

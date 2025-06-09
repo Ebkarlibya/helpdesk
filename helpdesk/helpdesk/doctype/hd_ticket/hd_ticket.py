@@ -110,6 +110,7 @@ class HDTicket(Document):
         self.remove_assignment_if_not_in_team()
         self.publish_update()
         self.update_search_index()
+        self.set_last_replay_by()
 
     def notify_agent(self, agent, notification_type="Assignment"):
         frappe.get_doc(

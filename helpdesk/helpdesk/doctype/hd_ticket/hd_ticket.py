@@ -70,6 +70,7 @@ class HDTicket(Document):
         self.validate_feedback()
         self.validate_ticket_type()
         self.validate_status_transition()
+        self.set_last_replay_by()
 
     def before_save(self):
         self.apply_sla()
@@ -84,7 +85,7 @@ class HDTicket(Document):
             return
         log_ticket_activity(self.name, "created this ticket")
         capture_event("ticket_created")
-        publish_event("helpdesk:new-ticket", {"name": self.name})
+        publish_event("helpdesk:list-update", {"name": self.name})
         if self.get("description"):
             self.create_communication_via_contact(self.description, new_ticket=True)
 
@@ -109,7 +110,6 @@ class HDTicket(Document):
         self.remove_assignment_if_not_in_team()
         self.publish_update()
         self.update_search_index()
-        self.update_replay_by()
 
     def notify_agent(self, agent, notification_type="Assignment"):
         frappe.get_doc(
@@ -195,13 +195,14 @@ class HDTicket(Document):
             self.first_responded_on = (
                 self.first_responded_on or frappe.utils.now_datetime()
             )
-    def update_replay_by(self):
+    def set_last_replay_by(self):
         if(is_agent(frappe.session.user)):
             self.last_replay_by = _("Support")
         elif is_admin(frappe.session.user):
             self.last_replay_by = _("Support")
         else:
             self.last_replay_by = _("Customer")
+        pass
 
     def set_feedback_values(self):
         if not self.feedback:
@@ -796,7 +797,7 @@ class HDTicket(Document):
                 "label": "Status",
                 "type": "Select",
                 "key": "status",
-                "width": "15rem",
+                "width": "18rem",
             },
             {
                 "label": "First response",
@@ -894,7 +895,7 @@ class HDTicket(Document):
                 "label": "Status",
                 "type": "Select",
                 "key": "status",
-                "width": "15rem",
+                "width": "18rem",
             },
             {
                 "label": "Priority",

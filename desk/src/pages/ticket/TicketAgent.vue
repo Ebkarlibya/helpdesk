@@ -296,17 +296,17 @@ const statusOptions = computed(() =>
   }))
 );
 
-const dropdownOptions = computed(() =>
-  ticketStatusStore.options.map((o) => ({
-    label: o,
-    value: o,
-    onClick: () => updateTicket({ "status": o }),
-    icon: () =>
-      h(IndicatorIcon, {
-        class: ticketStatusStore.textColorMap[o],
-      }),
-  }))
-);
+// const dropdownOptions = computed(() =>
+//   ticketStatusStore.options.map((o) => ({
+//     label: o,
+//     value: o,
+//     onClick: () => updateTicket({ "status": o }),
+//     icon: () =>
+//       h(IndicatorIcon, {
+//         class: ticketStatusStore.textColorMap[o],
+//       }),
+//   }))
+// );
 
 // watch(
 //   () => ticket.data,
@@ -416,6 +416,7 @@ function filterActivities(eventType: TicketTab) {
   return activities.value.filter((activity) => activity.type === eventType);
 }
 const isErrorTriggered = ref(false);
+
 function updateTicket(data: Partial<Ticket>) {
   isErrorTriggered.value = false;
   // if (value === ticket.data[fieldname]) return;
@@ -460,59 +461,59 @@ function updateTicket(data: Partial<Ticket>) {
 }
 provide("updateTicket", updateTicket)
 
-function updateOptimistic(fieldname: string, value: string) {
-  ticket.data[fieldname] = value;
-  createToast({
-    title: "Ticket updated",
-    icon: "check",
-    iconClasses: "text-green-600",
-  });
-}
+// function updateOptimistic(fieldname: string, value: string) {
+//   ticket.data[fieldname] = value;
+//   createToast({
+//     title: "Ticket updated",
+//     icon: "check",
+//     iconClasses: "text-green-600",
+//   });
+// }
 
-function createNonSla() {
-  console.log(ticket);
+// function createNonSla() {
+//   console.log(ticket);
 
-  $dialog({
-    title: "Confirm Action",
-    message: `Are you sure you want Create & Link Non-SLA Evaluation Form for Ticket (${ticket.data.subject})`,
-    actions: [
-      {
-        label: "Create Related Non-SLA",
-        theme: "green",
-        variant: "solid",
-        async onClick(close) {
-          call("etms_hd_addons.api.create_non_sla_form", {
-            ticket_name: ticket.data.name
-          }).then(res => {
-            if (res.status == 200) {
-              setTimeout(() => {
-                // $(document.body).css("filter", "opacity(1)")
-                createToast({
-                  title: "ETMS HD: Non-SLA Form Created & Linked",
-                  icon: "alert-circle",
-                });
-                ticket.reload()
-                // setTimeout(() => location.reload(), 1500)
-              }, 1000)
-            }
-          }).finally((er) => {
-            // $(document.body).css("filter", "opacity(1)")
-          })
+//   $dialog({
+//     title: "Confirm Action",
+//     message: `Are you sure you want Create & Link Non-SLA Evaluation Form for Ticket (${ticket.data.subject})`,
+//     actions: [
+//       {
+//         label: "Create Related Non-SLA",
+//         theme: "green",
+//         variant: "solid",
+//         async onClick(close) {
+//           call("etms_hd_addons.api.create_non_sla_form", {
+//             ticket_name: ticket.data.name
+//           }).then(res => {
+//             if (res.status == 200) {
+//               setTimeout(() => {
+//                 // $(document.body).css("filter", "opacity(1)")
+//                 createToast({
+//                   title: "ETMS HD: Non-SLA Form Created & Linked",
+//                   icon: "alert-circle",
+//                 });
+//                 ticket.reload()
+//                 // setTimeout(() => location.reload(), 1500)
+//               }, 1000)
+//             }
+//           }).finally((er) => {
+//             // $(document.body).css("filter", "opacity(1)")
+//           })
 
-          close();
-        },
-      },
-      {
-        label: "Cancel",
-        variant: "outline",
-        onClick(close) {
-          close();
-        },
-      },
-    ],
-  }
-  );
-}
+//           close();
+//         },
+//       },
+//       {
+//         label: "Cancel",
+//         variant: "outline",
+//         onClick(close) {
+//           close();
+//         },
+//       },
+//     ],
+//   }
+//   );
+// }
 
 function openRelatedNonSla() {
   open(`/app/non-sla-request-evaluation-form/${ticket.data.ehda_non_sla_form}`)
@@ -520,8 +521,6 @@ function openRelatedNonSla() {
 
 onMounted(() => {
   socket.on("helpdesk:ticket-update", (ticketID) => {
-    console.log('socket io update !!!!!!', ticketID, ticket);
-
     if (ticketID === Number(props.ticketId)) {
       ticket.reload();
     }

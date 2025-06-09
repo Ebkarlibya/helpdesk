@@ -101,6 +101,7 @@ import { MultipleAvatar, StarRating } from "@/components";
 import ListRows from "./ListRows.vue";
 import EmptyState from "./EmptyState.vue";
 import { useScreenSize } from "@/composables/screen";
+import { socket } from "@/socket";
 // import { dayjs } from "@/dayjs";
 import { View, ViewType } from "@/types";
 import {
@@ -422,7 +423,6 @@ function handleFieldClick(e: MouseEvent, column, row, item) {
   // custom: apply filters to quick filters values
   let qf = listViewData.quickFilters.data.find(el => el.name == column.key)
   qf.value = item
-  console.log(qf);
 }
 
 const showViewControls = computed(() => {
@@ -620,6 +620,12 @@ onMounted(async () => {
     }
     return;
   }
+
+  socket.on("helpdesk:list-update", () => {
+    console.log('event helpdesk:list-update');
+    reload(false)
+  });
+
 });
 
 defineExpose(exposeFunctions);

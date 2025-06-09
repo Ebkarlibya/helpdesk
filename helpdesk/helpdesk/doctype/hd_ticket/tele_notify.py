@@ -5,7 +5,7 @@ import asyncio
 from telegram import Bot, Message
 from frappe.model.document import Document
 from frappe.utils.data import now_datetime
-from helpdesk.utils import build_status_emoji
+from helpdesk.utils import build_rate_emoji_stars, build_status_emoji
 from etms_hd_addons.utils import get_settings
 
 def notify_tele_status(hd_ticket: Document):
@@ -16,17 +16,26 @@ def notify_tele_status(hd_ticket: Document):
 
         if hd_customer.ehda_telegram_group_id:
             notification_title = "New Replay on Ticket" # new ticket handled with comm down
-            full_name = frappe.db.get_value("User", filters={"name": frappe.session.user}, fieldname="full_name")
-            datetime = now_datetime()
+            
+            replay_by = "Support"
+            if hd_ticket.last_replay_by == "Customer":
+                replay_by = frappe.db.get_value("User", filters={"name": frappe.session.user}, fieldname="full_name")
+
+            # include feedback?
+            feedback_rate_text_row = ""
+            if hd_ticket.feedback and hd_ticket.has_value_changed("feedback"):
+                feedback_rate_text_row = f'<b>Rate:</b> {build_rate_emoji_stars(hd_ticket.feedback_rating)}'
+                notification_title = "Closed with Feedback"
+
             msg = f"""
 <b>{notification_title}:</b> {hd_ticket.name}
-<b>By:</b> { full_name }
+<b>By:</b> { replay_by }
 <b>Status:</b> { build_status_emoji(hd_ticket.status) }
 <b>Type:</b> {hd_ticket.ticket_type}
 <b>Subject:</b> {hd_ticket.subject}
 <b>Site:</b> {hd_ticket.ehda_etms_erp_site}
-
-<b>Date:</b> { datetime.strftime("%H:%M  %Y-%m-%d") }
+{feedback_rate_text_row if feedback_rate_text_row else ''}
+<b>Date:</b> { now_datetime().strftime("%H:%M  %Y-%m-%d") }
 For More Visit Support Portal:
 https://{hd_ticket.portal_uri}
     """
@@ -51,19 +60,21 @@ def notify_tele_replay(hd_ticket: Document, comm: Document):
                 }
             )
             notification_title = "New Ticket Created" if comm_count < 2 else "New Replay on Ticket"
-            full_name = frappe.db.get_value("User", filters={"name": frappe.session.user}, fieldname="full_name")
-            datetime = now_datetime()
+            
+            replay_by = "Support"
+            if hd_ticket.last_replay_by == "Customer":
+                replay_by = frappe.db.get_value("User", filters={"name": frappe.session.user}, fieldname="full_name")
 
 
             msg = f"""
 <b>{notification_title}:</b> {hd_ticket.name}
-<b>By:</b> { full_name }
+<b>By:</b> { replay_by }
 <b>Status:</b> { build_status_emoji(hd_ticket.status) }
 <b>Type:</b> {hd_ticket.ticket_type}
 <b>Subject:</b> {hd_ticket.subject}
 <b>Site:</b> {hd_ticket.ehda_etms_erp_site}
 
-<b>Date:</b> { datetime.strftime("%H:%M  %Y-%m-%d") }
+<b>Date:</b> { now_datetime().strftime("%H:%M  %Y-%m-%d") }
 For More Visit Support Portal:
 https://{hd_ticket.portal_uri}
     """

@@ -54,6 +54,17 @@ def build_status_emoji(status: str):
     elif status == _(StatusEnum.cancelled):
         return f"{StatusEnum.cancelled} 📕"
 
+def build_rate_emoji_stars(rate: float):
+    total_rate = 5
+
+    user_rate = int(rate * 5)
+
+    
+
+    rate_stars = "⭐" * user_rate
+    remaining_stars = "-" * (total_rate - user_rate)
+
+    return f"{rate_stars} {remaining_stars}"
 
 def check_permissions(doctype, parent):
     user = frappe.session.user

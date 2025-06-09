@@ -341,20 +341,20 @@ const dropdownOptions = computed(() => {
     });
   }
 
-  items.push({
-    group: "Create View",
-    hideLabel: true,
-    items: [
-      {
-        label: "Create View",
-        icon: "plus",
-        onClick: () => {
-          resetState();
-          viewDialog.show = true;
-        },
-      },
-    ],
-  });
+  // items.push({
+  //   group: "Create View",
+  //   hideLabel: true,
+  //   items: [
+  //     {
+  //       label: "Create View",
+  //       icon: "plus",
+  //       onClick: () => {
+  //         resetState();
+  //         viewDialog.show = true;
+  //       },
+  //     },
+  //   ],
+  // });
 
   return items;
 });

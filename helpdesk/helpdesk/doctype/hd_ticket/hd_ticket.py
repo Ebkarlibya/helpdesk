@@ -198,11 +198,11 @@ class HDTicket(Document):
             )
     def set_last_replay_by(self):
         if(is_agent(frappe.session.user)):
-            self.last_replay_by = _("Support")
+            self.last_replay_by = "Support"
         elif is_admin(frappe.session.user):
-            self.last_replay_by = _("Support")
+            self.last_replay_by = "Support"
         else:
-            self.last_replay_by = _("Customer")
+            self.last_replay_by = "Customer"
         pass
 
     def set_feedback_values(self):

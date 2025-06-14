@@ -251,8 +251,8 @@ const textColor = computed(() => {
 
 const inputClasses = computed(() => {
   let sizeClasses = {
-    sm: "text-base rounded h-8",
-    md: "text-base rounded h-8",
+    sm: "text-base rounded h-7",
+    md: "text-base rounded h-7",
     lg: "text-lg rounded-md h-10",
     xl: "text-xl rounded-md h-10",
   }[props.size];

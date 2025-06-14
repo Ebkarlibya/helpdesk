@@ -48,7 +48,7 @@
                 "
               />
               <button
-                class="absolute right-1.5 inline-flex h-8 w-7 items-center justify-center"
+                class="absolute right-1.5 inline-flex h-7 w-7 items-center justify-center"
                 @click="selectedValue = null"
               >
                 <FeatherIcon name="x" class="w-4" />
@@ -242,8 +242,8 @@ const textColor = computed(() => {
 
 const inputClasses = computed(() => {
   let sizeClasses = {
-    sm: "text-base rounded h-8",
-    md: "text-base rounded h-8",
+    sm: "text-base rounded h-7",
+    md: "text-base rounded h-7",
     lg: "text-lg rounded-md h-10",
     xl: "text-xl rounded-md h-10",
   }[props.size];

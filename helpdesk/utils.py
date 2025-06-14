@@ -24,35 +24,46 @@ class StatusEnum():
     cancelled = "Cancelled"
 
 def build_status_emoji(status: str):
-    if status == _(StatusEnum.new):
-        return f"{StatusEnum.new} 📖"
-    
-    elif status == _(StatusEnum.underReview):
-        return f"{StatusEnum.underReview} 🔍"
+    if status == StatusEnum.new:
+        return f"{StatusEnum.new}"
+        # return f"{StatusEnum.new} 📖"
 
-    elif status == _(StatusEnum.awaitingCustomerInfo):
-        return f"{StatusEnum.awaitingCustomerInfo} ⭕️"
+    elif status == StatusEnum.underReview:
+        return f"{StatusEnum.underReview}"
+        # return f"{StatusEnum.underReview} 🔍"
 
-    elif status == _(StatusEnum.customerResponded):
-        return f"{StatusEnum.customerResponded} 🔅"
-    
-    elif status == _(StatusEnum.workInProgress):
+    elif status == StatusEnum.awaitingCustomerInfo:
+        return f"{StatusEnum.awaitingCustomerInfo}"
+        # return f"{StatusEnum.awaitingCustomerInfo} ⭕️"
+
+    elif status == StatusEnum.customerResponded:
+        return f"{StatusEnum.customerResponded}"
+        # return f"{StatusEnum.customerResponded} 🔅"
+
+    elif status == StatusEnum.workInProgress:
         return f"{StatusEnum.workInProgress} ❇️"
+        # return f"{StatusEnum.workInProgress}"
 
-    elif status == _(StatusEnum.nonSlaEval):
-        return f"{StatusEnum.nonSlaEval} 🧾"
-    
-    elif status == _(StatusEnum.transferredToProj):
-        return f"{StatusEnum.transferredToProj} 📊"
-    
-    elif status == _(StatusEnum.resolved):
-        return f"{StatusEnum.resolved} ↩️"
+    elif status == StatusEnum.nonSlaEval:
+        return f"{StatusEnum.nonSlaEval}"
+        # return f"{StatusEnum.nonSlaEval} 🧾"
 
-    elif status == _(StatusEnum.closed):
-        return f"{StatusEnum.closed} 📕"
+    elif status == StatusEnum.transferredToProj:
+        return f"{StatusEnum.transferredToProj}"
+        # return f"{StatusEnum.transferredToProj} 📊"
 
-    elif status == _(StatusEnum.cancelled):
-        return f"{StatusEnum.cancelled} 📕"
+    elif status == StatusEnum.resolved:
+        return f"{StatusEnum.resolved}"
+        # return f"{StatusEnum.resolved} ↩️"
+
+    elif status == StatusEnum.closed:
+        return f"{StatusEnum.closed}"
+        # return f"{StatusEnum.closed} 📕"
+
+
+    elif status == StatusEnum.cancelled:
+        return f"{StatusEnum.cancelled}"
+        # return f"{StatusEnum.cancelled} 📕"
 
 def build_rate_emoji_stars(rate: float):
     total_rate = 5

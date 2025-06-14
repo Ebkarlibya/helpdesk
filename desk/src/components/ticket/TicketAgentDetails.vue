@@ -90,9 +90,9 @@
       </div>
     </div>
 
-    <Dialog v-model="readNonSlaDetailsDialog">
+    <Dialog v-model="readNonSlaDetailsDialog" :options="{ size: '4xl' }">
       <template #body-title>
-        <h3>Non-SLA Request Evaluation Form ({{ ticket.ehda_non_sla_form }})</h3>
+        <h3>Non-SLA Request Evaluation Form ({{ ticket.data.ehda_non_sla_form }})</h3>
       </template>
       <template #body-content>
 
@@ -120,8 +120,11 @@
 
           <Input :modelValue="nonSlaEvalForm.assigned_evaluator_name" label="Assigned Evaluator Name" disabled />
 
-          <Input :modelValue="nonSlaEvalForm.assigned_evaluator_email" label="Assigned Evaluator Email" disabled />
-
+          <div class="grid grid-cols-1">
+            <p style="color: gray;">Meeting with Customer Details (if any)</p>
+            <Textarea :variant="'subtle'" :ref_for="true" size="sm" placeholder="Placeholder"
+              :value="nonSlaEvalForm.meeting_with_customer_details_if_any" disabled />
+          </div>
           <!-- ----- -->
 
           <Input :modelValue="nonSlaEvalForm.impact_scope" label="Impact Scope" disabled />
@@ -134,6 +137,12 @@
           <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
 
           <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled />
+
+          <!-- ----- -->
+
+          <Input :modelValue="nonSlaEvalForm.estimated_effort_in_hours" label="Estimated Effort (in hours)" disabled />
+
+          <!-- ----- -->
 
           <Tooltip :text="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')">
             <Input :modelValue="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')"

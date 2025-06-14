@@ -57,7 +57,7 @@
                 placeholder="Search"
               />
               <button
-                class="absolute right-1.5 inline-flex h-8 w-7 items-center justify-center"
+                class="absolute right-1.5 inline-flex h-7 w-7 items-center justify-center"
                 @click="selectedValue = null"
               >
                 <FeatherIcon name="x" class="w-4" />

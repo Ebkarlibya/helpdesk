@@ -41,7 +41,7 @@ function getUrl() {
   const port = window.location.port ? `:${socketio_port}` : "";
   const protocol = port ? "http" : "https";
   const fVersion = window["frappe_version"];
-  debugger
+
   if (fVersion && fVersion.startsWith("14")) {
     return `${protocol}://${host}${port}`;
   }

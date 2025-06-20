@@ -52,8 +52,8 @@ import Restore from '../icons/Delete.vue'
 import { copyToClipboard } from "@/utils";
 import { Ticket } from "@/types";
 import { computed } from "vue";
-import { call } from "frappe-ui"
-const { textColorMap, detailedTextColorMap } = useTicketStatusStore();
+// import { call } from "frappe-ui"
+const { textColorMap } = useTicketStatusStore();
 
 interface Props {
   ticket: Ticket;

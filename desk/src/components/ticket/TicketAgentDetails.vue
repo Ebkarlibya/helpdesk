@@ -271,8 +271,8 @@ const firstResponseBadge = computed(() => {
 
 const resolutionBadge = computed(() => {
   let resolution = null;
-  if (props.ticket.status === StatusEnum.awaitingCustomerInfo && props.ticket.on_hold_since &&
-    dayjs(props.ticket.resolution_by).isAfter(dayjs(props.ticket.on_hold_since))
+  if ([StatusEnum.awaitingCustomerInfo, StatusEnum.nonSlaEval].includes(props.ticket.status)
+    && props.ticket.on_hold_since && dayjs(props.ticket.resolution_by).isAfter(dayjs(props.ticket.on_hold_since))
   ) {
     let time_left = formatTime(
       dayjs(props.ticket.resolution_by).diff(

@@ -17,8 +17,17 @@
         <div class="w-[126px] text-sm text-gray-600">Site</div>
       </Tooltip>
       <div class="flex items-center justify-between">
-        <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.ehda_etms_erp_site }}<span><span> 🌐</span></span></p>
+        <Tooltip text="Website">
+          <p style="cursor: pointer;">{{ props.ticket.ehda_etms_erp_site }}<span><svg
+                style="display: inline-block; width: 17px; margin: 5px 5px;" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" viewBox="0 0 24 24">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  color="currentColor">
+                  <circle cx="12" cy="12" r="10" />
+                  <ellipse cx="12" cy="12" rx="4" ry="10" />
+                  <path d="M2 12h20" />
+                </g>
+              </svg></span></p>
         </Tooltip>
       </div>
     </div>
@@ -51,7 +60,15 @@
       </Tooltip>
       <div class="flex items-center justify-between">
         <Tooltip text="Read SLA Description">
-          <p @click="readSlaDescription" style="cursor: pointer;">{{ props.ticket.sla }}<span> 📃</span></p>
+          <p @click="readSlaDescription" style="cursor: pointer;">{{ props.ticket.sla }}<span>
+              <svg style="display: inline-block; width: 17px; margin: 5px 5px;" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" viewBox="0 0 24 24">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+                  <path stroke-linejoin="round" d="M21 3h-6m6 0l-9 9m9-9v6" />
+                  <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+                </g>
+              </svg>
+            </span></p>
         </Tooltip>
       </div>
     </div>

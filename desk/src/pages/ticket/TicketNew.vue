@@ -170,7 +170,7 @@ function getSiteCustomerSLA(siteName: string) {
     if (res) {
       customerSlaInfo.value = res
       console.log(customerSlaInfo.value);
-      
+
     }
   }).finally((er) => {
     // $(document.body).css("filter", "opacity(1)")
@@ -291,5 +291,10 @@ onMounted(() => {
       user: userID,
     },
   });
+
+  setTimeout(() => {
+    document.querySelectorAll("[contenteditable].tiptap").forEach(el => el.dir = "auto")
+  })
+
 });
 </script>

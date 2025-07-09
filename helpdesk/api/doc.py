@@ -7,22 +7,21 @@ from pypika import Criterion
 
 from helpdesk.utils import StatusEnum, check_permissions, get_customer
 
-# TODO: remove soon
-def patch_tickets():
-    tickets: dict = frappe.get_list("HD Ticket", fields=["name", "status"])
+# def patch_tickets():
+#     tickets: dict = frappe.get_list("HD Ticket", fields=["name", "status"])
     
-    for ticket in tickets:
-        if ticket.get("status") == "Open":
-            hd_ticket = frappe.get_doc("HD Ticket", ticket.get("name"))
-            hd_ticket.status = StatusEnum.new
-            hd_ticket.save()
+#     for ticket in tickets:
+#         if ticket.get("status") == "Open":
+#             hd_ticket = frappe.get_doc("HD Ticket", ticket.get("name"))
+#             hd_ticket.status = StatusEnum.new
+#             hd_ticket.save()
 
-        if ticket.get("status") == "Replied":
-            hd_ticket = frappe.get_doc("HD Ticket", ticket.get("name"))
-            hd_ticket.status = StatusEnum.awaitingCustomerInfo
-            hd_ticket.save()
+#         if ticket.get("status") == "Replied":
+#             hd_ticket = frappe.get_doc("HD Ticket", ticket.get("name"))
+#             hd_ticket.status = StatusEnum.awaitingCustomerInfo
+#             hd_ticket.save()
 
-    print(len(tickets))
+#     print(len(tickets))
 
 
 

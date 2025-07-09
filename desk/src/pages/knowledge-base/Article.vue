@@ -9,37 +9,23 @@
       <template #right-header v-if="!isCustomerPortal">
         <!-- Default Buttons -->
         <div class="flex gap-2" v-if="!editable">
-          <Button
-            :label="article.data?.status === 'Draft' ? 'Publish' : 'Unpublish'"
-            :iconLeft="article.data?.status !== 'Published' && 'globe'"
-            @click="toggleStatus()"
-          />
+          <Button :label="article.data?.status === 'Draft' ? 'Publish' : 'Unpublish'"
+            :iconLeft="article.data?.status !== 'Published' && 'globe'" @click="toggleStatus()" />
         </div>
       </template>
     </LayoutHeader>
 
-    <div
-      class="py-4 mx-auto w-full max-w-3xl px-5 flex flex-col"
-      v-if="!article.loading"
-    >
+    <div class="py-4 mx-auto w-full max-w-3xl px-5 flex flex-col" v-if="!article.loading">
       <!-- article Info -->
-      <div
-        class="flex flex-col gap-3 p-4 w-full"
-        :class="editable && 'border rounded-lg overflow-hidden'"
-      >
+      <div class="flex flex-col gap-3 p-4 w-full" :class="editable && 'border rounded-lg overflow-hidden'">
         <!-- Top Element -->
         <div class="flex flex-col gap-3">
           <div class="flex gap-1 items-center justify-between">
             <div class="flex gap-1 items-center">
               <!-- Avatar -->
               <div class="flex gap-1 items-center justify-center">
-                <Avatar
-                  :image="article.data.author.image"
-                  :label="article.data.author.name"
-                />
-                <span
-                  class="truncate capitalize text-base text-ink-gray-9 font-medium"
-                >
+                <Avatar :image="article.data.author.image" :label="article.data.author.name" />
+                <span class="truncate capitalize text-base text-ink-gray-9 font-medium">
                   {{ article.data.author.name }}
                 </span>
               </div>
@@ -48,10 +34,7 @@
                 {{ dayjs(article.data.modified).short() }}
               </div>
             </div>
-            <Dropdown
-              :options="articleActions"
-              v-if="!editable && !isCustomerPortal"
-            >
+            <Dropdown :options="articleActions" v-if="!editable && !isCustomerPortal">
               <Button variant="ghost">
                 <template #icon>
                   <IconMoreHorizontal class="h-4 w-4" />
@@ -59,48 +42,28 @@
               </Button>
             </Dropdown>
             <div class="flex gap-2" v-if="editable">
-              <DiscardButton
-                :hide-dialog="!isDirty"
-                title="Discard changes?"
-                message="Are you sure you want to discard changes?"
-                @discard="handleDiscard"
-              />
+              <DiscardButton :hide-dialog="!isDirty" title="Discard changes?"
+                message="Are you sure you want to discard changes?" @discard="handleDiscard" />
 
               <Button label="Save" @click="handleSave" variant="solid" />
             </div>
           </div>
           <!-- Title -->
-          <textarea
-            ref="titleRef"
+          <textarea ref="titleRef"
             class="w-full resize-none border-0 text-3xl font-bold placeholder-ink-gray-3 p-0 pb-3 border-b border-gray-200 focus:ring-0 focus:border-gray-200 overflow-hidden"
-            v-model="title"
-            placeholder="Title"
-            rows="1"
-            wrap="soft"
-            maxlength="140"
-            autofocus
-            :disabled="!editable"
-          />
+            v-model="title" dir="auto" placeholder="Title" rows="1" wrap="soft" maxlength="140" autofocus :disabled="!editable" />
         </div>
         <!-- Article Content -->
-        <TextEditor
-          ref="editorRef"
-          :editor-class="editorClass"
-          :content="textEditorContentWithIDs"
-          :extensions="[PreserveIds]"
-          :editable="editable"
-          @change="(event:string) => {
-			      content = event;
-		      }"
-          placeholder="Write your article here..."
-        >
-          <template #bottom v-if="editable">
-            <TextEditorFixedMenu
-              class="-ml-1 overflow-x-auto w-full"
-              :buttons="textEditorMenuButtons"
-            />
-          </template>
-        </TextEditor>
+        <div dir="auto">
+          <TextEditor ref="editorRef" :editor-class="editorClass" :content="textEditorContentWithIDs"
+            :extensions="[PreserveIds]" :editable="editable" @change="(event: string) => {
+              content = event;
+            }" placeholder="Write your article here...">
+            <template #bottom v-if="editable">
+              <TextEditorFixedMenu class="-ml-1 overflow-x-auto w-full" :buttons="textEditorMenuButtons" />
+            </template>
+          </TextEditor>
+        </div>
       </div>
       <div class="p-4" v-if="isCustomerPortal">
         <ArticleFeedback :feedback="feedback" :article-id="articleId" />
@@ -393,7 +356,7 @@ const editorClass = computed(() => {
   return [
     "rounded-b-lg max-w-[unset] prose-sm",
     editable.value &&
-      "overflow-auto h-[calc(100vh-340px)] sm:h-[calc(100vh-250px)]",
+    "overflow-auto h-[calc(100vh-340px)] sm:h-[calc(100vh-250px)]",
   ];
 });
 

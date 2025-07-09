@@ -103,7 +103,7 @@
 
           <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
 
-          <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled />
+          <!-- <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled /> -->
 
           <!-- ----- -->
 
@@ -181,7 +181,14 @@
       <div class="flex items-center text-base leading-5" v-if="ticket.data.ehda_non_sla_form">
         <span class="w-[126px] text-sm text-gray-600">Non SLA Form</span>
         <span @click="readNonSlaDetails" class="text-base text-gray-800 flex-1" style="cursor: pointer;">{{
-          ticket.data.ehda_non_sla_form }} <span> 📃</span></span>
+          ticket.data.ehda_non_sla_form }} <span> <svg
+                  style="display: inline-block; width: 17px; margin: 5px 5px;" xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" viewBox="0 0 24 24">
+                  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+                    <path stroke-linejoin="round" d="M21 3h-6m6 0l-9 9m9-9v6" />
+                    <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+                  </g>
+                </svg></span></span>
       </div>
 
       <div class="flex items-center text-base leading-5" v-if="ticket.data.ehda_non_sla_form_project">

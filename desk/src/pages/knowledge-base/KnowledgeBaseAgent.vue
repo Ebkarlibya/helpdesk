@@ -14,25 +14,12 @@
         </Dropdown>
       </template>
     </LayoutHeader>
-    <ListViewBuilder
-      ref="listViewRef"
-      :options="options"
-      @row-click="(row) => $router.push(`kb/articles/${row}`)"
-    />
-    <CategoryModal
-      :edit="editTitle"
-      v-model="showCategoryModal"
-      v-model:title="category.title"
-      @update="handleCategoryUpdate"
-      @create="handleCategoryCreate"
-    />
+    <ListViewBuilder ref="listViewRef" :options="options" @row-click="(row) => $router.push(`kb/articles/${row}`)" />
+    <CategoryModal :edit="editTitle" v-model="showCategoryModal" v-model:title="category.title"
+      @update="handleCategoryUpdate" @create="handleCategoryCreate" />
     <MoveToCategoryModal v-model="moveToModal" @move="handleMoveToCategory" />
-    <MergeCategoryModal
-      :categoryTitle="category.title"
-      :category-id="category.id"
-      v-model="mergeModal"
-      @merge="handleMergeCategory"
-    />
+    <MergeCategoryModal :categoryTitle="category.title" :category-id="category.id" v-model="mergeModal"
+      @merge="handleMergeCategory" />
   </div>
 </template>
 

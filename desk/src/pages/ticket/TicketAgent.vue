@@ -105,11 +105,12 @@
         </div>
       </template>
     </Dialog>
+    <TicketCloseDialog/>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, h, watch, onMounted, onUnmounted, provide, ComputedRef } from "vue";
+import { computed, ref, h, watch, onMounted, onUnmounted, provide, ComputedRef, getCurrentInstance } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   Breadcrumbs,
@@ -137,6 +138,8 @@ import {
   ActivityIcon,
   EmailIcon,
 } from "@/components/icons";
+import TicketCloseDialog from "./TicketCloseDialog.vue";
+
 import { socket } from "@/socket";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
 import { useUserStore } from "@/stores/user";
@@ -145,7 +148,8 @@ import { createToast, getIcon, StatusEnum } from "@/utils";
 import { setupCustomizations } from "@/composables/formCustomisation";
 import { Resource, TabObject, Ticket, TicketTab, View } from "@/types";
 import { useView } from "@/composables/useView";
-
+const app = getCurrentInstance()
+const { $emitter } = app.appContext.config.globalProperties
 const route = useRoute();
 const router = useRouter();
 
@@ -254,9 +258,14 @@ const statusOptions = computed(() =>
         createToast({ title: "Transition to this status only allowed from Non SLA Form Workflow", icon: "check", iconClasses: "text-red-600", });
         return
       }
-      
+
       if ([StatusEnum.nonSlaEval, StatusEnum.transferredToProj].includes(ticket.data.status)) {
         createToast({ title: "Cannot Change Ticket with Linked Non-SLA Form", icon: "check", iconClasses: "text-red-600", });
+        return
+      }
+
+      if (mappedStatus == StatusEnum.closed) {
+        $emitter.emit("od_ticket_close", ticket)
         return
       }
 

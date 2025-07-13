@@ -35,6 +35,7 @@
   "first_response_time",
   "first_responded_on",
   "column_break_26",
+  "reason_of_closing",
   "avg_response_time",
   "resolution_tab",
   "section_break_19",
@@ -445,13 +446,19 @@
    "fieldname": "metadata",
    "fieldtype": "Small Text",
    "label": "Metadata"
+  },
+  {
+   "fieldname": "reason_of_closing",
+   "fieldtype": "Link",
+   "label": "Reason of Closing",
+   "options": "HD Reason of Ticket Close"
   }
  ],
  "grid_page_length": 50,
  "icon": "fa fa-issue",
  "idx": 61,
  "links": [],
- "modified": "2025-05-27 10:27:19.123629",
+ "modified": "2025-07-12 09:14:58.079266",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Ticket",

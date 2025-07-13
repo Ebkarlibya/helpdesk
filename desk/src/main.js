@@ -18,6 +18,7 @@ import App from "./App.vue";
 import "./index.css";
 import { router } from "./router";
 import { socket } from "./socket";
+import mitt from "mitt"
 import { createToast } from "@/utils";
 import { posthogPlugin } from "./telemetry";
 import { createDialog } from "./components/dialogs";
@@ -61,6 +62,7 @@ for (const c in globalComponents) {
 app.config.globalProperties.$socket = socket;
 app.config.globalProperties.$toast = createToast;
 app.config.globalProperties.$dialog = createDialog;
+app.config.globalProperties.$emitter = mitt()
 
 if (import.meta.env.DEV) {
   frappeRequest({

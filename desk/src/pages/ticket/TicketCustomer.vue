@@ -106,6 +106,7 @@ const placeholder = "Type a message";
 const editorContent = ref("");
 const attachments = ref([]);
 const showFeedbackDialog = ref(false);
+const showCloseTicketDialog = ref(true);
 const isExpanded = ref(false);
 
 const { isMobileView } = useScreenSize();

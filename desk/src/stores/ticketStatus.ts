@@ -15,7 +15,7 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
       "Transferred to Project Tracker",
       "Resolved",
       "Closed",
-      "Cancelled"
+      // "Cancelled"
     ]
   );
 
@@ -44,7 +44,7 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
     "Transferred to Project Tracker": "green",
     "Resolved": "green",
     "Closed": "gray",
-    "Cancelled": "gray",
+    // "Cancelled": "gray",
   };
 
 

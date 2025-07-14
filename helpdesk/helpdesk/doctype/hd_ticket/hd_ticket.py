@@ -236,6 +236,9 @@ class HDTicket(Document):
             if pre_doc.status == StatusEnum.closed:
                 frappe.throw("Cannot Interact with closed ticket, Please make new ticket")
 
+            # if self.status == StatusEnum.cancelled:
+            #     frappe.throw(f"Status ({ StatusEnum.cancelled }) is deprecated and will be removed soon, Please Use (Close) Instead.")
+
     def check_update_perms(self):
         if self.is_new() or is_agent():
             return

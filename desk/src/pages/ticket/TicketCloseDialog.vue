@@ -15,6 +15,14 @@
             },
           }),
       },
+            {
+        label: 'Done',
+        theme: 'gray',
+        variant: 'solid',
+        onClick: () => {
+          open = false
+        }
+      },
     ],
   }" @update:model-value="() => $emit('update:open', !open)">
     <template #body-content>

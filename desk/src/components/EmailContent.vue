@@ -219,7 +219,7 @@ const htmlContent = `
 	</style>
   </head>
   <body>
-	  <div ref="emailContentRef" class="email-content prose-f">${_content.value}</div>
+	  <div ref="emailContentRef" class="email-content prose-f" dir="auto">${_content.value}</div>
   </body>
   <base target="_blank" />
   </html>

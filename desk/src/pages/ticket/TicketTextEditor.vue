@@ -16,7 +16,7 @@
       </div>
     </template>
     <template #bottom-left>
-      <span class="flex">
+      <span class="flex items-center gap-1">
         <slot name="bottom-left" />
         <FileUploader :upload-args="{
           folder: 'Home/Helpdesk',
@@ -37,6 +37,13 @@
             </Button>
           </template>
         </FileUploader>
+        <!-- Speech-to-Text: replaces description content with transcript -->
+        <SttButton
+          :doctype="props.doctype"
+          :docname="props.docname"
+          @update:modelValue="(text) => $emit('update:content', text)"
+          @error="(msg) => createToast({ title: msg, icon: 'x', iconClasses: 'text-red-600' })"
+        />
       </span>
     </template>
     <template #top-right>
@@ -64,6 +71,7 @@ import { FileUploader } from "frappe-ui";
 import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/auth";
 import { AttachmentItem, TextEditor as HTextEditor, UserAvatar } from "@/components";
+import SttButton from "@/components/SttButton.vue";
 import { File } from "@/types";
 import { createToast } from "@/utils";
 
@@ -72,6 +80,10 @@ interface P {
   placeholder: string;
   attachments: File[];
   expand?: boolean;
+  /** Frappe doctype — passed to SttButton for AI logging */
+  doctype?: string;
+  /** Frappe docname — "__new__" for unsaved tickets */
+  docname?: string;
 }
 
 interface E {
@@ -80,8 +92,10 @@ interface E {
   (event: "update:expand", expand: boolean): void;
 }
 
-withDefaults(defineProps<P>(), {
-  expand: false,
+const props = withDefaults(defineProps<P>(), {
+  expand:  false,
+  doctype: "HD Ticket",
+  docname: "__new__",
 });
 defineEmits<E>();
 const e = ref(null);

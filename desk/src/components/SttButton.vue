@@ -4,15 +4,67 @@
     class="relative flex items-center gap-1.5 rounded-full border p-1 shadow-sm transition-all duration-300"
     :class="containerClass"
   >
-    <!-- Language Selector (Idle only) -->
-    <div v-if="state === 'idle'" class="relative ml-1 flex items-center ">
-      <select
-        v-model="selectedLanguage"
-        class="cursor-pointer bg-transparent hover:rounded-full hover:bg-gray-100 text-gray-700 hover:text-gray-900 font-bold text-[10px] rounded pl-2 pr-6 py-0.5 outline-none focus:outline-none focus:ring-0 border-transparent focus:border-transparent"
+    <!-- Language Selector (Idle only) — custom dropdown, scalable to N languages -->
+    <div v-if="state === 'idle'" class="relative ml-1" ref="langDropdown">
+      <!-- Trigger pill -->
+      <button
+        ref="triggerEl"
+        type="button"
+        @click.stop="toggleDropdown"
+        class="flex items-center gap-1 rounded-full bg-gray-100 hover:bg-gray-200 px-2.5 py-1 transition-all duration-200"
       >
-        <option selected value="ar">AR</option>
-        <option value="en">EN</option>
-      </select>
+        <span class="text-[10px] font-bold uppercase tracking-wide text-gray-700 leading-none">
+          {{ selectedLanguage }}
+        </span>
+        <!-- Chevron -->
+        <svg
+          class="h-2.5 w-2.5 text-gray-400 transition-transform duration-200"
+          :class="isLangOpen ? 'rotate-180' : ''"
+          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      <!-- Teleport to body: escapes any overflow/scroll container -->
+      <Teleport to="body">
+        <Transition
+          enter-active-class="transition duration-150 ease-out"
+          enter-from-class="opacity-0 scale-95 -translate-y-1"
+          enter-to-class="opacity-100 scale-100 translate-y-0"
+          leave-active-class="transition duration-100 ease-in"
+          leave-from-class="opacity-100 scale-100 translate-y-0"
+          leave-to-class="opacity-0 scale-95 -translate-y-1"
+        >
+          <div
+            v-if="isLangOpen"
+            :style="dropdownStyle"
+            class="fixed z-[9999] min-w-[110px] origin-top-left rounded-xl border border-gray-100 bg-white py-1 shadow-lg"
+          >
+            <button
+              v-for="lang in availableLanguages"
+              :key="lang.value"
+              type="button"
+              @click="selectLanguage(lang.value)"
+              class="flex w-full items-center gap-2 px-3 py-1.5 text-left transition-colors duration-150 hover:bg-gray-50"
+            >
+              <!-- Active indicator dot -->
+              <span
+                class="h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors"
+                :class="selectedLanguage === lang.value ? 'bg-gray-800' : 'bg-gray-200'"
+              />
+              <span
+                class="text-[11px] font-medium leading-none"
+                :class="selectedLanguage === lang.value ? 'text-gray-900' : 'text-gray-500'"
+              >
+                {{ lang.label }}
+              </span>
+            </button>
+          </div>
+        </Transition>
+      </Teleport>
     </div>
 
     <!-- Recording Timer & Visualizer (Recording only) -->
@@ -98,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { call } from "frappe-ui";
 import { createToast } from "@/utils";
 
@@ -128,6 +180,56 @@ type SttState = "idle" | "recording" | "transcribing" | "error";
 const state = ref<SttState>("idle");
 const errorMessage = ref<string>("");
 const selectedLanguage = ref<string>(props.language || "ar");
+
+// ── Language config — add new languages here, no other changes needed ─────────
+const availableLanguages: { value: string; label: string }[] = [
+  { value: "ar", label: "AR — Arabic" },
+  { value: "en", label: "EN — English" },
+];
+
+// Language dropdown state
+const isLangOpen = ref(false);
+const langDropdown = ref<HTMLElement | null>(null);
+const triggerEl = ref<HTMLElement | null>(null);
+const dropdownStyle = ref<Record<string, string>>({});
+
+function toggleDropdown() {
+  if (!isLangOpen.value && triggerEl.value) {
+    const rect      = triggerEl.value.getBoundingClientRect();
+    const MARGIN    = 8;                                      // min gap from viewport edge
+    const menuW     = 120;                                    // approx dropdown width (min-w-[110px])
+    const menuH     = availableLanguages.length * 36 + 8;    // approx dropdown height
+
+    // ── Vertical: prefer below, flip above if not enough room ────────────────
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const top = spaceBelow >= menuH + MARGIN
+      ? rect.bottom + 6
+      : Math.max(MARGIN, rect.top - menuH - 6);
+
+    // ── Horizontal: prefer left-aligned, flip if near right edge ─────────────
+    const spaceRight = window.innerWidth - rect.left;
+    const left = spaceRight >= menuW + MARGIN
+      ? rect.left
+      : Math.max(MARGIN, rect.right - menuW);
+
+    dropdownStyle.value = {
+      top:  `${top}px`,
+      left: `${left}px`,
+    };
+  }
+  isLangOpen.value = !isLangOpen.value;
+}
+
+function selectLanguage(lang: string) {
+  selectedLanguage.value = lang;
+  isLangOpen.value = false;
+}
+
+function handleOutsideClick(e: MouseEvent) {
+  if (langDropdown.value && !langDropdown.value.contains(e.target as Node)) {
+    isLangOpen.value = false;
+  }
+}
 
 // Recording timer state
 const recordingTime = ref<number>(0);
@@ -282,7 +384,9 @@ function setState(s: SttState, msg = "") {
 }
 
 // Cleanup on component unmount
+onMounted(() => document.addEventListener("click", handleOutsideClick, true));
 onUnmounted(() => {
+  document.removeEventListener("click", handleOutsideClick, true);
   stopTimer();
   activeStream?.getTracks().forEach((t) => t.stop());
 });

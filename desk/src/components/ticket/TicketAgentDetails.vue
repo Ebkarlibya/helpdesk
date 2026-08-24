@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-3 border-b px-6 py-3">
     <div v-for="s in sections" :key="s.label" class="flex items-center text-base leading-5">
       <Tooltip :text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">{{ s.label }}</div>
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">{{ s.label }}</div>
       </Tooltip>
       <div class="flex items-center justify-between">
         <div v-if="s.value">{{ s.value }}</div>
@@ -12,199 +12,204 @@
       </div>
     </div>
 
-    <div v-if="props.ticket.ehda_etms_erp_site" @click="openSiteTab" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Site</div>
+    <div v-if="props.ticket.ehda_etms_erp_site" @click="openSiteTab" class="flex items-center text-base leading-5 cursor-pointer hover:opacity-80">
+      <Tooltip text="Site">
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">Site</div>
       </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Website">
-          <p style="cursor: pointer;">{{ props.ticket.ehda_etms_erp_site }}<span><svg
-                style="display: inline-block; width: 17px; margin: 5px 5px;" xmlns="http://www.w3.org/2000/svg"
-                width="24" height="24" viewBox="0 0 24 24">
-                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  color="currentColor">
-                  <circle cx="12" cy="12" r="10" />
-                  <ellipse cx="12" cy="12" rx="4" ry="10" />
-                  <path d="M2 12h20" />
-                </g>
-              </svg></span></p>
+      <div class="flex items-center justify-between min-w-0">
+        <Tooltip text="Open Site in New Tab">
+          <p class="flex items-center truncate text-sm sm:text-base">
+            <span class="truncate">{{ props.ticket.ehda_etms_erp_site }}</span>
+            <svg
+              class="inline-block w-4 h-4 ml-1 shrink-0"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10" />
+                <ellipse cx="12" cy="12" rx="4" ry="10" />
+                <path d="M2 12h20" />
+              </g>
+            </svg>
+          </p>
         </Tooltip>
       </div>
     </div>
 
     <div v-if="props.ticket.customer" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Customer</div>
+      <Tooltip text="Customer">
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">Customer</div>
       </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.customer }}<span></span></p>
-        </Tooltip>
+      <div class="flex items-center justify-between min-w-0">
+        <p class="truncate text-sm sm:text-base">{{ props.ticket.customer }}</p>
       </div>
     </div>
 
     <div v-if="props.ticket.last_replay_by" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Last Replay By</div>
+      <Tooltip text="Last Reply By">
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">Last Reply By</div>
       </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Last Replay By">
-          <p style="cursor: pointer;">{{ props.ticket.last_replay_by }}<span></span></p>
-        </Tooltip>
+      <div class="flex items-center justify-between min-w-0">
+        <p class="truncate text-sm sm:text-base">{{ props.ticket.last_replay_by }}</p>
       </div>
     </div>
 
-    <div class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Related SLA</div>
+    <div v-if="props.ticket.sla" class="flex items-center text-base leading-5 cursor-pointer hover:opacity-80" @click="readSlaDescription">
+      <Tooltip text="Related SLA">
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">Related SLA</div>
       </Tooltip>
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between min-w-0">
         <Tooltip text="Read SLA Description">
-          <p @click="readSlaDescription" style="cursor: pointer;">{{ props.ticket.sla }}<span>
-              <svg style="display: inline-block; width: 17px; margin: 5px 5px;" xmlns="http://www.w3.org/2000/svg"
-                width="24" height="24" viewBox="0 0 24 24">
-                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
-                  <path stroke-linejoin="round" d="M21 3h-6m6 0l-9 9m9-9v6" />
-                  <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
-                </g>
-              </svg>
-            </span></p>
-        </Tooltip>
-      </div>
-    </div>
-
-    <div v-if="props.ticket.ehda_non_sla_form" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Non SLA Status</div>
-      </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.ehda_non_sla_status }}<span></span></p>
+          <p class="flex items-center truncate text-sm sm:text-base text-blue-600 dark:text-blue-400">
+            <span class="truncate">{{ props.ticket.sla }}</span>
+            <svg class="inline-block w-4 h-4 ml-1 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+                <path stroke-linejoin="round" d="M21 3h-6m6 0l-9 9m9-9v6" />
+                <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+              </g>
+            </svg>
+          </p>
         </Tooltip>
       </div>
     </div>
 
     <div v-if="props.ticket.ehda_non_sla_form" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Non SLA Form</div>
+      <Tooltip text="Non SLA Status">
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">Non SLA Status</div>
       </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Read SLA Description">
-          <span @click="readNonSlaDetails" class="text-base text-gray-800 flex-1" style="cursor: pointer;">{{
-            props.ticket.ehda_non_sla_form }} <span> <svg style="display: inline-block; width: 17px; margin: 5px 5px;"
-                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
-                  <path stroke-linejoin="round" d="M21 3h-6m6 0l-9 9m9-9v6" />
-                  <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
-                </g>
-              </svg></span></span>
+      <div class="flex items-center justify-between min-w-0">
+        <p class="truncate text-sm sm:text-base">{{ props.ticket.ehda_non_sla_status }}</p>
+      </div>
+    </div>
+
+    <div v-if="props.ticket.ehda_non_sla_form" class="flex items-center text-base leading-5 cursor-pointer hover:opacity-80" @click="readNonSlaDetails">
+      <Tooltip text="Non SLA Form">
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">Non SLA Form</div>
+      </Tooltip>
+      <div class="flex items-center justify-between min-w-0">
+        <Tooltip text="View Non-SLA Request Evaluation">
+          <span class="flex items-center truncate text-sm sm:text-base text-blue-600 dark:text-blue-400">
+            <span class="truncate">{{ props.ticket.ehda_non_sla_form }}</span>
+            <svg class="inline-block w-4 h-4 ml-1 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+                <path stroke-linejoin="round" d="M21 3h-6m6 0l-9 9m9-9v6" />
+                <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+              </g>
+            </svg>
+          </span>
         </Tooltip>
       </div>
     </div>
 
     <div v-if="props.ticket.ehda_non_sla_form_project" class="flex items-center text-base leading-5">
-      <Tooltip text="s.label">
-        <div class="w-[126px] text-sm text-gray-600">Non SLA Project</div>
+      <Tooltip text="Non SLA Project">
+        <div class="w-[126px] shrink-0 text-sm text-gray-600">Non SLA Project</div>
       </Tooltip>
-      <div class="flex items-center justify-between">
-        <Tooltip text="Read SLA Description">
-          <p style="cursor: pointer;">{{ props.ticket.ehda_non_sla_form_project }}<span></span></p>
-        </Tooltip>
+      <div class="flex items-center justify-between min-w-0">
+        <p class="truncate text-sm sm:text-base">{{ props.ticket.ehda_non_sla_form_project }}</p>
       </div>
     </div>
 
+    <!-- Non-SLA Evaluation Form Dialog -->
     <Dialog v-model="readNonSlaDetailsDialog" :options="{ size: '4xl' }">
       <template #body-title>
-        <h3>Non-SLA Request Evaluation Form ({{ ticket.ehda_non_sla_form }})</h3>
+        <h3 class="text-base sm:text-lg font-semibold text-ink-gray-9">
+          Non-SLA Request Evaluation Form ({{ props.ticket.ehda_non_sla_form }})
+        </h3>
       </template>
       <template #body-content>
+        <div v-if="nonSlaEvalForm" class="max-h-[65vh] sm:max-h-[70vh] overflow-y-auto pr-1 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <Input :modelValue="nonSlaEvalForm.workflow_state" label="Workflow Status" type="text" disabled />
 
-        <div class="grid grid-cols-2 gap-4" v-if="nonSlaEvalForm">
-          <Input :modelValue="nonSlaEvalForm.workflow_state" label="Workflow Status" type="text" disabled />
+            <Input :modelValue="nonSlaEvalForm.related_quotation" label="Related Quotation (if paid)" disabled />
 
-          <Input :modelValue="nonSlaEvalForm.related_quotation" label="Related Quotation (if paid)" disabled />
+            <div class="hidden sm:block"></div>
 
-          <!-- ----- -->
-          <div></div>
+            <Input :modelValue="nonSlaEvalForm.related_project" label="Related Project (if approved)" disabled />
 
-          <Input :modelValue="nonSlaEvalForm.related_project" label="Related Project (if approved)" disabled />
+            <Input :modelValue="nonSlaEvalForm.employee" label="Assigned Evaluator" disabled />
 
+            <Tooltip :text="(nonSlaEvalForm.type_of_non_sla_request || []).map(el => el.type_of_non_sla_request).join(', ')">
+              <Input :modelValue="(nonSlaEvalForm.type_of_non_sla_request || []).map(el => el.type_of_non_sla_request).join(', ')"
+                label="Type of Non SLA Request" disabled />
+            </Tooltip>
 
-          <!-- ----- -->
+            <Input :modelValue="nonSlaEvalForm.assigned_evaluator_name" label="Assigned Evaluator Name" disabled />
 
-          <Input :modelValue="nonSlaEvalForm.employee" label="Assigned Evaluator" disabled />
+            <div class="sm:col-span-2 space-y-1" v-if="nonSlaEvalForm.meeting_with_customer_details_if_any">
+              <label class="text-xs text-ink-gray-5">Meeting with Customer Details (if any)</label>
+              <Textarea :variant="'subtle'" size="sm" placeholder=""
+                :modelValue="nonSlaEvalForm.meeting_with_customer_details_if_any" disabled />
+            </div>
 
-          <Tooltip :text="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')">
-            <Input :modelValue="nonSlaEvalForm.type_of_non_sla_request.map(el => el.type_of_non_sla_request).join(', ')"
-              label="Type of Non SLA Request" disabled />
-          </Tooltip>
+            <Input :modelValue="nonSlaEvalForm.impact_scope" label="Impact Scope" disabled />
 
-          <!-- ----- -->
+            <Input :modelValue="nonSlaEvalForm.technical_complexity" label="Technical Complexity" disabled />
 
-          <Input :modelValue="nonSlaEvalForm.assigned_evaluator_name" label="Assigned Evaluator Name" disabled />
+            <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
 
-          <div class="grid grid-cols-1">
-            <p style="color: gray;">Meeting with Customer Details (if any)</p>
-            <Textarea :variant="'subtle'" :ref_for="true" size="sm" placeholder="Placeholder"
-              :value="nonSlaEvalForm.meeting_with_customer_details_if_any" disabled />
+            <Input :modelValue="nonSlaEvalForm.estimated_effort_in_hours" label="Estimated Effort (in hours)" disabled />
+
+            <Tooltip v-if="nonSlaEvalForm.cancellation_reason?.length" :text="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')">
+              <Input :modelValue="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')"
+                label="Request Cancellation Reason" disabled />
+            </Tooltip>
+
+            <Tooltip v-if="nonSlaEvalForm.quotation_rejection_reason?.length" :text="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')">
+              <Input :modelValue="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')"
+                label="Quotation Rejection Reason" disabled />
+            </Tooltip>
           </div>
-          <!-- ----- -->
 
-          <Input :modelValue="nonSlaEvalForm.impact_scope" label="Impact Scope" disabled />
-
-          <Input :modelValue="nonSlaEvalForm.technical_complexity" label="Technical Complexity" disabled />
-
-
-          <!-- ----- -->
-
-          <Input :modelValue="nonSlaEvalForm.urgency_from_customer" label="Urgency from Customer" disabled />
-
-          <!-- <Input :modelValue="nonSlaEvalForm.can_it_be_reused" label="Can it be reused ?" disabled /> -->
-
-          <!-- ----- -->
-
-          <Input :modelValue="nonSlaEvalForm.estimated_effort_in_hours" label="Estimated Effort (in hours)" disabled />
-
-          <!-- ----- -->
-
-          <Tooltip :text="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')">
-            <Input :modelValue="nonSlaEvalForm.cancellation_reason.map(el => el.link_afkn).join(', ')"
-              label="Request Cancellation Reason" disabled />
-          </Tooltip>
-
-          <Tooltip :text="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')">
-            <Input :modelValue="nonSlaEvalForm.quotation_rejection_reason.map(el => el.link_kyjp).join(', ')"
-              label="Quotation Rejection Reason" disabled />
-          </Tooltip>
+          <div class="space-y-1" v-if="nonSlaEvalForm.additional_notes">
+            <label class="text-xs text-ink-gray-5">Additional Notes</label>
+            <Textarea :variant="'subtle'" size="sm" placeholder=""
+              :modelValue="nonSlaEvalForm.additional_notes" disabled />
+          </div>
         </div>
-
-        <br>
-        <div class="grid grid-cols-1" v-if="nonSlaEvalForm.additional_notes">
-          <p style="color: gray;">Additional Notes</p>
-          <Textarea :variant="'subtle'" :ref_for="true" size="sm" placeholder="Placeholder"
-            :value="nonSlaEvalForm.additional_notes" disabled />
-        </div>
-
       </template>
 
       <template #actions>
-        <Button class="ml-2" @click="readNonSlaDetailsDialog = false">
-          Close
-        </Button>
+        <div class="flex justify-end w-full">
+          <Button variant="solid" @click="readNonSlaDetailsDialog = false">
+            Close
+          </Button>
+        </div>
+      </template>
+    </Dialog>
+
+    <!-- SLA Description Dialog -->
+    <Dialog v-model="readSlaDetailsDialog" :options="{ size: 'xl' }">
+      <template #body-title>
+        <h3 class="text-base sm:text-lg font-semibold text-ink-gray-9">
+          Service Level Agreement ({{ props.ticket.sla }})
+        </h3>
+      </template>
+      <template #body-content>
+        <div class="max-h-[60vh] overflow-y-auto pr-1 text-sm text-ink-gray-7 leading-relaxed" style="direction: rtl;">
+          <div v-if="props.ticket.sla_description" v-html="props.ticket.sla_description" />
+          <p v-else class="text-gray-400">No SLA description available.</p>
+        </div>
+      </template>
+      <template #actions>
+        <div class="flex justify-end w-full">
+          <Button variant="solid" @click="readSlaDetailsDialog = false">
+            Close
+          </Button>
+        </div>
       </template>
     </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Badge, Tooltip, call } from "frappe-ui";
+import { Badge, Tooltip, Dialog, Input, Textarea, Button, call } from "frappe-ui";
 import { dayjs } from "@/dayjs";
 import { formatTime, StatusEnum } from "@/utils";
 import { dateFormat, dateTooltipFormat } from "@/utils";
 import { computed, ref } from "vue";
-import { globalStore } from "@/stores/globalStore";
 import { NonSLAEvalForm } from "@/types";
-const { $dialog } = globalStore();
 
 const props = defineProps({
   ticket: {
@@ -212,13 +217,15 @@ const props = defineProps({
     required: true,
   },
 });
-console.log(props.ticket);
 
-let nonSlaEvalForm = ref<NonSLAEvalForm>()
-let readNonSlaDetailsDialog = ref(false)
+let nonSlaEvalForm = ref<NonSLAEvalForm>();
+let readNonSlaDetailsDialog = ref(false);
+let readSlaDetailsDialog = ref(false);
 
 function openSiteTab() {
-  open(`/app/etms-erp-site/${props.ticket.ehda_etms_erp_site}`, '_blank').focus()
+  if (props.ticket.ehda_etms_erp_site) {
+    open(`/app/etms-erp-site/${props.ticket.ehda_etms_erp_site}`, '_blank')?.focus();
+  }
 }
 
 function readNonSlaDetails() {
@@ -227,34 +234,14 @@ function readNonSlaDetails() {
     non_sla_name: props.ticket.ehda_non_sla_form
   }).then((res: NonSLAEvalForm) => {
     if (res) {
-      nonSlaEvalForm.value = res
-      readNonSlaDetailsDialog.value = true
-      console.log(res);
-
-    } else {
-      console.log('no customer linked to user: ');
+      nonSlaEvalForm.value = res;
+      readNonSlaDetailsDialog.value = true;
     }
-  }).finally((er) => {
-    // $(document.body).css("filter", "opacity(1)")
-  })
+  });
 }
 
 function readSlaDescription() {
-  $dialog({
-    title: `Service Level Agreement (${props.ticket.sla})`,
-    html: `<div style="direction: rtl">${props.ticket.sla_description}</div>`,
-    size: '30%',
-    actions: [
-      {
-        label: "Close",
-        variant: "solid",
-        // theme: theme,
-        onClick(close: Function) {
-          close();
-        },
-      },
-    ],
-  });
+  readSlaDetailsDialog.value = true;
 }
 
 const firstResponseBadge = computed(() => {
